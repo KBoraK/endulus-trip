@@ -21,7 +21,7 @@ function load(){
  return s;
 }
 function merge(base,extra){
- const out=structuredClone?structuredClone(base):JSON.parse(JSON.stringify(base));
+ const out=(typeof structuredClone!=="undefined")?structuredClone(base):JSON.parse(JSON.stringify(base));
  Object.keys(extra||{}).forEach(k=>{
    if(extra[k]&&typeof extra[k]==="object"&&!Array.isArray(extra[k])&&out[k]&&typeof out[k]==="object") out[k]=merge(out[k],extra[k]);
    else out[k]=extra[k];
