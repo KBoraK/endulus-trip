@@ -148,6 +148,7 @@ function onlineState(){
 }
 window.addEventListener("online",onlineState);window.addEventListener("offline",onlineState);onlineState();
 if(window.matchMedia("(display-mode: standalone)").matches||navigator.standalone===true)document.body.classList.add("pwa-standalone");
+const deepLink={travel:"v61travel",book:"book",map:"v5mapview"}[location.hash.replace("#","")];if(deepLink){const b=document.querySelector('.tabs button[data-v="'+deepLink+'"]');if(b)setTimeout(()=>b.click(),50)}
 
 save();
 })();
