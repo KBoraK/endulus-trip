@@ -91,6 +91,7 @@ const btn=document.getElementById("editToggle");
 function setEdit(v){edit=v;document.body.classList.toggle("edit-on",edit);btn?.classList.toggle("on",edit);if(btn){btn.querySelector(".edit-label").textContent=edit?"Bitti":"Düzenle";btn.setAttribute("aria-label",edit?"Düzenlemeyi bitir":"Düzenleme modunu aç")}renderEditBar()}
 if(btn)btn.onclick=()=>setEdit(!edit);
 renderStays();renderBookings();renderBudget();renderActions();setEdit(false);
+const mapNav=document.querySelector('.tabs button[data-v="v5mapview"]');if(mapNav)mapNav.addEventListener("click",()=>{const q=document.querySelector('[data-v5go="v5mapview"]');if(q)setTimeout(()=>q.click(),0)});
 
 // Keep notes in the central state as they change.
 document.querySelectorAll("#v5noteslist textarea").forEach(t=>t.addEventListener("input",()=>{state.notes=state.notes||{};state.notes[t.dataset.d]=t.value;save()}));
