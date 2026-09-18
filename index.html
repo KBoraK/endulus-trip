@@ -160,7 +160,7 @@ if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.ser
    const dark=document.documentElement.dataset.theme==="dark";
    btn.querySelector(".theme-icon").textContent=dark?"☀":"☾";
    btn.querySelector(".theme-label").textContent=dark?"Light":"Dark";
-   btn.setAttribute("aria-label",dark?"Açık temaya geç":"Koyu temaya geç");
+   btn.setAttribute("aria-label",dark?"Açık temaya geç":"Koyu temaya geç");const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=dark?"#171a16":"#eee8dc";
  };
  paint();
  btn.addEventListener("click",()=>{
