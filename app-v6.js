@@ -1,0 +1,102 @@
+(()=>{
+"use strict";
+if(typeof D==="undefined") return;
+const KEY="endulusStateV6";
+const STATUS={
+ required:["Rezervasyon gerekli","required"],
+ waiting:["Satış / saat bekleniyor","waiting"],
+ later:["Tarih yaklaşınca kontrol","later"],
+ booked:["Booked","booked"]
+};
+const stayDefaults={};
+D.stays.forEach(s=>stayDefaults[s[0]]={status:"todo",name:"",price:"",checkin:s[1].split("–")[0]||"",checkout:s[1].split("–")[1]||"",area:s[3]});
+const reservationDefaults={};
+D.bookings.forEach(b=>reservationDefaults[b[0]]={status:["train"].includes(b[0])?"waiting":"required",time:"",total:"",verified:""});
+function load(){
+ let s={version:6,stays:stayDefaults,reservations:reservationDefaults,expenses:{flights:"",intercity:"",local:"",food:"",other:""}};
+ try{const old=JSON.parse(localStorage.getItem(KEY)||"null");if(old)s=merge(s,old)}catch(e){}
+ try{const checks=JSON.parse(localStorage.getItem("endulusChecks")||"{}");Object.keys(checks).forEach(k=>{if(checks[k]&&s.reservations[k])s.reservations[k].status="booked"})}catch(e){}
+ try{const b=JSON.parse(localStorage.getItem("endulusBudgetV5")||"{}");["flights","intercity","local","food","other"].forEach(k=>{if(b[k]!==undefined&&s.expenses[k]==="")s.expenses[k]=b[k]})}catch(e){}
+ try{const n=JSON.parse(localStorage.getItem("endulusNotesV5")||"{}");if(n)s.notes=n}catch(e){}
+ return s;
+}
+function merge(base,extra){
+ const out=structuredClone?structuredClone(base):JSON.parse(JSON.stringify(base));
+ Object.keys(extra||{}).forEach(k=>{
+   if(extra[k]&&typeof extra[k]==="object"&&!Array.isArray(extra[k])&&out[k]&&typeof out[k]==="object") out[k]=merge(out[k],extra[k]);
+   else out[k]=extra[k];
+ });return out;
+}
+let state=load(),edit=false;
+const save=()=>{
+ localStorage.setItem(KEY,JSON.stringify(state));
+ const checks={};Object.entries(state.reservations).forEach(([k,v])=>checks[k]=v.status==="booked");localStorage.setItem("endulusChecks",JSON.stringify(checks));
+ localStorage.setItem("endulusBudgetV5",JSON.stringify({...state.expenses,stays:stayTotal(),attractions:"323.31"}));
+ if(state.notes)localStorage.setItem("endulusNotesV5",JSON.stringify(state.notes));
+};
+const money=n=>new Intl.NumberFormat("tr-TR",{style:"currency",currency:"EUR"}).format(Number(n)||0);
+const num=v=>parseFloat(String(v||"").replace(",","."))||0;
+const stayTotal=()=>Object.values(state.stays).reduce((s,x)=>s+num(x.price),0);
+const attractionPlan=()=>D.budget.reduce((s,x)=>s+num(x[1]),0);
+const expenseTotal=()=>Object.values(state.expenses).reduce((s,x)=>s+num(x),0);
+const grand=()=>stayTotal()+attractionPlan()+expenseTotal();
+const pp=()=>grand()/3;
+const getBooking=id=>D.bookings.find(b=>b[0]===id);
+function bookingEstimatedTotal(id){
+ const b=getBooking(id),v=state.reservations[id];if(!b||!v)return 0;
+ return num(v.total)||(v.status==="booked"&&b[3]!=null?num(b[3])*3:0);
+}
+function bookedActivityTotal(){return Object.keys(state.reservations).reduce((s,id)=>s+bookingEstimatedTotal(id),0)}
+function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function renderStays(){
+ const box=document.querySelector("#staygrid");if(!box)return;
+ box.className="v6staygrid";
+ box.innerHTML=D.stays.map(s=>{
+  const v=state.stays[s[0]]||stayDefaults[s[0]],booked=v.status==="booked";
+  return '<article class="v6stay" data-city="'+escapeHtml(s[0])+'"><div class="v6staytop"><div><div class="ey">'+escapeHtml(s[1])+' · '+s[2]+' gece</div><h3>'+escapeHtml(s[0])+'</h3></div><span class="v6badge '+(booked?"booked":"todo")+'">'+(booked?"✓ Rezerve":"Bekliyor")+'</span></div><div class="v6summary">'+(v.name?'<b>'+escapeHtml(v.name)+'</b><br>':"")+escapeHtml(v.area)+(v.price?'<br><b>'+money(v.price)+'</b> · toplam konaklama':"")+'</div><div class="actions"><a class="action" target="_blank" rel="noopener" href="'+maps(v.area.split(";")[0]+" "+s[0])+'">⌖ Bölge</a></div><div class="v6fields"><label>Durum<select data-stay="'+escapeHtml(s[0])+'" data-field="status"><option value="todo" '+(v.status==="todo"?"selected":"")+'>Bekliyor</option><option value="booked" '+(v.status==="booked"?"selected":"")+'>Rezerve</option></select></label><label>Toplam fiyat (€)<input inputmode="decimal" data-stay="'+escapeHtml(s[0])+'" data-field="price" value="'+escapeHtml(v.price)+'" placeholder="0"></label><label class="wide">Otel / apartman adı<input data-stay="'+escapeHtml(s[0])+'" data-field="name" value="'+escapeHtml(v.name)+'" placeholder="Henüz seçilmedi"></label><label class="wide">Bölge<input data-stay="'+escapeHtml(s[0])+'" data-field="area" value="'+escapeHtml(v.area)+'"></label></div></article>';
+ }).join("");
+ box.querySelectorAll("[data-stay]").forEach(el=>el.onchange=()=>{state.stays[el.dataset.stay][el.dataset.field]=el.value;save();renderStays();renderBudget();renderActions()});
+}
+function renderBookings(){
+ const box=document.querySelector("#books");if(!box)return;
+ box.innerHTML=D.bookings.map(b=>{
+  const v=state.reservations[b[0]],st=STATUS[v.status]||STATUS.required,link=official[b[1]];
+  return '<article class="v6book"><div class="v6bookhead"><div><div class="ey">'+escapeHtml(b[2])+'</div><h3>'+escapeHtml(b[1])+'</h3><div class="v6bookmeta">'+(b[3]!=null?money(b[3])+' pp · 3 kişi plan: '+money(b[3]*3):'Fiyat henüz girilmedi')+(v.time?' · '+escapeHtml(v.time):'')+(v.verified?' · son kontrol '+escapeHtml(v.verified):'')+'</div>'+(link?'<a class="ticketlink" target="_blank" rel="noopener" href="'+link+'">Resmî sayfa ↗</a>':"")+'</div><span class="v6bookstate '+st[1]+'">'+st[0]+'</span></div><div class="v6bookfields"><label>Durum<select data-res="'+b[0]+'" data-field="status">'+Object.entries(STATUS).map(([k,x])=>'<option value="'+k+'" '+(v.status===k?"selected":"")+'>'+x[0]+'</option>').join("")+'</select></label><label>Saat<input data-res="'+b[0]+'" data-field="time" value="'+escapeHtml(v.time)+'" placeholder="örn. 09:30"></label><label>Toplam ödeme (€)<input inputmode="decimal" data-res="'+b[0]+'" data-field="total" value="'+escapeHtml(v.total)+'" placeholder="'+(b[3]!=null?(b[3]*3).toFixed(2):"0")+'"></label><label>Son kontrol<input type="date" data-res="'+b[0]+'" data-field="verified" value="'+escapeHtml(v.verified)+'"></label></div></article>';
+ }).join("");
+ box.querySelectorAll("[data-res]").forEach(el=>el.onchange=()=>{state.reservations[el.dataset.res][el.dataset.field]=el.value;save();renderBookings();renderBudget();renderActions()});
+ const n=Object.values(state.reservations).filter(x=>x.status==="booked").length,p=Math.round(n/D.bookings.length*100);
+ const bar=document.querySelector("#prog"),txt=document.querySelector("#progtext");if(bar)bar.style.width=p+"%";if(txt)txt.textContent=n+"/"+D.bookings.length+" booked";
+}
+function renderBudget(){
+ const sec=document.querySelector("#v5realbudget");if(!sec)return;
+ const labels={flights:"Uçuşlar",intercity:"Şehirlerarası ulaşım",local:"Yerel ulaşım",food:"Yemek",other:"Diğer"};
+ sec.innerHTML='<div class="head"><div><div class="ey">TEK KAYNAK · 3 KİŞİ</div><h2>Trip budget</h2></div><span class="pill">otomatik</span></div><div class="v6budgetcards"><div class="v6bcard"><b>'+money(grand())+'</b><small>planlanan toplam</small></div><div class="v6bcard"><b>'+money(pp())+'</b><small>kişi başı</small></div><div class="v6bcard"><b>'+money(stayTotal())+'</b><small>konaklama</small></div><div class="v6bcard"><b>'+money(attractionPlan())+'</b><small>aktiviteler</small><div class="v6auto">baz plan</div></div></div><div class="v5warn">Aktivite baz planı mevcut listedeki '+money(attractionPlan())+' üzerinden otomatik geliyor. Konaklama ve diğer kategoriler Edit Mode’da girildikçe toplam güncellenir. Booked aktivitelerde kaydedilen/hesaplanan tutar: '+money(bookedActivityTotal())+'.</div><div class="v5budget v6expense">'+Object.keys(labels).map(k=>'<label><span>'+labels[k]+'</span><input inputmode="decimal" data-exp="'+k+'" value="'+escapeHtml(state.expenses[k])+'" placeholder="€"></label>').join("")+'</div>';
+ sec.querySelectorAll("[data-exp]").forEach(el=>el.oninput=()=>{state.expenses[el.dataset.exp]=el.value;save();const cards=sec.querySelectorAll(".v6bcard b");cards[0].textContent=money(grand());cards[1].textContent=money(pp())});
+}
+function renderActions(){
+ const box=document.querySelector("#v6actions");if(!box)return;
+ const required=D.bookings.filter(b=>state.reservations[b[0]].status!=="booked");
+ const missingStays=D.stays.filter(s=>state.stays[s[0]].status!=="booked").length;
+ let html="";
+ if(required.length){const b=required[0],st=STATUS[state.reservations[b[0]].status]||STATUS.required;html+='<div class="v6action"><b>🔴 '+escapeHtml(b[1])+'</b><span>'+escapeHtml(b[2])+' · '+st[0]+'</span></div>'}
+ if(required.length>1){const b=required[1];html+='<div class="v6action"><b>🟠 Sonra: '+escapeHtml(b[1])+'</b><span>'+escapeHtml(b[2])+'</span></div>'}
+ if(missingStays)html+='<div class="v6action"><b>🏨 '+missingStays+' konaklama bekliyor</b><span>Konaklama sekmesinde seçtikçe Booked yap.</span></div>';
+ if(!required.length&&!missingStays)html='<div class="v6action v6done"><b>✓ Ana rezervasyonlar tamam</b><span>Yalnız tarih yaklaşınca tatil saatlerini tekrar doğrula.</span></div>';
+ box.innerHTML=html;
+}
+function renderEditBar(){
+ ["stays","book","v5realbudget"].forEach(id=>{const s=document.getElementById(id);if(!s)return;let old=s.querySelector(".v6bar");if(old)old.remove();let bar=document.createElement("div");bar.className="v6bar";bar.innerHTML='<b>'+(edit?"✎ Edit Mode açık":"Görüntüleme modu")+'</b><span>'+(edit?"Değişiklikler otomatik kaydedilir.":"Sağ üstteki ✎ Düzenle ile alanları aç.")+'</span>';s.insertBefore(bar,s.firstChild.nextSibling)});
+}
+const btn=document.getElementById("editToggle");
+function setEdit(v){edit=v;document.body.classList.toggle("edit-on",edit);btn?.classList.toggle("on",edit);if(btn){btn.querySelector(".edit-label").textContent=edit?"Bitti":"Düzenle";btn.setAttribute("aria-label",edit?"Düzenlemeyi bitir":"Düzenleme modunu aç")}renderEditBar()}
+if(btn)btn.onclick=()=>setEdit(!edit);
+renderStays();renderBookings();renderBudget();renderActions();setEdit(false);
+
+// Keep notes in the central state as they change.
+document.querySelectorAll("#v5noteslist textarea").forEach(t=>t.addEventListener("input",()=>{state.notes=state.notes||{};state.notes[t.dataset.d]=t.value;save()}));
+// Replace export/import with v6 single-state backup.
+const ex=document.getElementById("v5export");if(ex)ex.onclick=()=>{save();const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:"application/json"}));a.download="endulus-roadbook-v6-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)};
+const im=document.getElementById("v5import");if(im)im.onchange=e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||Number(d.version)<6)throw new Error();localStorage.setItem(KEY,JSON.stringify(d));location.reload()}catch(_){alert("Bu dosya v6 Roadbook yedeği değil.")}};r.readAsText(file)};
+const reset=document.getElementById("v5reset");if(reset)reset.onclick=()=>{if(confirm("Bu cihazdaki v6 rezervasyon, konaklama, bütçe ve not verileri sıfırlansın mı?")){[KEY,"endulusChecks","endulusBudgetV5","endulusNotesV5"].forEach(k=>localStorage.removeItem(k));location.reload()}};
+save();
+})();
