@@ -7,12 +7,42 @@
   "background_color": "#eee8dc",
   "theme_color": "#eee8dc",
   "description": "Endülüs 2026–27 kişisel seyahat dashboard'u",
+  "categories": [
+    "travel",
+    "lifestyle"
+  ],
   "icons": [
     {
       "src": "icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Travel Mode",
+      "short_name": "Bugün",
+      "url": "./#travel",
+      "icons": [
+        {
+          "src": "icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Rezervasyonlar",
+      "short_name": "Biletler",
+      "url": "./#book",
+      "icons": [
+        {
+          "src": "icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
     }
   ]
 }
