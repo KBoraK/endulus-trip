@@ -99,5 +99,55 @@ document.querySelectorAll("#v5noteslist textarea").forEach(t=>t.addEventListener
 const ex=document.getElementById("v5export");if(ex)ex.onclick=()=>{save();const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:"application/json"}));a.download="endulus-roadbook-v6-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)};
 const im=document.getElementById("v5import");if(im)im.onchange=e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||Number(d.version)<6)throw new Error();localStorage.setItem(KEY,JSON.stringify(d));location.reload()}catch(_){alert("Bu dosya v6 Roadbook yedeği değil.")}};r.readAsText(file)};
 const reset=document.getElementById("v5reset");if(reset)reset.onclick=()=>{if(confirm("Bu cihazdaki v6 rezervasyon, konaklama, bütçe ve not verileri sıfırlansın mı?")){[KEY,"endulusChecks","endulusBudgetV5","endulusNotesV5"].forEach(k=>localStorage.removeItem(k));location.reload()}};
+
+/* v6.1 Daily Travel Mode */
+const TRIP_DATES=["2026-12-22","2026-12-23","2026-12-24","2026-12-25","2026-12-26","2026-12-27","2026-12-28","2026-12-29","2026-12-30","2026-12-31","2027-01-01","2027-01-02","2027-01-03"];
+const DAY_ROUTES={
+  1:["Toulouse-Blagnac Airport","Toulouse-Blagnac Airport hotels"],
+  2:["Alcazaba Malaga","Muelle Uno Malaga",["Teatro Romano Malaga","Catedral de Malaga","Soho Malaga"]],
+  3:["Puente Nuevo Ronda","Baños Arabes Ronda",["Old Town Ronda"]],
+  4:["Carrera del Darro Granada","Sacromonte Granada",["Albaicin Granada","Mirador San Nicolas Granada"]],
+  5:["Alhambra Granada","Realejo Granada",["Generalife Granada"]],
+  6:["Medina Azahara Cordoba","Puente Romano Cordoba",["Judería Cordoba"]],
+  7:["Mezquita Catedral Cordoba","Triana Sevilla"],
+  8:["Real Alcazar Sevilla","Las Setas Sevilla",["Catedral Sevilla","Santa Cruz Sevilla"]],
+  9:["Plaza de España Sevilla","Puerta del Sol Madrid"],
+  10:["Museo del Prado Madrid","Puerta del Sol Madrid",["Barrio de las Letras Madrid","Retiro Madrid"]],
+  11:["Plaza Mayor Madrid","Madrid Barajas Airport"],
+  12:["Place de la Comedie Montpellier","Aqueduc Saint Clement Montpellier",["Cathedrale Saint Pierre Montpellier","Promenade du Peyrou Montpellier"]],
+  13:["Place de la Comedie Montpellier","Montpellier Airport"]
+};
+const travelKey="endulusTravelV61";let travelDone={};try{travelDone=JSON.parse(localStorage.getItem(travelKey)||"{}")}catch(e){}
+const travelDir=r=>"https://www.google.com/maps/dir/?api=1&travelmode=walking&origin="+encodeURIComponent(r[0])+"&destination="+encodeURIComponent(r[1])+(r[2]?.length?"&waypoints="+encodeURIComponent(r[2].join("|")):"");
+const travelSearch=q=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
+const daySelect=document.getElementById("v61dayselect"),dayHero=document.getElementById("v61dayhero"),dayTimeline=document.getElementById("v61timeline"),dayActions=document.getElementById("v61travelactions");
+let activeDay=0;
+function localISO(){const d=new Date(),off=d.getTimezoneOffset();return new Date(d.getTime()-off*60000).toISOString().slice(0,10)}
+function defaultDay(){const iso=localISO(),n=TRIP_DATES.indexOf(iso);return n>=0?n:(iso<TRIP_DATES[0]?0:TRIP_DATES.length-1)}
+function renderTravel(){
+ if(!daySelect||!dayHero||!dayTimeline)return;
+ const d=D.days[activeDay],items=d[4],done=travelDone[d[0]]||{},count=items.filter((_,i)=>done[i]).length,p=Math.round(count/items.length*100);
+ daySelect.value=String(activeDay);
+ dayHero.innerHTML='<div class="ey">GÜN '+d[0]+' · '+d[1]+'</div><h3>'+escapeHtml(d[2])+'</h3><p>'+escapeHtml(d[3])+' · '+count+'/'+items.length+' tamamlandı</p><div class="v61progress"><i style="width:'+p+'%"></i></div>';
+ dayTimeline.innerHTML=items.map((x,i)=>'<article class="v61item '+(done[i]?"done":"")+'"><div class="tm">'+escapeHtml(x[0])+'</div><button class="v61check" data-ti="'+i+'" aria-label="'+(done[i]?"Tamamlanmadı olarak işaretle":"Tamamlandı olarak işaretle")+'">'+(done[i]?"✓":"")+'</button><div><h4>'+escapeHtml(x[1])+'</h4><p>'+escapeHtml(x[2])+'</p></div></article>').join("");
+ dayTimeline.querySelectorAll("[data-ti]").forEach(b=>b.onclick=()=>{travelDone[d[0]]=travelDone[d[0]]||{};travelDone[d[0]][b.dataset.ti]=!travelDone[d[0]][b.dataset.ti];localStorage.setItem(travelKey,JSON.stringify(travelDone));renderTravel()});
+ const route=DAY_ROUTES[d[0]],city=d[2].split(" → ")[0];
+ dayActions.innerHTML=(route?'<a class="primary" target="_blank" rel="noopener" href="'+travelDir(route)+'">🚶 Günlük rotayı aç</a>':"")+'<a target="_blank" rel="noopener" href="'+travelSearch(city)+'">⌖ '+escapeHtml(city)+' haritası</a>';
+ document.getElementById("v61prev").disabled=activeDay===0;document.getElementById("v61next").disabled=activeDay===D.days.length-1;
+}
+if(daySelect){
+ daySelect.innerHTML=D.days.map((d,i)=>'<option value="'+i+'">Gün '+d[0]+' · '+escapeHtml(d[2])+'</option>').join("");
+ activeDay=defaultDay();daySelect.onchange=()=>{activeDay=+daySelect.value;renderTravel()};
+ document.getElementById("v61prev").onclick=()=>{if(activeDay>0){activeDay--;renderTravel()}};
+ document.getElementById("v61next").onclick=()=>{if(activeDay<D.days.length-1){activeDay++;renderTravel()}};
+ renderTravel();
+}
+function onlineState(){
+ const on=navigator.onLine,label=on?"● Online":"● Offline";
+ ["v61online"].forEach(id=>{const el=document.getElementById(id);if(el){el.textContent=label;el.classList.toggle("v61online",on);el.classList.toggle("v61offline",!on)}});
+}
+window.addEventListener("online",onlineState);window.addEventListener("offline",onlineState);onlineState();
+if(window.matchMedia("(display-mode: standalone)").matches||navigator.standalone===true)document.body.classList.add("pwa-standalone");
+
 save();
 })();
