@@ -33,6 +33,7 @@ const save=()=>{
  const checks={};Object.entries(state.reservations).forEach(([k,v])=>checks[k]=v.status==="booked");localStorage.setItem("endulusChecks",JSON.stringify(checks));
  localStorage.setItem("endulusBudgetV5",JSON.stringify({...state.expenses,stays:stayTotal(),attractions:"323.31"}));
  if(state.notes)localStorage.setItem("endulusNotesV5",JSON.stringify(state.notes));
+ if(typeof window.endulusCloudSave==="function")window.endulusCloudSave(state);
 };
 const money=n=>new Intl.NumberFormat("tr-TR",{style:"currency",currency:"EUR"}).format(Number(n)||0);
 const num=v=>parseFloat(String(v||"").replace(",","."))||0;
@@ -150,5 +151,15 @@ window.addEventListener("online",onlineState);window.addEventListener("offline",
 if(window.matchMedia("(display-mode: standalone)").matches||navigator.standalone===true)document.body.classList.add("pwa-standalone");
 const deepLink={travel:"v61travel",book:"book",map:"v5mapview"}[location.hash.replace("#","")];if(deepLink){const b=document.querySelector('.tabs button[data-v="'+deepLink+'"]');if(b)setTimeout(()=>b.click(),50)}
 
+window.EndulusApp={
+ getState:()=>JSON.parse(JSON.stringify(state)),
+ applyCloudState:(remote)=>{
+   if(!remote||typeof remote!=="object")return;
+   state=merge(state,remote);localStorage.setItem(KEY,JSON.stringify(state));
+   renderStays();renderBookings();renderBudget();renderActions();
+   if(state.notes){localStorage.setItem("endulusNotesV5",JSON.stringify(state.notes));document.querySelectorAll("#v5noteslist textarea").forEach(t=>{if(state.notes[t.dataset.d]!==undefined)t.value=state.notes[t.dataset.d]})}
+ },
+ setCloudStatus:(label,kind="")=>{const el=document.getElementById("cloudStatus");if(el){el.textContent=label;el.dataset.kind=kind}}
+};
 save();
 })();
