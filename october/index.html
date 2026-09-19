@@ -3,90 +3,157 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#efe9dd">
-<title>Ekim Kısa Tatili</title>
+<meta name="theme-color" content="#ece7dc">
+<title>Skopje · 30.10–02.11.2026</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
-:root{--bg:#efe9dd;--card:#faf5ec;--text:#293027;--muted:#756f65;--line:#d9cebe;--accent:#a85d3a;--olive:#68745e}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#efe9dd,#f5efe7);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.wrap{max-width:880px;margin:auto;padding:20px 14px 90px}.hero{padding:28px 0 18px}.ey{font-size:11px;letter-spacing:.16em;color:var(--accent);font-weight:800}.hero h1{font:700 46px/.95 Georgia,serif;margin:10px 0}.muted{color:var(--muted);line-height:1.45}
-.back{display:inline-flex;text-decoration:none;color:var(--text);border:1px solid var(--line);background:var(--card);padding:9px 11px;border-radius:11px;font-weight:700;font-size:13px}
-.notice{background:#ead9bc;border:1px solid #d5b780;border-radius:14px;padding:12px;font-size:13px;line-height:1.45;margin:12px 0 18px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:15px;margin:10px 0}
-.card h2{font:700 25px Georgia,serif;margin:0 0 12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-label{display:grid;gap:5px;font-size:12px;color:var(--muted)}input,textarea{width:100%;border:1px solid var(--line);border-radius:10px;background:#fffaf2;color:var(--text);padding:10px;font:inherit}textarea{min-height:100px;resize:vertical}
-.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;overflow-x:auto;gap:4px;padding:7px 8px calc(7px + env(safe-area-inset-bottom));background:rgba(239,233,221,.96);border-top:1px solid var(--line);backdrop-filter:blur(14px)}
-.tabs button{flex:1;min-width:78px;border:0;border-radius:11px;background:transparent;padding:9px 6px;color:var(--text);font:inherit;font-size:11px}.tabs button.on{background:var(--olive);color:#fff}
-.view{display:none}.view.on{display:block}.row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin:9px 0}.row button,.add{border:1px solid var(--line);border-radius:10px;background:#eee5d8;padding:10px;cursor:pointer}.danger{color:#9a4938}
-@media(max-width:600px){.hero h1{font-size:39px}.grid{grid-template-columns:1fr}.wrap{padding-top:14px}}
+:root{--bg:#ece7dc;--bg2:#e4ddd0;--card:#f8f2e8;--card2:#f2eadf;--text:#293027;--muted:#756f65;--line:#d7ccbc;--accent:#a85639;--olive:#65715b;--gold:#b9894a;--green:#648064;--orange:#c48842;--red:#b85d50;--shadow:0 10px 34px rgba(71,56,38,.08)}
+*{box-sizing:border-box}html{scroll-behavior:smooth;background:var(--bg)}body{margin:0;min-height:100vh;background:linear-gradient(145deg,var(--bg),#f2ece3);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.wrap,main{max-width:1050px;margin:auto}
+.hero{padding:34px 16px 26px;position:relative;overflow:hidden}.hero:before{content:"";position:absolute;width:130px;height:130px;border:1px solid rgba(168,86,57,.2);border-radius:50%;right:18px;top:20px}.ey{font-size:11px;letter-spacing:.16em;color:var(--accent);font-weight:850}.hero h1{font:700 clamp(42px,8vw,68px)/.95 Georgia,serif;margin:10px 0 12px;letter-spacing:-.04em}.route{color:var(--muted);font-size:15px;line-height:1.5}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:20px}.stat{background:rgba(248,242,232,.78);border:1px solid var(--line);border-radius:15px;padding:13px}.stat b{display:block;font:700 23px Georgia;color:var(--accent)}.stat small{color:var(--muted)}
+.switch{display:inline-flex;margin-top:13px;text-decoration:none;color:var(--text);background:var(--card);border:1px solid var(--line);padding:8px 10px;border-radius:10px;font-weight:750;font-size:12px}
+.tabs{position:sticky;top:0;z-index:50;display:flex;gap:6px;overflow-x:auto;padding:9px max(10px,calc((100vw - 1050px)/2));background:rgba(236,231,220,.94);backdrop-filter:blur(16px);border-block:1px solid var(--line);scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}.tabs button,.action,.filter{white-space:nowrap;border:1px solid var(--line);background:rgba(248,242,232,.85);color:var(--text);border-radius:11px;padding:9px 11px;text-decoration:none;font:inherit;font-size:12px;cursor:pointer}.tabs button.on,.filter.on,.action.primary{background:var(--olive);color:white;border-color:var(--olive)}
+main{padding:20px 12px 90px}.view{display:none}.view.on{display:block}.head{display:flex;justify-content:space-between;gap:12px;align-items:end;margin:4px 0 16px}.head h2{font:700 31px Georgia;margin:4px 0}.muted{color:var(--muted);line-height:1.5}.pill{font-size:11px;background:var(--card);border:1px solid var(--line);padding:5px 8px;border-radius:99px}
+.panel,.day,.hotel,.food,.transport,.note{background:linear-gradient(145deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:17px;box-shadow:var(--shadow)}
+.homegrid{display:grid;grid-template-columns:1.3fr .7fr;gap:10px}.panel{padding:16px}.panel h3{font:700 24px Georgia;margin:5px 0 8px}.quick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.quick button{border:1px solid var(--line);background:#efe6d9;border-radius:12px;padding:14px;text-align:left;font-weight:800;cursor:pointer}
+.flight{display:grid;grid-template-columns:80px 1fr auto;gap:11px;align-items:center;border-top:1px solid var(--line);padding:12px 0}.flight:first-of-type{border-top:0}.time{font-weight:900;color:var(--accent)}.fix{font-size:10px;padding:5px 7px;border-radius:99px;background:#dce4d7}
+.day{margin:10px 0;overflow:hidden}.day summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:15px;cursor:pointer}.day summary::-webkit-details-marker{display:none}.day h3{margin:0;font-size:16px}.date{font-size:12px;color:var(--muted);margin-top:4px}.timeline{border-top:1px solid var(--line);padding:0 14px}.item{display:grid;grid-template-columns:70px 1fr;gap:10px;padding:13px 0;border-bottom:1px solid rgba(80,65,45,.1)}.item:last-child{border-bottom:0}.name{font-weight:850}.desc{font-size:12px;color:var(--muted);line-height:1.45;margin-top:3px}.tag{display:inline-block;margin-top:6px;font-size:10px;padding:4px 7px;background:#e7dfd2;border-radius:99px}.maplink{display:inline-block;margin-top:7px;color:var(--accent);text-decoration:none;font-size:11px;font-weight:800}
+#map{height:440px;border-radius:18px;border:1px solid var(--line);overflow:hidden}.mapchips{display:flex;gap:6px;overflow-x:auto;margin:10px 0 12px}.mapchips button{border:1px solid var(--line);background:var(--card);border-radius:99px;padding:7px 9px;white-space:nowrap;cursor:pointer}
+.hotelgrid,.foodgrid,.transportgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:9px}.hotel,.food,.transport{padding:14px}.hotel h3,.food h3,.transport h3{font:700 20px Georgia;margin:5px 0}.meta{font-size:12px;color:var(--muted);line-height:1.5}.price{font-size:20px;font-weight:900;color:var(--olive);margin:8px 0}.rating{font-weight:850}.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.warn{background:#ead9bc;border:1px solid #d4b77d;padding:11px;border-radius:13px;font-size:12px;line-height:1.45;margin:11px 0}.good{color:var(--green);font-weight:800}.bad{color:var(--accent);font-weight:800}
+.note{padding:14px;margin:9px 0}.note textarea,.note input{width:100%;border:1px solid var(--line);border-radius:10px;background:#fffaf2;padding:9px;font:inherit;color:var(--text)}.note textarea{min-height:110px}.budget{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.bcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}.bcard b{display:block;font-size:23px;font-family:Georgia}.small{font-size:11px;color:var(--muted)}
+footer{text-align:center;color:#8b8175;padding:14px;font-size:11px}
+@media(min-width:1100px){body{padding-left:180px}.tabs{position:fixed;left:16px;top:18px;bottom:18px;width:154px;flex-direction:column;align-items:stretch;padding:82px 9px 10px;border:1px solid var(--line);border-radius:20px}.tabs:before{content:"SKOPJE";position:absolute;top:28px;left:18px;font:700 20px Georgia;color:var(--accent)}.tabs button{text-align:left}.hero,main{max-width:1020px}.wrap{max-width:1020px}}
+@media(max-width:650px){.stats{grid-template-columns:1fr 1fr}.homegrid{grid-template-columns:1fr}.head{align-items:stretch;flex-direction:column}#map{height:54vh;min-height:320px}.budget{grid-template-columns:1fr}.hero h1{font-size:44px}.tabs{position:fixed;top:auto;bottom:0;left:0;right:0;z-index:100;height:calc(66px + env(safe-area-inset-bottom));padding:6px 6px env(safe-area-inset-bottom);justify-content:flex-start;overflow-x:auto}.tabs button{flex:0 0 auto;min-width:78px;height:54px}.hero{padding-top:25px}main{padding-bottom:92px}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <a class="back" href="../">← 🇪🇸 Endülüs’e dön</a>
-  <header class="hero">
-    <div class="ey">GEÇİCİ SEYAHAT PROFİLİ · EKİM</div>
-    <h1>Ekim Kısa Tatili</h1>
-    <p class="muted">Bu sayfa Endülüs dashboard’undan tamamen ayrı çalışır. Buradaki değişiklikler yalnızca bu geçici seyahate kaydedilir.</p>
-  </header>
-  <div class="notice"><b>🔒 Ayrı veri alanı:</b> Bu sayfa <code>octoberTripTempV1</code> anahtarını kullanır. Endülüs notları, bütçesi ve rezervasyonları etkilenmez.</div>
-
-  <section id="overview" class="view on">
-    <div class="card"><h2>Seyahat bilgisi</h2><div class="grid">
-      <label>Başlangıç tarihi<input id="start" type="date"></label>
-      <label>Bitiş tarihi<input id="end" type="date"></label>
-      <label style="grid-column:1/-1">Rota<input id="route" placeholder="örn. Freiburg → ... → Freiburg"></label>
-      <label style="grid-column:1/-1">Kısa açıklama<textarea id="summary" placeholder="Bu tatilin amacı / ana planı"></textarea></label>
-    </div></div>
-  </section>
-
-  <section id="plan" class="view">
-    <div class="card"><h2>Plan</h2><div id="planRows"></div><button class="add" data-add="plan">＋ Plan satırı ekle</button></div>
-  </section>
-
-  <section id="stays" class="view">
-    <div class="card"><h2>Konaklama</h2><div id="stayRows"></div><button class="add" data-add="stays">＋ Konaklama ekle</button></div>
-  </section>
-
-  <section id="transport" class="view">
-    <div class="card"><h2>Ulaşım</h2><div id="transportRows"></div><button class="add" data-add="transport">＋ Ulaşım ekle</button></div>
-  </section>
-
-  <section id="notes" class="view">
-    <div class="card"><h2>Notlar</h2><textarea id="notesText" placeholder="Rezervasyon, yemek, yapılacaklar..."></textarea></div>
-    <div class="card"><button id="reset" class="add danger">Geçici Ekim verilerini sıfırla</button></div>
-  </section>
-</div>
+<header class="hero wrap">
+ <div class="ey">🇲🇰 SKOPJE · 30.10—02.11.2026 · GEÇİCİ PROFİL</div>
+ <h1>Skopje<br>City Break</h1>
+ <div class="route">İzmir → Skopje · Old Bazaar · Vodno · Matka Canyon → Basel</div>
+ <div class="stats"><div class="stat"><b>4</b><small>takvim günü</small></div><div class="stat"><b>3</b><small>gece</small></div><div class="stat"><b>2,5</b><small>gezi günü</small></div><div class="stat"><b>2</b><small>FIX uçuş</small></div></div>
+ <a class="switch" href="../">← 🇪🇸 Endülüs dashboard’una dön</a>
+</header>
 
 <nav class="tabs">
-  <button class="on" data-v="overview">⌂ Genel</button>
-  <button data-v="plan">📅 Plan</button>
-  <button data-v="stays">🛏️ Konaklama</button>
-  <button data-v="transport">🚆 Ulaşım</button>
-  <button data-v="notes">✎ Notlar</button>
+ <button class="on" data-v="home">⌂ Ana Sayfa</button><button data-v="plan">📅 Plan</button><button data-v="mapview">🗺️ Harita</button><button data-v="stays">🛏️ Konaklama</button><button data-v="food">🍴 Yemek</button><button data-v="transport">🚕 Ulaşım</button><button data-v="notes">✎ Notlar</button>
 </nav>
 
+<main>
+<section id="home" class="view on">
+ <div class="homegrid">
+  <div class="panel"><div class="ey">FIX UÇUŞLAR</div><h3>Uçuş planı</h3>
+   <div class="flight"><div class="time">30 Eki</div><div><b>İzmir → Skopje</b><div class="small">16:35 kalkış · 15:50 Skopje varış</div></div><span class="fix">FIX</span></div>
+   <div class="flight"><div class="time">2 Kas</div><div><b>Skopje → Basel</b><div class="small">06:45–09:05</div></div><span class="fix">FIX</span></div>
+  </div>
+  <div class="panel"><div class="ey">HIZLI ERİŞİM</div><h3>Trip mode</h3><div class="quick"><button data-go="plan">📅 Günlük plan</button><button data-go="mapview">🗺️ Harita</button><button data-go="stays">🛏️ Oteller</button><button data-go="food">🍴 Yemek</button></div></div>
+ </div>
+ <div class="warn"><b>Erken dönüş:</b> 2 Kasım 06:45 uçuşu için şehir merkezinden yaklaşık 03:45–04:00 civarı çıkışı baz al. Havaalanı shuttle’ı uçuşlara göre çalışıyor; ancak bu kadar erken saatte taksi ana plan olarak daha güvenli.</div>
+</section>
+
+<section id="plan" class="view">
+ <div class="head"><div><div class="ey">RAHAT TEMPO · ŞEHİR + DOĞA</div><h2>Günlük plan</h2></div><span class="pill">30 Eki–2 Kas</span></div>
+
+ <details class="day" open><summary><div><h3>30 Ekim · Cuma · Varış + merkez akşamı</h3><div class="date">Skopje’ye alışma, yürüyüş ve Old Bazaar</div></div><b>⌄</b></summary><div class="timeline">
+  <div class="item"><div class="time">15:50</div><div><div class="name">✈️ Skopje varış</div><div class="desc">Pasaport + bagaj sonrası şehir merkezine geçiş.</div><span class="tag">FIX</span></div></div>
+  <div class="item"><div class="time">~17:15</div><div><div class="name">Otele giriş</div><div class="desc">Macedonia Square / Old Bazaar hattında konaklama en pratik seçim.</div><span class="tag">Check-in</span></div></div>
+  <div class="item"><div class="time">18:00</div><div><div class="name">Macedonia Square → Stone Bridge</div><div class="desc">İlk akşam için kompakt merkez yürüyüşü.</div><a class="maplink" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Macedonia+Square+Skopje">⌖ Haritada aç</a></div></div>
+  <div class="item"><div class="time">18:45</div><div><div class="name">Old Bazaar akşam yürüyüşü</div><div class="desc">Osmanlı dokusu, hanlar, çarşı sokakları ve ilk yerel yemek.</div><a class="maplink" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Old+Bazaar+Skopje">⌖ Haritada aç</a></div></div>
+  <div class="item"><div class="time">20:00</div><div><div class="name">🍴 Destan / Old Bazaar</div><div class="desc">Kebapi, shopska salatası ve ayran için kolay ilk akşam seçeneği.</div><span class="tag">Local food</span></div></div>
+ </div></details>
+
+ <details class="day" open><summary><div><h3>31 Ekim · Cumartesi · Tarihi Skopje + Vodno</h3><div class="date">Old Bazaar, Kale, şehir merkezi ve manzara</div></div><b>⌄</b></summary><div class="timeline">
+  <div class="item"><div class="time">09:00</div><div><div class="name">Old Bazaar + Mustafa Paşa Camii</div><div class="desc">Sabah çarşı daha sakin. Osmanlı dönemi katmanına odaklan.</div><span class="tag">Tarih</span></div></div>
+  <div class="item"><div class="time">11:00</div><div><div class="name">Skopje Fortress / Kale</div><div class="desc">Vardar ve merkez panoraması.</div><a class="maplink" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Skopje+Fortress">⌖ Haritada aç</a></div></div>
+  <div class="item"><div class="time">12:30</div><div><div class="name">Stone Bridge + Macedonia Square</div><div class="desc">Şehrin iki yakasını birleştiren ana yürüyüş aksı.</div></div>
+  <div class="item"><div class="time">13:30</div><div><div class="name">Mother Teresa Memorial House</div><div class="desc">Kısa merkez durağı; güncel saatleri seyahatten önce doğrula.</div><a class="maplink" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Mother+Teresa+Memorial+House+Skopje">⌖ Haritada aç</a></div></div>
+  <div class="item"><div class="time">15:00</div><div><div class="name">Vodno → Millennium Cross</div><div class="desc">Hava açıksa teleferik/manzara. Teleferik çalışma saatlerini tarih yaklaşınca kontrol et.</div><span class="tag">Hava durumuna bağlı</span></div></div>
+  <div class="item"><div class="time">19:30</div><div><div class="name">🍴 Debar Maalo akşamı</div><div class="desc">Skopski Merak veya Kafana Debar Maalo. Cumartesi akşamı rezervasyon mantıklı.</div><span class="tag">Kafana</span></div></div>
+ </div></details>
+
+ <details class="day" open><summary><div><h3>1 Kasım · Pazar · Matka Canyon</h3><div class="date">Doğa günü + sakin son akşam</div></div><b>⌄</b></summary><div class="timeline">
+  <div class="item"><div class="time">09:00</div><div><div class="name">Skopje → Matka Canyon</div><div class="desc">Toplu taşıma / taksi seçeneklerini bir gün önce teyit et.</div><a class="maplink" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Matka+Canyon+North+Macedonia">⌖ Haritada aç</a></div></div>
+  <div class="item"><div class="time">10:00</div><div><div class="name">Matka yürüyüşü</div><div class="desc">Kanyon kıyısı, manastır çevresi ve manzara.</div><span class="tag">Doğa</span></div></div>
+  <div class="item"><div class="time">11:30</div><div><div class="name">Tekne / Vrelo Cave opsiyonu</div><div class="desc">Hava ve işletme durumuna göre yerinde karar ver; sezon/saatleri doğrula.</div><span class="tag">Opsiyonel</span></div></div>
+  <div class="item"><div class="time">15:00</div><div><div class="name">Skopje’ye dönüş + mola</div><div class="desc">Son akşamı ağırlaştırmadan bırak.</div></div>
+  <div class="item"><div class="time">19:00</div><div><div class="name">🍴 Old House veya Debar Maalo</div><div class="desc">Tavče gravče, ajvar, shopska salatası, pastrmajlija gibi yerel tatlar.</div></div>
+  <div class="item"><div class="time">21:00</div><div><div class="name">Erken toparlanma</div><div class="desc">03:45–04:00 çıkış için valizi gece hazırla.</div><span class="tag">Önemli</span></div></div>
+ </div></details>
+
+ <details class="day"><summary><div><h3>2 Kasım · Pazartesi · Dönüş</h3><div class="date">Çok erken havaalanı transferi</div></div><b>⌄</b></summary><div class="timeline">
+  <div class="item"><div class="time">03:45</div><div><div class="name">Otel → SKP Airport</div><div class="desc">Ana plan: taksi. Shuttle saati uygunsa ikinci seçenek.</div><span class="tag">Transfer</span></div></div>
+  <div class="item"><div class="time">04:45</div><div><div class="name">Havaalanında ol</div><div class="desc">Havalimanı check-in bankoları uluslararası uçuşlarda planlanan kalkıştan 2 saat önce açılıyor.</div></div></div>
+  <div class="item"><div class="time">06:45</div><div><div class="name">✈️ Skopje → Basel</div><div class="desc">09:05 Basel varış.</div><span class="tag">FIX</span></div></div>
+ </div></details>
+</section>
+
+<section id="mapview" class="view">
+ <div class="head"><div><div class="ey">İNTERAKTİF</div><h2>Skopje haritası</h2></div><span class="pill">şehir + doğa</span></div>
+ <div class="mapchips" id="chips"></div><div id="map"></div>
+ <p class="muted">Harita çevrimiçi çalışır. Pinlere dokunarak ana durakları görebilirsin.</p>
+</section>
+
+<section id="stays" class="view">
+ <div class="head"><div><div class="ey">30 EKİ–2 KAS · 3 GECE</div><h2>Konaklama seçenekleri</h2></div><span class="pill">merkez odaklı</span></div>
+ <div class="warn"><b>Fiyat referansı:</b> 19.09.2026 tarihinde Booking.com üzerinde <b>2 yetişkin / 1 oda / 3 gece</b> için görülen toplamlar. Kişi sayın farklıysa fiyatları yeniden tarayalım.</div>
+ <div class="hotelgrid">
+  <article class="hotel"><div class="ey">APARTMAN · MERKEZ</div><h3>Central Apartments in Skopje City Center</h3><div class="rating">9,1 · 242 yorum</div><div class="meta">50-ta Divizija 21 · merkez güneyi · yürüyerek Macedonia Square erişimi</div><div class="price">€109,89</div><div class="good">✓ Puan/fiyat dengesi çok güçlü</div><div class="meta">− Old Bazaar’ın tam içinde değil.</div><div class="actions"><a class="action primary" target="_blank" href="https://www.booking.com/hotel/mk/apartment-in-skopje-city-center-apt-3.html?checkin=2026-10-30&checkout=2026-11-02&group_adults=2">Booking ↗</a><a class="action" target="_blank" href="https://www.google.com/maps/search/?api=1&query=50-ta+Divizija+21+Skopje">⌖ Harita</a></div></article>
+  <article class="hotel"><div class="ey">OTEL · MACEDONIA SQUARE</div><h3>Hotel Square</h3><div class="rating">7,1 · 488 yorum · 2★</div><div class="meta">Nikola Vapcarov 2/4-6 · Macedonia Square’ın hemen yanında</div><div class="price">€138,90</div><div class="good">✓ Konum çok merkezi</div><div class="meta">− Puanı alternatiflere göre daha düşük.</div><div class="actions"><a class="action primary" target="_blank" href="https://www.booking.com/hotel/mk/square.html?checkin=2026-10-30&checkout=2026-11-02&group_adults=2">Booking ↗</a><a class="action" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Hotel+Square+Skopje">⌖ Harita</a></div></article>
+  <article class="hotel"><div class="ey">OTEL · OLD BAZAAR KENARI</div><h3>Hotel De KOKA</h3><div class="rating">7,7 · 5.277 yorum · 3★</div><div class="meta">Goce Delchev 5 · Old Bazaar ve Stone Bridge’e yakın</div><div class="price">€192,96</div><div class="good">✓ Çarşı + merkez arasında pratik</div><div class="meta">− Puanı orta seviyede.</div><div class="actions"><a class="action primary" target="_blank" href="https://www.booking.com/hotel/mk/dekoka.html?checkin=2026-10-30&checkout=2026-11-02&group_adults=2">Booking ↗</a><a class="action" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Hotel+De+KOKA+Skopje">⌖ Harita</a></div></article>
+  <article class="hotel"><div class="ey">OTEL · VARDAR KIYISI</div><h3>Hotel Senigallia</h3><div class="rating">9,1 · 1.834 yorum · 4★</div><div class="meta">Kej 13 Noemvri · nehir üzerinde gemi konsepti · Macedonia Square’a çok yakın</div><div class="price">€309,65</div><div class="good">✓ En karakterli + yüksek puanlı merkez seçeneği</div><div class="meta">− Fiyat belirgin daha yüksek.</div><div class="actions"><a class="action primary" target="_blank" href="https://www.booking.com/hotel/mk/senigallia.html?checkin=2026-10-30&checkout=2026-11-02&group_adults=2">Booking ↗</a><a class="action" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Hotel+Senigallia+Skopje">⌖ Harita</a></div></article>
+ </div>
+</section>
+
+<section id="food" class="view">
+ <div class="head"><div><div class="ey">LOCAL FOOD · KAFANA</div><h2>Yemek listesi</h2></div></div>
+ <div class="foodgrid">
+  <article class="food"><div class="ey">OLD BAZAAR</div><h3>Destan</h3><div class="meta">Kebapi odaklı klasik çarşı durağı. 30 Ekim ilk akşam için en kolay seçeneklerden.</div><div class="actions"><a class="action" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Destan+Skopje+Old+Bazaar">⌖ Harita</a></div></article>
+  <article class="food"><div class="ey">DEBAR MAALO</div><h3>Skopski Merak</h3><div class="meta">Geleneksel Makedon mutfağı, paylaşmalık tabaklar ve canlı kafana atmosferi. Cumartesi akşamı rezervasyon iyi fikir.</div><div class="actions"><a class="action" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Skopski+Merak+Skopje">⌖ Harita</a></div></article>
+  <article class="food"><div class="ey">DEBAR MAALO</div><h3>Kafana Debar Maalo</h3><div class="meta">Meze, ızgara ve yerel akşam yemeği deneyimi için alternatif.</div><div class="actions"><a class="action" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Kafana+Debar+Maalo+Skopje">⌖ Harita</a></div></article>
+  <article class="food"><div class="ey">MERKEZ</div><h3>Old House</h3><div class="meta">Daha oturaklı yerel mutfak alternatifi; son akşam için uygun.</div><div class="actions"><a class="action" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Old+House+Skopje">⌖ Harita</a></div></article>
+ </div>
+ <div class="warn"><b>Denenecekler:</b> tavče gravče, ajvar, shopska salatası, kebapi, pastrmajlija. Debar Maalo özellikle uzun kafana akşamları için güçlü bölge.</div>
+</section>
+
+<section id="transport" class="view">
+ <div class="head"><div><div class="ey">KAPI → KAPI</div><h2>Ulaşım</h2></div></div>
+ <div class="transportgrid">
+  <article class="transport"><div class="ey">SKP → MERKEZ</div><h3>V2V Airport Shuttle</h3><div class="meta">Havalimanının resmî bilgisine göre uçuş saatlerine göre çalışan düzenli shuttle. Tek yön <b>199 MKD</b>.</div><div class="actions"><a class="action primary" target="_blank" href="https://skp.airports.com.mk/en-EN/to-from-the-airport">Resmî bilgi ↗</a></div></article>
+  <article class="transport"><div class="ey">ERKEN DÖNÜŞ</div><h3>Airport Taxi</h3><div class="meta">2 Kasım 06:45 uçuş için ana plan. Yetkili havalimanı taksileri terminal çıkışında 24/7 bulunuyor; şehirden havalimanına dönüş fiyatını otelden önceki gün teyit et.</div><div class="actions"><a class="action primary" target="_blank" href="https://skp.airports.com.mk/en-EN/to-from-the-airport/page/taxi">Airport taxi ↗</a></div></article>
+  <article class="transport"><div class="ey">ŞEHİR İÇİ</div><h3>Yürüyüş + kısa taxi</h3><div class="meta">Macedonia Square, Stone Bridge, Old Bazaar ve Kale birbirine yakın. Merkez gününü büyük ölçüde yürüyerek yap; Vodno ve Matka’da araç/toplu taşıma kullan.</div></article>
+ </div>
+</section>
+
+<section id="notes" class="view">
+ <div class="head"><div><div class="ey">LOCAL STORAGE · SKOPJE ONLY</div><h2>Notlar ve bütçe</h2></div></div>
+ <div class="budget"><div class="bcard"><b id="hotelBudget">€0</b><span class="small">seçilen konaklama</span></div><div class="bcard"><b id="otherBudget">€0</b><span class="small">diğer harcamalar</span></div><div class="bcard"><b id="totalBudget">€0</b><span class="small">girilen toplam</span></div></div>
+ <div class="note"><label>Konaklama toplamı (€)<input id="hotelInput" inputmode="decimal" placeholder="örn. 138,90"></label></div>
+ <div class="note"><label>Diğer harcamalar (€)<input id="otherInput" inputmode="decimal" placeholder="uçuş hariç / isteğe göre"></label></div>
+ <div class="note"><label>Notlar<textarea id="notesText" placeholder="Rezervasyon numarası, yapılacaklar, restoran rezervasyonu..."></textarea></label></div>
+ <div class="warn">Bu bölüm yalnızca <b>skopjeTripTempV1</b> anahtarında saklanır. Endülüs dashboard verilerine dokunmaz.</div>
+</section>
+</main>
+<footer>Skopje City Break · geçici profil · 30.10–02.11.2026</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 (()=>{
- const KEY="octoberTripTempV1";
- const empty={start:"",end:"",route:"",summary:"",plan:[],stays:[],transport:[],notes:""};
- let state=empty;
- try{state={...empty,...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch(e){}
+ const KEY="skopjeTripTempV1";
+ let state={hotel:"",other:"",notes:""};try{state={...state,...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch(e){}
  const save=()=>localStorage.setItem(KEY,JSON.stringify(state));
- const bind=(id,key)=>{const el=document.getElementById(id);el.value=state[key]||"";el.addEventListener("input",()=>{state[key]=el.value;save()})};
- bind("start","start");bind("end","end");bind("route","route");bind("summary","summary");bind("notesText","notes");
- const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
- function renderList(key,boxId,placeholder){
-   const box=document.getElementById(boxId);
-   box.innerHTML=(state[key]||[]).map((x,i)=>'<div class="row"><input data-key="'+key+'" data-i="'+i+'" value="'+esc(x)+'" placeholder="'+placeholder+'"><button data-del="'+key+'" data-i="'+i+'">✕</button></div>').join("");
-   box.querySelectorAll("input[data-key]").forEach(el=>el.addEventListener("input",()=>{state[el.dataset.key][+el.dataset.i]=el.value;save()}));
-   box.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{state[b.dataset.del].splice(+b.dataset.i,1);save();renderAll()});
- }
- function renderAll(){renderList("plan","planRows","örn. Cumartesi · şehir turu");renderList("stays","stayRows","örn. Otel adı · 120 €");renderList("transport","transportRows","örn. Tren / uçuş / araç");}
- renderAll();
- document.querySelectorAll("[data-add]").forEach(b=>b.onclick=()=>{state[b.dataset.add].push("");save();renderAll()});
- document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("on",x===b));document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id===b.dataset.v));scrollTo({top:0,behavior:"smooth"})});
- document.getElementById("reset").onclick=()=>{if(confirm("Yalnızca Ekim geçici seyahat verileri silinsin mi?")){localStorage.removeItem(KEY);location.reload()}};
+ const num=v=>parseFloat(String(v||"").replace(",","."))||0;
+ const eur=n=>new Intl.NumberFormat("tr-TR",{style:"currency",currency:"EUR"}).format(n||0);
+ const hi=document.getElementById("hotelInput"),oi=document.getElementById("otherInput"),nt=document.getElementById("notesText");
+ hi.value=state.hotel;oi.value=state.other;nt.value=state.notes;
+ function paint(){document.getElementById("hotelBudget").textContent=eur(num(state.hotel));document.getElementById("otherBudget").textContent=eur(num(state.other));document.getElementById("totalBudget").textContent=eur(num(state.hotel)+num(state.other))}
+ hi.oninput=()=>{state.hotel=hi.value;save();paint()};oi.oninput=()=>{state.other=oi.value;save();paint()};nt.oninput=()=>{state.notes=nt.value;save()};paint();
+ function go(id){document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("on",b.dataset.v===id));document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id===id));scrollTo({top:0,behavior:"smooth"});if(id==="mapview")setTimeout(()=>map.invalidateSize(),80)}
+ document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>go(b.dataset.v));document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));
+ const pts=[
+  ["Macedonia Square",41.9957,21.4315],["Stone Bridge",41.9966,21.4334],["Old Bazaar",42.0004,21.4367],["Skopje Fortress",42.0017,21.4321],["Mustafa Pasha Mosque",42.0016,21.4348],["Mother Teresa Memorial House",41.9939,21.4290],["Vodno / Millennium Cross",41.9650,21.3949],["Matka Canyon",41.9508,21.2994],["Debar Maalo",42.0004,21.4188]
+ ];
+ const map=L.map("map").setView([41.997,21.431],13);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(map);
+ pts.forEach(p=>L.marker([p[1],p[2]]).addTo(map).bindPopup("<b>"+p[0]+"</b>"));
+ const chips=document.getElementById("chips");pts.forEach((p,i)=>{const b=document.createElement("button");b.textContent=p[0];b.onclick=()=>{map.setView([p[1],p[2]],i===7?12:15);};chips.appendChild(b)});
 })();
 </script>
-</body>
-</html>
+</body></html>
