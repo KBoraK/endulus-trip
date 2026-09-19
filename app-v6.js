@@ -57,7 +57,8 @@ const stayAlternatives={
  ],
  "Sevilla":[
   {name:"Airbnb · 635203765526746475",price:196,rating:"",type:"Airbnb · Apartman",area:"Sevilla · konum teyit edilecek",center:"—",url:"https://www.airbnb.de/rooms/635203765526746475?unique_share_id=a90c93e3-e12b-4fa8-ae27-2548de6960f8&viralityEntryPoint=1&s=76"},
-  {name:"Airbnb · 23970555",price:244,rating:"",type:"Airbnb · Apartman",area:"Sevilla · konum teyit edilecek",center:"—",url:"https://www.airbnb.de/rooms/23970555?unique_share_id=0e42d997-0416-4914-baa7-36e2fb58f20a&viralityEntryPoint=1&s=76"}
+  {name:"Airbnb · 23970555",price:244,rating:"",type:"Airbnb · Apartman",area:"Sevilla · konum teyit edilecek",center:"—",url:"https://www.airbnb.de/rooms/23970555?unique_share_id=0e42d997-0416-4914-baa7-36e2fb58f20a&viralityEntryPoint=1&s=76"},
+  {name:"Airbnb · 1006965952595172368",price:238,rating:"",type:"Airbnb · Apartman",area:"Sevilla · konum teyit edilecek",center:"—",url:"https://www.airbnb.de/rooms/1006965952595172368?unique_share_id=5bd88d85-6036-4530-a7fd-c889306eb258&viralityEntryPoint=1&s=76"}
  ],
  "Córdoba":[
   {name:"Apartamentos Ruz",price:70,rating:"8,5 · 318 yorum",type:"Apartman",area:"Judería · Puerta de Sevilla",center:"~0,8 km · Mezquita-Catedral",url:"https://www.booking.com/hotel/es/apartamentos-ruz.html?aid=2438770&checkin=2026-12-27&checkout=2026-12-28&no_rooms=1&group_adults=3&selected_currency=EUR"},
