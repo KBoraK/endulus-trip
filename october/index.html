@@ -132,6 +132,27 @@ footer{text-align:center;color:#8b8175;padding:14px;font-size:11px}
   </article>
 
   <article class="hotel">
+   <div class="ey">MERKEZ · KAHVALTI DAHİL</div><h3>Holiday Inn Express Skopje City Centre</h3>
+   <div class="rating">8,8 · 139 Expedia yorumu · yeni IHG oteli</div>
+   <div class="meta">Vasil Iljoski Br 5 · Macedonia Square / Stone Bridge tarafı</div>
+   <div class="price">€211 <span class="small">· kullanıcı tarafından bulunan toplam fiyat</span></div>
+   <div class="meta"><b>📍 Macedonia Square:</b> 0,21 km kuş uçuşu · Expedia'ya göre yaklaşık 0,3 km / 3 dk yürüyüş</div>
+   <div class="meta"><b>🚌 Holiday Inn airport shuttle durağı:</b> 0,64 km kuş uçuşu · yaklaşık 0,7–0,8 km / 8–10 dk yürüyüş</div>
+   <div class="good">✓ Bu dört seçenek içinde Macedonia Square'a en yakın</div>
+   <div class="good">✓ Express Start™ kahvaltı fiyata dahil; sıcak-soğuk seçenekler, hamur işi, meyve ve kahve</div>
+   <div class="good">✓ Stone Bridge yaklaşık 0,3 km; Old Bazaar yaklaşık 0,9 km</div>
+   <div class="good">✓ 24/7 bar, ücretsiz Wi‑Fi, günlük housekeeping ve modern odalar</div>
+   <div class="meta">− Otelin kendi airport shuttle servisi yok; havaalanı otobüsü için normal Holiday Inn durağına yürümek gerekiyor.</div>
+   <div class="meta">− Spa/havuz yok; Park Hotel &amp; Spa bu konuda daha güçlü.</div>
+   <div class="meta">− Otopark ücretli: IHG'ye göre €10/gün ve kapasite sınırlı.</div>
+   <div class="actions">
+    <a class="action primary" target="_blank" href="https://www.ihg.com/holidayinnexpress/hotels/gb/en/skopje/skpcc/hoteldetail">IHG ↗</a>
+    <a class="action" target="_blank" href="https://www.google.com/maps/dir/?api=1&origin=Holiday+Inn+Express+Skopje+City+Centre&destination=Macedonia+Square+Skopje&travelmode=walking">→ Merkez rota</a>
+    <a class="action" target="_blank" href="https://www.google.com/maps/dir/?api=1&origin=Holiday+Inn+Express+Skopje+City+Centre&destination=Holiday+Inn+Skopje&travelmode=walking">→ Shuttle rota</a>
+   </div>
+  </article>
+
+  <article class="hotel">
    <div class="ey">5★ · SPA / KONFOR</div><h3>Park Hotel &amp; Spa</h3>
    <div class="rating">8,4 · 1.191 yorum · 5★</div>
    <div class="meta">1732 Str. no. 4 · Vardar / şehir stadyumu tarafı</div>
@@ -149,7 +170,7 @@ footer{text-align:center;color:#8b8175;padding:14px;font-size:11px}
    </div>
   </article>
  </div>
- <div class="warn"><b>Kısa karşılaştırma:</b> fiyat/puan için <b>Central Apartments</b>; Old Bazaar/Kale odaklı gezi için <b>Citadel 360</b>; otel konforu, spa ve havuz için <b>Park Hotel &amp; Spa</b>. 02.11’deki 06:45 uçuş nedeniyle hangi oteli seçersen seç, dönüş sabahı önceden ayarlanmış taksi daha rahat.</div>
+ <div class="warn"><b>Kısa karşılaştırma:</b> en düşük fiyat için <b>Central Apartments (€109,89)</b>; Macedonia Square'a en yakın ve kahvaltı dahil otel için <b>Holiday Inn Express (€211)</b>; Old Bazaar/Kale odaklı gezi için <b>Citadel 360 (€240,98)</b>; spa, kapalı havuz ve 5★ otel konforu için <b>Park Hotel &amp; Spa (€224,41)</b>. Airport shuttle açısından Holiday Inn Express diğer üçünden daha iyi konumda olsa da durak normal Holiday Inn'in önünde; Express'ten yaklaşık 8–10 dk yürüyüş gerekiyor. 02.11’deki 06:45 uçuş için önceden ayarlanmış taksi hâlâ en rahat seçenek.</div>
 </section>
 
 <section id="food" class="view">
@@ -205,7 +226,7 @@ footer{text-align:center;color:#8b8175;padding:14px;font-size:11px}
  document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>go(b.dataset.v));document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));
  const pts=[
   ["Macedonia Square",41.99569,21.43179],["Stone Bridge",41.9966,21.4334],["Old Bazaar",42.0004,21.4367],["Skopje Fortress",42.0017,21.4321],["Mustafa Pasha Mosque",42.0016,21.4348],["Mother Teresa Memorial House",41.9939,21.4290],["Vodno / Millennium Cross",41.9650,21.3949],["Matka Canyon",41.9508,21.2994],["Debar Maalo",42.0004,21.4188],
-  ["🛏 Citadel 360",42.002835,21.433238],["🛏 Central Apartments",41.990918,21.424987],["🛏 Park Hotel & Spa",42.006123,21.42745],["🚌 Airport shuttle · Holiday Inn",41.9946,21.43603]
+  ["🛏 Citadel 360",42.002835,21.433238],["🛏 Central Apartments",41.990918,21.424987],["🛏 Park Hotel & Spa",42.006123,21.42745],["🛏 Holiday Inn Express",41.9969,21.4298],["🚌 Airport shuttle · Holiday Inn",41.994471,21.436764]
  ];
  const map=L.map("map").setView([41.997,21.431],13);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(map);
  pts.forEach(p=>L.marker([p[1],p[2]]).addTo(map).bindPopup("<b>"+p[0]+"</b>"));
