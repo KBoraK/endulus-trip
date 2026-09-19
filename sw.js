@@ -1,12 +1,17 @@
-const CACHE="endulus-v6.2.16";
-const CORE=["./","./index.html","./manifest.webmanifest","./icon.svg","./app-v6.js?v=6.2.16"];
+const CACHE="endulus-v6.2.17";
+const CORE=["./","./index.html","./manifest.webmanifest","./icon.svg","./app-v6.js?v=6.2.17"];
 self.addEventListener("install",event=>event.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
 self.addEventListener("activate",event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith("endulus-")&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener("fetch",event=>{
  const req=event.request;if(req.method!=="GET")return;
  const url=new URL(req.url);if(url.origin!==self.location.origin)return;
  if(req.mode==="navigate"){
-  event.respondWith(fetch(req).then(res=>{const copy=res.clone();caches.open(CACHE).then(c=>c.put("./index.html",copy));return res}).catch(()=>caches.match("./index.html")));return;
+  const rootPath=self.registration.scope.endsWith("/")?new URL(self.registration.scope).pathname:new URL(self.registration.scope).pathname+"/";
+  const isRoot=url.pathname===rootPath||url.pathname===rootPath+"index.html";
+  if(isRoot){
+   event.respondWith(fetch(req).then(res=>{const copy=res.clone();caches.open(CACHE).then(c=>c.put("./index.html",copy));return res}).catch(()=>caches.match("./index.html")));return;
+  }
+  event.respondWith(fetch(req));return;
  }
  event.respondWith(fetch(req).then(res=>{if(res.ok){const copy=res.clone();caches.open(CACHE).then(c=>c.put(req,copy))}return res}).catch(()=>caches.match(req)));
 });
