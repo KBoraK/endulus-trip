@@ -16,13 +16,13 @@ main{padding:20px 12px 90px}.view{display:none}.view.on{display:block}.head{disp
 .panel,.day,.hotel,.food,.transport,.note{background:linear-gradient(145deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:17px;box-shadow:var(--shadow)}
 .homegrid{display:grid;grid-template-columns:1.3fr .7fr;gap:10px}.panel{padding:16px}.panel h3{font:700 24px Georgia;margin:5px 0 8px}.quick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.quick button{border:1px solid var(--line);background:#efe6d9;border-radius:12px;padding:14px;text-align:left;font-weight:800;cursor:pointer}
 .flight{display:grid;grid-template-columns:80px 1fr auto;gap:11px;align-items:center;border-top:1px solid var(--line);padding:12px 0}.flight:first-of-type{border-top:0}.time{font-weight:900;color:var(--accent)}.fix{font-size:10px;padding:5px 7px;border-radius:99px;background:#dce4d7}
-.day{margin:10px 0;overflow:hidden}.day summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:15px;cursor:pointer}.day summary::-webkit-details-marker{display:none}.day h3{margin:0;font-size:16px}.date{font-size:12px;color:var(--muted);margin-top:4px}.timeline{border-top:1px solid var(--line);padding:0 14px}.item{display:grid;grid-template-columns:70px 1fr;gap:10px;padding:13px 0;border-bottom:1px solid rgba(80,65,45,.1)}.item:last-child{border-bottom:0}.name{font-weight:850}.desc{font-size:12px;color:var(--muted);line-height:1.45;margin-top:3px}.tag{display:inline-block;margin-top:6px;font-size:10px;padding:4px 7px;background:#e7dfd2;border-radius:99px}.maplink{display:inline-block;margin-top:7px;color:var(--accent);text-decoration:none;font-size:11px;font-weight:800}
+.day{margin:10px 0;overflow:hidden}.day summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:15px;cursor:pointer}.day summary::-webkit-details-marker{display:none}.day h3{margin:0;font-size:16px}.date{font-size:12px;color:var(--muted);margin-top:4px}.timeline{border-top:1px solid var(--line);padding:0 14px}.item{display:grid;grid-template-columns:70px minmax(0,1fr);gap:10px;padding:13px 0;border-bottom:1px solid rgba(80,65,45,.1);width:100%;align-items:start}.item>div:last-child{min-width:0;overflow-wrap:anywhere}.item:last-child{border-bottom:0}.name{font-weight:850}.desc{font-size:12px;color:var(--muted);line-height:1.45;margin-top:3px}.tag{display:inline-block;margin-top:6px;font-size:10px;padding:4px 7px;background:#e7dfd2;border-radius:99px}.maplink{display:inline-block;margin-top:7px;color:var(--accent);text-decoration:none;font-size:11px;font-weight:800}
 #map{height:440px;border-radius:18px;border:1px solid var(--line);overflow:hidden}.mapchips{display:flex;gap:6px;overflow-x:auto;margin:10px 0 12px}.mapchips button{border:1px solid var(--line);background:var(--card);border-radius:99px;padding:7px 9px;white-space:nowrap;cursor:pointer}
 .hotelgrid,.foodgrid,.transportgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:9px}.hotel,.food,.transport{padding:14px}.hotel h3,.food h3,.transport h3{font:700 20px Georgia;margin:5px 0}.meta{font-size:12px;color:var(--muted);line-height:1.5}.price{font-size:20px;font-weight:900;color:var(--olive);margin:8px 0}.rating{font-weight:850}.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.warn{background:#ead9bc;border:1px solid #d4b77d;padding:11px;border-radius:13px;font-size:12px;line-height:1.45;margin:11px 0}.good{color:var(--green);font-weight:800}.bad{color:var(--accent);font-weight:800}
 .note{padding:14px;margin:9px 0}.note textarea,.note input{width:100%;border:1px solid var(--line);border-radius:10px;background:#fffaf2;padding:9px;font:inherit;color:var(--text)}.note textarea{min-height:110px}.budget{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.bcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}.bcard b{display:block;font-size:23px;font-family:Georgia}.small{font-size:11px;color:var(--muted)}
 footer{text-align:center;color:#8b8175;padding:14px;font-size:11px}
 @media(min-width:1100px){body{padding-left:180px}.tabs{position:fixed;left:16px;top:18px;bottom:18px;width:154px;flex-direction:column;align-items:stretch;padding:82px 9px 10px;border:1px solid var(--line);border-radius:20px}.tabs:before{content:"SKOPJE";position:absolute;top:28px;left:18px;font:700 20px Georgia;color:var(--accent)}.tabs button{text-align:left}.hero,main{max-width:1020px}.wrap{max-width:1020px}}
-@media(max-width:650px){.stats{grid-template-columns:1fr 1fr}.homegrid{grid-template-columns:1fr}.head{align-items:stretch;flex-direction:column}#map{height:54vh;min-height:320px}.budget{grid-template-columns:1fr}.hero h1{font-size:44px}.tabs{position:fixed;top:auto;bottom:0;left:0;right:0;z-index:100;height:calc(66px + env(safe-area-inset-bottom));padding:6px 6px env(safe-area-inset-bottom);justify-content:flex-start;overflow-x:auto}.tabs button{flex:0 0 auto;min-width:78px;height:54px}.hero{padding-top:25px}main{padding-bottom:92px}}
+@media(max-width:650px){.item{grid-template-columns:58px minmax(0,1fr);gap:9px}.stats{grid-template-columns:1fr 1fr}.homegrid{grid-template-columns:1fr}.head{align-items:stretch;flex-direction:column}#map{height:54vh;min-height:320px}.budget{grid-template-columns:1fr}.hero h1{font-size:44px}.tabs{position:fixed;top:auto;bottom:0;left:0;right:0;z-index:100;height:calc(66px + env(safe-area-inset-bottom));padding:6px 6px env(safe-area-inset-bottom);justify-content:flex-start;overflow-x:auto}.tabs button{flex:0 0 auto;min-width:78px;height:54px}.hero{padding-top:25px}main{padding-bottom:92px}}
 </style>
 </head>
 <body>
@@ -53,37 +53,109 @@ footer{text-align:center;color:#8b8175;padding:14px;font-size:11px}
 <section id="plan" class="view">
  <div class="head"><div><div class="ey">RAHAT TEMPO · ŞEHİR + DOĞA</div><h2>Günlük plan</h2></div><span class="pill">30 Eki–2 Kas</span></div>
 
- <details class="day" open><summary><div><h3>30 Ekim · Cuma · Varış + merkez akşamı</h3><div class="date">Skopje’ye alışma, yürüyüş ve Old Bazaar</div></div><b>⌄</b></summary><div class="timeline">
-  <div class="item"><div class="time">15:50</div><div><div class="name">✈️ Skopje varış</div><div class="desc">Pasaport + bagaj sonrası şehir merkezine geçiş.</div><span class="tag">FIX</span></div></div>
-  <div class="item"><div class="time">~17:15</div><div><div class="name">Otele giriş</div><div class="desc">Macedonia Square / Old Bazaar hattında konaklama en pratik seçim.</div><span class="tag">Check-in</span></div></div>
-  <div class="item"><div class="time">18:00</div><div><div class="name">Macedonia Square → Stone Bridge</div><div class="desc">İlk akşam için kompakt merkez yürüyüşü.</div><a class="maplink" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Macedonia+Square+Skopje">⌖ Haritada aç</a></div></div>
-  <div class="item"><div class="time">18:45</div><div><div class="name">Old Bazaar akşam yürüyüşü</div><div class="desc">Osmanlı dokusu, hanlar, çarşı sokakları ve ilk yerel yemek.</div><a class="maplink" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Old+Bazaar+Skopje">⌖ Haritada aç</a></div></div>
-  <div class="item"><div class="time">20:00</div><div><div class="name">🍴 Destan / Old Bazaar</div><div class="desc">Kebapi, shopska salatası ve ayran için kolay ilk akşam seçeneği.</div><span class="tag">Local food</span></div></div>
- </div></details>
+ <details class="day" open>
+  <summary><div><h3>30 Ekim · Cuma · Varış + merkez akşamı</h3><div class="date">Skopje’ye alışma, yürüyüş ve Old Bazaar</div></div><b>⌄</b></summary>
+  <div class="timeline">
+   <div class="item">
+    <div class="time">15:50</div>
+    <div><div class="name">✈️ Skopje varış</div><div class="desc">Pasaport + bagaj sonrası şehir merkezine geçiş.</div><span class="tag">FIX</span></div>
+   </div>
+   <div class="item">
+    <div class="time">~17:15</div>
+    <div><div class="name">Otele giriş</div><div class="desc">Macedonia Square / Old Bazaar hattında konaklama en pratik seçim.</div><span class="tag">Check-in</span></div>
+   </div>
+   <div class="item">
+    <div class="time">18:00</div>
+    <div><div class="name">Macedonia Square → Stone Bridge</div><div class="desc">İlk akşam için kompakt merkez yürüyüşü.</div><a class="maplink" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Macedonia+Square+Skopje">⌖ Haritada aç</a></div>
+   </div>
+   <div class="item">
+    <div class="time">18:45</div>
+    <div><div class="name">Old Bazaar akşam yürüyüşü</div><div class="desc">Osmanlı dokusu, hanlar, çarşı sokakları ve ilk yerel yemek.</div><a class="maplink" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Old+Bazaar+Skopje">⌖ Haritada aç</a></div>
+   </div>
+   <div class="item">
+    <div class="time">20:00</div>
+    <div><div class="name">🍴 Destan / Old Bazaar</div><div class="desc">Kebapi, shopska salatası ve ayran için kolay ilk akşam seçeneği.</div><span class="tag">Local food</span></div>
+   </div>
+  </div>
+ </details>
 
- <details class="day" open><summary><div><h3>31 Ekim · Cumartesi · Tarihi Skopje + Vodno</h3><div class="date">Old Bazaar, Kale, şehir merkezi ve manzara</div></div><b>⌄</b></summary><div class="timeline">
-  <div class="item"><div class="time">09:00</div><div><div class="name">Old Bazaar + Mustafa Paşa Camii</div><div class="desc">Sabah çarşı daha sakin. Osmanlı dönemi katmanına odaklan.</div><span class="tag">Tarih</span></div></div>
-  <div class="item"><div class="time">11:00</div><div><div class="name">Skopje Fortress / Kale</div><div class="desc">Vardar ve merkez panoraması.</div><a class="maplink" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Skopje+Fortress">⌖ Haritada aç</a></div></div>
-  <div class="item"><div class="time">12:30</div><div><div class="name">Stone Bridge + Macedonia Square</div><div class="desc">Şehrin iki yakasını birleştiren ana yürüyüş aksı.</div></div>
-  <div class="item"><div class="time">13:30</div><div><div class="name">Mother Teresa Memorial House</div><div class="desc">Kısa merkez durağı; güncel saatleri seyahatten önce doğrula.</div><a class="maplink" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Mother+Teresa+Memorial+House+Skopje">⌖ Haritada aç</a></div></div>
-  <div class="item"><div class="time">15:00</div><div><div class="name">Vodno → Millennium Cross</div><div class="desc">Hava açıksa teleferik/manzara. Teleferik çalışma saatlerini tarih yaklaşınca kontrol et.</div><span class="tag">Hava durumuna bağlı</span></div></div>
-  <div class="item"><div class="time">19:30</div><div><div class="name">🍴 Debar Maalo akşamı</div><div class="desc">Skopski Merak veya Kafana Debar Maalo. Cumartesi akşamı rezervasyon mantıklı.</div><span class="tag">Kafana</span></div></div>
- </div></details>
+ <details class="day" open>
+  <summary><div><h3>31 Ekim · Cumartesi · Tarihi Skopje + Vodno</h3><div class="date">Old Bazaar, Kale, şehir merkezi ve manzara</div></div><b>⌄</b></summary>
+  <div class="timeline">
+   <div class="item">
+    <div class="time">09:00</div>
+    <div><div class="name">Old Bazaar + Mustafa Paşa Camii</div><div class="desc">Sabah çarşı daha sakin. Osmanlı dönemi katmanına odaklan.</div><span class="tag">Tarih</span></div>
+   </div>
+   <div class="item">
+    <div class="time">11:00</div>
+    <div><div class="name">Skopje Fortress / Kale</div><div class="desc">Vardar ve merkez panoraması.</div><a class="maplink" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Skopje+Fortress">⌖ Haritada aç</a></div>
+   </div>
+   <div class="item">
+    <div class="time">12:30</div>
+    <div><div class="name">Stone Bridge + Macedonia Square</div><div class="desc">Şehrin iki yakasını birleştiren ana yürüyüş aksı.</div></div>
+   </div>
+   <div class="item">
+    <div class="time">13:30</div>
+    <div><div class="name">Mother Teresa Memorial House</div><div class="desc">Kısa merkez durağı; güncel saatleri seyahatten önce doğrula.</div><a class="maplink" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Mother+Teresa+Memorial+House+Skopje">⌖ Haritada aç</a></div>
+   </div>
+   <div class="item">
+    <div class="time">15:00</div>
+    <div><div class="name">Vodno → Millennium Cross</div><div class="desc">Hava açıksa teleferik/manzara. Teleferik çalışma saatlerini tarih yaklaşınca kontrol et.</div><span class="tag">Hava durumuna bağlı</span></div>
+   </div>
+   <div class="item">
+    <div class="time">19:30</div>
+    <div><div class="name">🍴 Debar Maalo akşamı</div><div class="desc">Skopski Merak veya Kafana Debar Maalo. Cumartesi akşamı rezervasyon mantıklı.</div><span class="tag">Kafana</span></div>
+   </div>
+  </div>
+ </details>
 
- <details class="day" open><summary><div><h3>1 Kasım · Pazar · Matka Canyon</h3><div class="date">Doğa günü + sakin son akşam</div></div><b>⌄</b></summary><div class="timeline">
-  <div class="item"><div class="time">09:00</div><div><div class="name">Skopje → Matka Canyon</div><div class="desc">Toplu taşıma / taksi seçeneklerini bir gün önce teyit et.</div><a class="maplink" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Matka+Canyon+North+Macedonia">⌖ Haritada aç</a></div></div>
-  <div class="item"><div class="time">10:00</div><div><div class="name">Matka yürüyüşü</div><div class="desc">Kanyon kıyısı, manastır çevresi ve manzara.</div><span class="tag">Doğa</span></div></div>
-  <div class="item"><div class="time">11:30</div><div><div class="name">Tekne / Vrelo Cave opsiyonu</div><div class="desc">Hava ve işletme durumuna göre yerinde karar ver; sezon/saatleri doğrula.</div><span class="tag">Opsiyonel</span></div></div>
-  <div class="item"><div class="time">15:00</div><div><div class="name">Skopje’ye dönüş + mola</div><div class="desc">Son akşamı ağırlaştırmadan bırak.</div></div>
-  <div class="item"><div class="time">19:00</div><div><div class="name">🍴 Old House veya Debar Maalo</div><div class="desc">Tavče gravče, ajvar, shopska salatası, pastrmajlija gibi yerel tatlar.</div></div>
-  <div class="item"><div class="time">21:00</div><div><div class="name">Erken toparlanma</div><div class="desc">03:45–04:00 çıkış için valizi gece hazırla.</div><span class="tag">Önemli</span></div></div>
- </div></details>
+ <details class="day" open>
+  <summary><div><h3>1 Kasım · Pazar · Matka Canyon</h3><div class="date">Doğa günü + sakin son akşam</div></div><b>⌄</b></summary>
+  <div class="timeline">
+   <div class="item">
+    <div class="time">09:00</div>
+    <div><div class="name">Skopje → Matka Canyon</div><div class="desc">Toplu taşıma / taksi seçeneklerini bir gün önce teyit et.</div><a class="maplink" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Matka+Canyon+North+Macedonia">⌖ Haritada aç</a></div>
+   </div>
+   <div class="item">
+    <div class="time">10:00</div>
+    <div><div class="name">Matka yürüyüşü</div><div class="desc">Kanyon kıyısı, manastır çevresi ve manzara.</div><span class="tag">Doğa</span></div>
+   </div>
+   <div class="item">
+    <div class="time">11:30</div>
+    <div><div class="name">Tekne / Vrelo Cave opsiyonu</div><div class="desc">Hava ve işletme durumuna göre yerinde karar ver; sezon/saatleri doğrula.</div><span class="tag">Opsiyonel</span></div>
+   </div>
+   <div class="item">
+    <div class="time">15:00</div>
+    <div><div class="name">Skopje’ye dönüş + mola</div><div class="desc">Son akşamı ağırlaştırmadan bırak.</div></div>
+   </div>
+   <div class="item">
+    <div class="time">19:00</div>
+    <div><div class="name">🍴 Old House veya Debar Maalo</div><div class="desc">Tavče gravče, ajvar, shopska salatası, pastrmajlija gibi yerel tatlar.</div></div>
+   </div>
+   <div class="item">
+    <div class="time">21:00</div>
+    <div><div class="name">Erken toparlanma</div><div class="desc">03:45–04:00 çıkış için valizi gece hazırla.</div><span class="tag">Önemli</span></div>
+   </div>
+  </div>
+ </details>
 
- <details class="day"><summary><div><h3>2 Kasım · Pazartesi · Dönüş</h3><div class="date">Çok erken havaalanı transferi</div></div><b>⌄</b></summary><div class="timeline">
-  <div class="item"><div class="time">03:45</div><div><div class="name">Otel → SKP Airport</div><div class="desc">Ana plan: taksi. Shuttle saati uygunsa ikinci seçenek.</div><span class="tag">Transfer</span></div></div>
-  <div class="item"><div class="time">04:45</div><div><div class="name">Havaalanında ol</div><div class="desc">Havalimanı check-in bankoları uluslararası uçuşlarda planlanan kalkıştan 2 saat önce açılıyor.</div></div></div>
-  <div class="item"><div class="time">06:45</div><div><div class="name">✈️ Skopje → Basel</div><div class="desc">09:05 Basel varış.</div><span class="tag">FIX</span></div></div>
- </div></details>
+ <details class="day">
+  <summary><div><h3>2 Kasım · Pazartesi · Dönüş</h3><div class="date">Çok erken havaalanı transferi</div></div><b>⌄</b></summary>
+  <div class="timeline">
+   <div class="item">
+    <div class="time">03:45</div>
+    <div><div class="name">Otel → SKP Airport</div><div class="desc">Ana plan: taksi. Shuttle saati uygunsa ikinci seçenek.</div><span class="tag">Transfer</span></div>
+   </div>
+   <div class="item">
+    <div class="time">04:45</div>
+    <div><div class="name">Havaalanında ol</div><div class="desc">Havalimanı check-in bankoları uluslararası uçuşlarda planlanan kalkıştan 2 saat önce açılıyor.</div></div>
+   </div>
+   <div class="item">
+    <div class="time">06:45</div>
+    <div><div class="name">✈️ Skopje → Basel</div><div class="desc">09:05 Basel varış.</div><span class="tag">FIX</span></div>
+   </div>
+  </div>
+ </details>
 </section>
 
 <section id="mapview" class="view">
