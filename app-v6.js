@@ -48,14 +48,26 @@ function bookingEstimatedTotal(id){
 }
 function bookedActivityTotal(){return Object.keys(state.reservations).reduce((s,id)=>s+bookingEstimatedTotal(id),0)}
 function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+const stayAlternatives={
+ "Málaga":[
+  {name:"VARELA 30 Apartamentos",price:212.52,rating:"8,6 · 921 yorum",type:"Apartman",area:"Málaga Centro",url:"https://www.booking.com/hotel/es/varela-30-apartamentos.html?aid=2438770&checkin=2026-12-23&checkout=2026-12-25&no_rooms=1&group_adults=3&selected_currency=EUR"},
+  {name:"Coeo Hernan Ruiz Rooftop Pool Hostel",price:238.72,rating:"",type:"Hostel / özel oda",area:"Málaga Centro",url:"https://www.booking.com/hotel/es/coeo-hernan.html?aid=2438770&checkin=2026-12-23&checkout=2026-12-25&no_rooms=1&group_adults=3&selected_currency=EUR"},
+  {name:"Apartamentos Pinar Málaga Centro - Carretería",price:282,rating:"8,8 · 7.367 yorum",type:"Apartman",area:"Centro · Carretería",url:"https://www.booking.com/hotel/es/apartamento-marmoles-m1-centro.html?aid=2438770&checkin=2026-12-23&checkout=2026-12-25&no_rooms=1&group_adults=3&selected_currency=EUR"},
+  {name:"Apartamentos Málaga Premium - Calle Granada",price:234.09,rating:"8,7 · 1.722 yorum",type:"Apartman",area:"Centro · Calle Granada",url:"https://www.booking.com/hotel/es/apartamentos-malaga-premium.html?aid=2438770&checkin=2026-12-23&checkout=2026-12-25&no_rooms=1&group_adults=3&selected_currency=EUR"}
+ ]
+};
+let stayCity="Málaga";
 function renderStays(){
  const box=document.querySelector("#staygrid");if(!box)return;
- box.className="v6staygrid";
- box.innerHTML=D.stays.map(s=>{
-  const v=state.stays[s[0]]||stayDefaults[s[0]],booked=v.status==="booked";
-  return '<article class="v6stay" data-city="'+escapeHtml(s[0])+'"><div class="v6staytop"><div><div class="ey">'+escapeHtml(s[1])+' · '+s[2]+' gece</div><h3>'+escapeHtml(s[0])+'</h3></div><span class="v6badge '+(booked?"booked":"todo")+'">'+(booked?"✓ Rezerve":"Bekliyor")+'</span></div><div class="v6summary">'+(v.name?'<b>'+escapeHtml(v.name)+'</b><br>':"")+escapeHtml(v.area)+(v.price?'<br><b>'+money(v.price)+'</b> · toplam konaklama':"")+'</div><div class="actions"><a class="action" target="_blank" rel="noopener" href="'+maps(v.area.split(";")[0]+" "+s[0])+'">⌖ Bölge</a></div><div class="v6fields"><label>Durum<select data-stay="'+escapeHtml(s[0])+'" data-field="status"><option value="todo" '+(v.status==="todo"?"selected":"")+'>Bekliyor</option><option value="booked" '+(v.status==="booked"?"selected":"")+'>Rezerve</option></select></label><label>Toplam fiyat (€)<input inputmode="decimal" data-stay="'+escapeHtml(s[0])+'" data-field="price" value="'+escapeHtml(v.price)+'" placeholder="0"></label><label class="wide">Otel / apartman adı<input data-stay="'+escapeHtml(s[0])+'" data-field="name" value="'+escapeHtml(v.name)+'" placeholder="Henüz seçilmedi"></label><label class="wide">Bölge<input data-stay="'+escapeHtml(s[0])+'" data-field="area" value="'+escapeHtml(v.area)+'"></label></div></article>';
- }).join("");
- box.querySelectorAll("[data-stay]").forEach(el=>el.onchange=()=>{state.stays[el.dataset.stay][el.dataset.field]=el.value;save();renderStays();renderBudget();renderActions()});
+ box.className="";
+ const cities=D.stays.map(x=>x[0]);
+ if(!cities.includes(stayCity))stayCity=cities[0];
+ const s=D.stays.find(x=>x[0]===stayCity),v=state.stays[s[0]]||stayDefaults[s[0]],booked=v.status==="booked",alts=stayAlternatives[stayCity]||[];
+ box.innerHTML='<div class="filters v6staycities">'+cities.map(c=>'<button class="filter '+(c===stayCity?"on":"")+'" data-staycity="'+escapeHtml(c)+'">'+escapeHtml(c)+'</button>').join("")+'</div>'+
+ '<article class="v6stay" data-city="'+escapeHtml(s[0])+'"><div class="v6staytop"><div><div class="ey">'+escapeHtml(s[1])+' · '+s[2]+' gece</div><h3>'+escapeHtml(s[0])+'</h3></div><span class="v6badge '+(booked?"booked":"todo")+'">'+(booked?"✓ Rezerve":"Bekliyor")+'</span></div><div class="v6summary">'+(v.name?'<b>'+escapeHtml(v.name)+'</b><br>':"")+escapeHtml(v.area)+(v.price?'<br><b>'+money(v.price)+'</b> · toplam konaklama':"")+'</div><div class="actions"><a class="action" target="_blank" rel="noopener" href="'+maps(v.area.split(";")[0]+" "+s[0])+'">⌖ Bölge</a></div><div class="v6fields"><label>Durum<select data-stay="'+escapeHtml(s[0])+'" data-field="status"><option value="todo" '+(v.status==="todo"?"selected":"")+'>Bekliyor</option><option value="booked" '+(v.status==="booked"?"selected":"")+'>Rezerve</option></select></label><label>Toplam fiyat (€)<input inputmode="decimal" data-stay="'+escapeHtml(s[0])+'" data-field="price" value="'+escapeHtml(v.price)+'" placeholder="0"></label><label class="wide">Otel / apartman adı<input data-stay="'+escapeHtml(s[0])+'" data-field="name" value="'+escapeHtml(v.name)+'" placeholder="Henüz seçilmedi"></label><label class="wide">Bölge<input data-stay="'+escapeHtml(s[0])+'" data-field="area" value="'+escapeHtml(v.area)+'"></label></div></article>'+
+ (alts.length?'<div class="head" style="margin-top:22px"><div><div class="ey">KARAR LİSTESİ · 3 YETİŞKİN</div><h2>'+escapeHtml(stayCity)+' alternatifleri</h2></div><span class="pill">23–25 Ara · 2 gece</span></div><p class="muted">Fiyatlar Booking.com üzerinde 19.09.2026 tarihinde 3 yetişkin / 1 oda veya apartman için görülen toplam fiyatlardır; rezervasyona kadar değişebilir.</p><div class="v6staygrid">'+alts.map(a=>'<article class="v6stay"><div class="v6staytop"><div><div class="ey">'+escapeHtml(a.type)+' · '+escapeHtml(a.area)+'</div><h3>'+escapeHtml(a.name)+'</h3></div></div><div class="v6summary">'+(a.rating?'<b>'+escapeHtml(a.rating)+'</b><br>':"")+'2 gece · 3 kişi<br><b>'+money(a.price)+'</b> · güncel toplam</div><div class="actions"><a class="action primary" target="_blank" rel="noopener" href="'+a.url+'">Booking.com ↗</a><a class="action" target="_blank" rel="noopener" href="'+maps(a.name+" Málaga")+'">⌖ Harita</a></div></article>').join("")+'</div>':'<div class="v5warn" style="margin-top:18px">Bu şehir için karar verdiğimiz alternatifler henüz eklenmedi.</div>');
+ box.querySelectorAll("[data-staycity]").forEach(b=>b.onclick=()=>{stayCity=b.dataset.staycity;renderStays();renderEditBar()});
+ box.querySelectorAll("[data-stay]").forEach(el=>el.onchange=()=>{state.stays[el.dataset.stay][el.dataset.field]=el.value;save();renderStays();renderBudget();renderActions();renderEditBar()});
 }
 function renderBookings(){
  const box=document.querySelector("#books");if(!box)return;
