@@ -157,6 +157,20 @@ const DAY_ROUTES={
   12:["Place de la Comedie Montpellier","Aqueduc Saint Clement Montpellier",["Cathedrale Saint Pierre Montpellier","Promenade du Peyrou Montpellier"]],
   13:["Place de la Comedie Montpellier","Montpellier Airport"]
 };
+const DAY_FOOD={
+  2:[["Mesón Mariano","Chivo malagueño · alcachofas · balık"],["La Plancha Taberna","Izgara · tapas · İspanyol mutfağı"],["El Gastronauta","Tapas · Akdeniz · çağdaş İspanyol"],["Next Level Specialty Coffee","Kahvaltı · specialty coffee"]],
+  3:[["El Lechuguita","Geleneksel küçük tapas"],["Casa María","Ev yapımı İspanyol · balık · et"],["Restaurante Tropicana","Çağdaş İspanyol · Akdeniz"],["Cafetería Churrería Alba","Kahvaltı · churros · café con leche"],["La Telera 1860","Setenil opsiyonel · yerel ürünler"]],
+  4:[["Rosario Varela","Realejo · gastrobar"],["Bar FM","Balık · deniz ürünleri"],["Bar Oliver","Deniz ürünü · geleneksel tapas"],["Despiertoo Specialty Coffee","Kahvaltı · specialty coffee"]],
+  5:[["Bar Ávila","Jamón asado · tapas"],["Rosario Varela","Realejo · gastrobar"],["Alhambra Churrería","Churros con chocolate"],["Despiertoo Specialty Coffee","Kahvaltı · specialty coffee"]],
+  6:[["Taberna San Cristóbal","Salmorejo · berenjenas"],["Taberna Góngora","Geleneksel Córdoba mutfağı"],["Sociedad Plateros María Auxiliadora","Geleneksel · Montilla-Moriles"],["The Coffee Club","Kahvaltı · specialty coffee"]],
+  7:[["Taberna Salinas","Salmorejo · flamenquín · rabo de toro"],["The Coffee Club","Kahvaltı · specialty coffee"],["Las Golondrinas","Triana · solomillo · chipirones"],["Blanca Paloma","Triana · balık/deniz ürünü · tapas"]],
+  8:[["Casa Moreno","Pringá · mojama · vermut/sherry"],["Blanca Paloma","Triana · deniz ürünü · tapas"],["Paradas 7","Kahvaltı · specialty coffee"]],
+  9:[["Paradas 7","Kahvaltı · specialty coffee"],["Bodega de la Ardosa","Madrid · tortilla · vermut"],["HanSo Café","Madrid · specialty coffee"]],
+  10:[["La Sanabresa","Old-school local öğle yemeği"],["Casa Dani","Tortilla de patatas · menú del día"],["Bodega de la Ardosa","Tortilla · vermut · kroket"],["HanSo Café","Kahvaltı · specialty coffee"]],
+  11:[["HanSo Café","Kahvaltı · specialty coffee"],["Bodega de la Ardosa","Tortilla · vermut · kroket"],["Bodegas Alfaro","Lavapiés · vermut/tapas"]],
+  12:[["Ripailles","Fransız bistro"],["Bistrot Sainte Anne","Écusson · bistro"],["Bonobo","Brunch · pancakes · yumurta · kahve"]],
+  13:[["Bonobo","Brunch · kahve"]]
+};
 const travelKey="endulusTravelV61";let travelDone={};try{travelDone=JSON.parse(localStorage.getItem(travelKey)||"{}")}catch(e){}
 const travelDir=r=>"https://www.google.com/maps/dir/?api=1&travelmode=walking&origin="+encodeURIComponent(r[0])+"&destination="+encodeURIComponent(r[1])+(r[2]?.length?"&waypoints="+encodeURIComponent(r[2].join("|")):"");
 const travelSearch=q=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
@@ -169,7 +183,7 @@ function renderTravel(){
  const d=D.days[activeDay],items=d[4],done=travelDone[d[0]]||{},count=items.filter((_,i)=>done[i]).length,p=Math.round(count/items.length*100);
  daySelect.value=String(activeDay);
  dayHero.innerHTML='<div class="ey">GÜN '+d[0]+' · '+d[1]+'</div><h3>'+escapeHtml(d[2])+'</h3><p>'+escapeHtml(d[3])+' · '+count+'/'+items.length+' tamamlandı</p><div class="v61progress"><i style="width:'+p+'%"></i></div>';
- dayTimeline.innerHTML=items.map((x,i)=>'<article class="v61item '+(done[i]?"done":"")+'"><div class="tm">'+escapeHtml(x[0])+'</div><button class="v61check" data-ti="'+i+'" aria-label="'+(done[i]?"Tamamlanmadı olarak işaretle":"Tamamlandı olarak işaretle")+'">'+(done[i]?"✓":"")+'</button><div><h4>'+escapeHtml(x[1])+'</h4><p>'+escapeHtml(x[2])+'</p></div></article>').join("");
+ dayTimeline.innerHTML=items.map((x,i)=>'<article class="v61item '+(done[i]?"done":"")+'"><div class="tm">'+escapeHtml(x[0])+'</div><button class="v61check" data-ti="'+i+'" aria-label="'+(done[i]?"Tamamlanmadı olarak işaretle":"Tamamlandı olarak işaretle")+'">'+(done[i]?"✓":"")+'</button><div><h4>'+escapeHtml(x[1])+'</h4><p>'+escapeHtml(x[2])+'</p></div></article>').join("")+(DAY_FOOD[d[0]]?'<article class="v61item"><div class="tm">🍴</div><div></div><div><h4>Rota üzerindeki yemek alternatifleri</h4><p>'+DAY_FOOD[d[0]].map(x=>'<a target="_blank" rel="noopener" href="'+travelSearch(x[0]+" "+d[2].split(" → ").pop())+'"><b>'+escapeHtml(x[0])+'</b></a> · '+escapeHtml(x[1])).join("<br>")+'</p></div></article>':"");
  dayTimeline.querySelectorAll("[data-ti]").forEach(b=>b.onclick=()=>{travelDone[d[0]]=travelDone[d[0]]||{};travelDone[d[0]][b.dataset.ti]=!travelDone[d[0]][b.dataset.ti];localStorage.setItem(travelKey,JSON.stringify(travelDone));renderTravel()});
  const route=DAY_ROUTES[d[0]],city=d[2].split(" → ")[0];
  dayActions.innerHTML=(route?'<a class="primary" target="_blank" rel="noopener" href="'+travelDir(route)+'">🚶 Günlük rotayı aç</a>':"")+'<a target="_blank" rel="noopener" href="'+travelSearch(city)+'">⌖ '+escapeHtml(city)+' haritası</a>';
