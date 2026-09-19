@@ -57,7 +57,7 @@ const stayAlternatives={
  ],
  "Granada":[
   {name:"Aljibe de San Miguel Bajo",price:215.50,rating:"9,1 · 101 yorum",type:"Apartman",area:"Albaicín · San Miguel Bajo",center:"~0,8 km",url:"https://www.booking.com/hotel/es/aljibe-de-san-miguel-bajo.html?aid=2438770&checkin=2026-12-25&checkout=2026-12-27&no_rooms=1&group_adults=3&selected_currency=EUR"},
-  {name:"Wekey Homes – Apartamento con 2 camas V",price:259,rating:"4,66 · 352 yorum",type:"Airbnb · Apartman",area:"Granada",center:"—",url:""}
+  {name:"Wekey Homes – Apartamento con 2 camas V",price:259,rating:"4,66 · 352 yorum",type:"Airbnb · Apartman",area:"Centro · Placeta de Santo Cristo / Cerrajeros civarı (Airbnb harita pini, yaklaşık)",center:"~0,3 km · Granada Katedrali",url:"https://www.airbnb.de/properties/1715260200657483940?unique_share_id=20d6aeef-ea46-4f4b-9923-e8628d53a164&viralityEntryPoint=1&s=76&anchor_room_id=1394087409052626820"}
  ]
 };
 let stayCity="Málaga";
