@@ -392,7 +392,7 @@ footer{text-align:center;color:#8b8175;padding:14px;font-size:11px}
  document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>go(b.dataset.v));document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));
  const pts=[
   ["Macedonia Square",41.99569,21.43179],["Stone Bridge",41.9966,21.4334],["Old Bazaar",42.0004,21.4367],["Skopje Fortress",42.0017,21.4321],["Mustafa Pasha Mosque",42.0016,21.4348],["Mother Teresa Memorial House",41.9939,21.4290],["Vodno / Millennium Cross",41.9650,21.3949],["Matka Canyon",41.9508,21.2994],["Debar Maalo",42.0004,21.4188],
-  ["🛏 Citadel 360",42.002835,21.433238],["🛏 Central Apartments",41.990918,21.424987],["🛏 Park Hotel & Spa",42.006123,21.42745],["🛏 Holiday Inn Express",41.9969,21.4298],["🛏 Hotel Macedonia Square",41.995308,21.432783],["✓ Solun's Riverside Rooms",41.995555,21.434101],["☕ Blueberry & Basil",41.9959,21.4281],["🥐 Breadway Taste Gallery",41.9949,21.4317],["☕ FORTY3 Centar",41.9929,21.4299],["☕ Forum Specialty Coffee",41.9955,21.4299],["🚌 Airport shuttle · Holiday Inn",41.994471,21.436764]
+  ["✓ Solun's Riverside Rooms",41.995555,21.434101],["☕ Blueberry & Basil",41.9959,21.4281],["🥐 Breadway Taste Gallery",41.9949,21.4317],["☕ FORTY3 Centar",41.9929,21.4299],["☕ Forum Specialty Coffee",41.9955,21.4299],["🚌 Airport shuttle · Holiday Inn",41.994471,21.436764]
  ];
  const map=L.map("map").setView([41.997,21.431],13);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(map);
  pts.forEach(p=>L.marker([p[1],p[2]]).addTo(map).bindPopup("<b>"+p[0]+"</b>"));
