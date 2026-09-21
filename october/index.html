@@ -19,7 +19,7 @@ main{padding:20px 12px 90px}.view{display:none}.view.on{display:block}.head{disp
 .day{margin:10px 0;overflow:hidden}.day summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:15px;cursor:pointer}.day summary::-webkit-details-marker{display:none}.day h3{margin:0;font-size:16px}.date{font-size:12px;color:var(--muted);margin-top:4px}.timeline{border-top:1px solid var(--line);padding:0 14px}.item{display:grid;grid-template-columns:70px minmax(0,1fr);gap:10px;padding:13px 0;border-bottom:1px solid rgba(80,65,45,.1);width:100%;align-items:start}.item>div:last-child{min-width:0;overflow-wrap:anywhere}.item:last-child{border-bottom:0}.name{font-weight:850}.desc{font-size:12px;color:var(--muted);line-height:1.45;margin-top:3px}.tag{display:inline-block;margin-top:6px;font-size:10px;padding:4px 7px;background:#e7dfd2;border-radius:99px}.maplink{display:inline-block;margin-top:7px;color:var(--accent);text-decoration:none;font-size:11px;font-weight:800}
 #map{height:440px;border-radius:18px;border:1px solid var(--line);overflow:hidden}.mapchips{display:flex;gap:6px;overflow-x:auto;margin:10px 0 12px}.mapchips button{border:1px solid var(--line);background:var(--card);border-radius:99px;padding:7px 9px;white-space:nowrap;cursor:pointer}.map-marker{width:34px;height:34px;border-radius:50% 50% 50% 12px;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 4px 10px rgba(44,38,30,.24)}.map-marker span{transform:rotate(45deg);font-size:17px;line-height:1}.map-marker.hotel{background:#65715b}.map-marker.food{background:#c48842}.map-marker.sight{background:#a85639}.map-marker.transport{background:#557c9b}.leaflet-popup-content b{font-size:13px}
 .hotelgrid,.foodgrid,.transportgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:9px}.hotel,.food,.transport{padding:14px}.hotel h3,.food h3,.transport h3{font:700 20px Georgia;margin:5px 0}.meta{font-size:12px;color:var(--muted);line-height:1.5}.price{font-size:20px;font-weight:900;color:var(--olive);margin:8px 0}.rating{font-weight:850}.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.warn{background:#ead9bc;border:1px solid #d4b77d;padding:11px;border-radius:13px;font-size:12px;line-height:1.45;margin:11px 0}.good{color:var(--green);font-weight:800}.bad{color:var(--accent);font-weight:800}
-.note{padding:14px;margin:9px 0}.note textarea,.note input{width:100%;border:1px solid var(--line);border-radius:10px;background:#fffaf2;padding:9px;font:inherit;color:var(--text)}.note textarea{min-height:110px}.budget{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.bcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}.bcard b{display:block;font-size:23px;font-family:Georgia}.small{font-size:11px;color:var(--muted)}
+.note{padding:14px;margin:9px 0}.note textarea,.note input{width:100%;border:1px solid var(--line);border-radius:10px;background:#fffaf2;padding:9px;font:inherit;color:var(--text)}.note textarea{min-height:110px}.budget{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px}.bcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}.bcard b{display:block;font-size:23px;font-family:Georgia}.small{font-size:11px;color:var(--muted)}
 footer{text-align:center;color:#8b8175;padding:14px;font-size:11px}
 @media(min-width:1100px){body{padding-left:180px}.tabs{position:fixed;left:16px;top:18px;bottom:18px;width:154px;flex-direction:column;align-items:stretch;padding:82px 9px 10px;border:1px solid var(--line);border-radius:20px}.tabs:before{content:"SKOPJE";position:absolute;top:28px;left:18px;font:700 20px Georgia;color:var(--accent)}.tabs button{text-align:left}.hero,main{max-width:1020px}.wrap{max-width:1020px}}
 @media(max-width:650px){.item{grid-template-columns:58px minmax(0,1fr);gap:9px}.stats{grid-template-columns:1fr 1fr}.homegrid{grid-template-columns:1fr}.head{align-items:stretch;flex-direction:column}#map{height:54vh;min-height:320px}.budget{grid-template-columns:1fr}.hero h1{font-size:44px}.tabs{position:fixed;top:auto;bottom:0;left:0;right:0;z-index:100;height:calc(66px + env(safe-area-inset-bottom));padding:6px 6px env(safe-area-inset-bottom);justify-content:flex-start;overflow-x:auto}.tabs button,.tabs>a{flex:0 0 auto;min-width:78px;height:54px}.hero{padding-top:25px}main{padding-bottom:92px}}
@@ -365,9 +365,17 @@ footer{text-align:center;color:#8b8175;padding:14px;font-size:11px}
 
 <section id="notes" class="view">
  <div class="head"><div><div class="ey">LOCAL STORAGE · SKOPJE ONLY</div><h2>Notlar ve bütçe</h2></div></div>
- <div class="budget"><div class="bcard"><b id="hotelBudget">€0</b><span class="small">seçilen konaklama</span></div><div class="bcard"><b id="otherBudget">€0</b><span class="small">diğer harcamalar</span></div><div class="bcard"><b id="totalBudget">€0</b><span class="small">girilen toplam</span></div></div>
+ <div class="budget">
+  <div class="bcard"><b id="hotelBudget">€0</b><span class="small">konaklama</span></div>
+  <div class="bcard"><b id="flightBudget">€0</b><span class="small">uçuşlar</span></div>
+  <div class="bcard"><b id="transportBudget">€0</b><span class="small">ekstra transport</span></div>
+  <div class="bcard"><b id="otherBudget">€0</b><span class="small">diğer harcamalar</span></div>
+  <div class="bcard"><b id="totalBudget">€0</b><span class="small">girilen toplam</span></div>
+ </div>
  <div class="note"><label>Konaklama toplamı (€) · Solun's Riverside Rooms (BOOKED)<input id="hotelInput" inputmode="decimal" placeholder="169"></label></div>
- <div class="note"><label>Diğer harcamalar (€)<input id="otherInput" inputmode="decimal" placeholder="uçuş hariç / isteğe göre"></label></div>
+ <div class="note"><label>Uçuş toplamı (€)<input id="flightInput" inputmode="decimal" placeholder="İzmir → Skopje + Skopje → Basel"></label></div>
+ <div class="note"><label>Ekstra transport (€)<input id="transportInput" inputmode="decimal" placeholder="airport transfer, Matka taxi, şehir içi taxi..."></label></div>
+ <div class="note"><label>Diğer harcamalar (€)<input id="otherInput" inputmode="decimal" placeholder="yemek, alışveriş, aktiviteler..."></label></div>
  <div class="note"><label>Notlar<textarea id="notesText" placeholder="Rezervasyon numarası, yapılacaklar, restoran rezervasyonu..."></textarea></label></div>
  <div class="warn">Bu bölüm yalnızca <b>skopjeTripTempV1</b> anahtarında saklanır. Endülüs dashboard verilerine dokunmaz.</div>
 </section>
@@ -378,16 +386,27 @@ footer{text-align:center;color:#8b8175;padding:14px;font-size:11px}
 <script>
 (()=>{
  const KEY="skopjeTripTempV1";
- let state={hotel:"",other:"",notes:""};try{state={...state,...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch(e){}
+ let state={hotel:"",flight:"",transport:"",other:"",notes:""};try{state={...state,...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch(e){}
  const save=()=>localStorage.setItem(KEY,JSON.stringify(state));
  const HOTEL_BOOKING_MIGRATION="skopjeSoluns169V1";
  if(!localStorage.getItem(HOTEL_BOOKING_MIGRATION)){state.hotel="169";save();localStorage.setItem(HOTEL_BOOKING_MIGRATION,"1")}
  const num=v=>parseFloat(String(v||"").replace(",","."))||0;
  const eur=n=>new Intl.NumberFormat("tr-TR",{style:"currency",currency:"EUR"}).format(n||0);
- const hi=document.getElementById("hotelInput"),oi=document.getElementById("otherInput"),nt=document.getElementById("notesText");
- hi.value=state.hotel;oi.value=state.other;nt.value=state.notes;
- function paint(){document.getElementById("hotelBudget").textContent=eur(num(state.hotel));document.getElementById("otherBudget").textContent=eur(num(state.other));document.getElementById("totalBudget").textContent=eur(num(state.hotel)+num(state.other))}
- hi.oninput=()=>{state.hotel=hi.value;save();paint()};oi.oninput=()=>{state.other=oi.value;save();paint()};nt.oninput=()=>{state.notes=nt.value;save()};paint();
+ const hi=document.getElementById("hotelInput"),fi=document.getElementById("flightInput"),ti=document.getElementById("transportInput"),oi=document.getElementById("otherInput"),nt=document.getElementById("notesText");
+ hi.value=state.hotel;fi.value=state.flight;ti.value=state.transport;oi.value=state.other;nt.value=state.notes;
+ function paint(){
+  document.getElementById("hotelBudget").textContent=eur(num(state.hotel));
+  document.getElementById("flightBudget").textContent=eur(num(state.flight));
+  document.getElementById("transportBudget").textContent=eur(num(state.transport));
+  document.getElementById("otherBudget").textContent=eur(num(state.other));
+  document.getElementById("totalBudget").textContent=eur(num(state.hotel)+num(state.flight)+num(state.transport)+num(state.other))
+ }
+ hi.oninput=()=>{state.hotel=hi.value;save();paint()};
+ fi.oninput=()=>{state.flight=fi.value;save();paint()};
+ ti.oninput=()=>{state.transport=ti.value;save();paint()};
+ oi.oninput=()=>{state.other=oi.value;save();paint()};
+ nt.oninput=()=>{state.notes=nt.value;save()};
+ paint();
  function go(id){document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("on",b.dataset.v===id));document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id===id));scrollTo({top:0,behavior:"smooth"});if(id==="mapview")setTimeout(()=>map.invalidateSize(),80)}
  document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>go(b.dataset.v));document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));
  const pts=[
