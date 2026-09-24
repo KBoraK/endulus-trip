@@ -1,4 +1,5 @@
 {
-  "build": "6.2.23",
-  "updated": "2026-09-24"
+  "build": "6.2.24",
+  "updated": "2026-09-24",
+  "note": "automatic redirect disabled"
 }
