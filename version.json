@@ -1,5 +1,5 @@
 {
-  "build": "6.2.27",
+  "build": "6.2.29",
   "updated": "2026-09-24",
-  "note": "flight totals updated"
+  "note": "day-plan city chips isolated from legacy filter styles"
 }
