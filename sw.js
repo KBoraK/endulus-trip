@@ -1,3 +1,4 @@
+const BUILD="6.2.22";
 const CACHE="endulus-v6-runtime";
 const CORE=["./","./index.html","./manifest.webmanifest","./icon.svg","./app-v6.js"];
 
