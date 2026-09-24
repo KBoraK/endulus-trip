@@ -27,7 +27,7 @@ p{line-height:1.55;color:#746f65}.dot{font-size:36px;margin-bottom:18px}
    await Promise.all(keys.filter(k=>k.startsWith("endulus-")).map(k=>caches.delete(k)));
   }
   const target=new URL("./",location.href);
-  target.searchParams.set("build","6.2.22");
+  target.searchParams.set("build","6.2.23");
   target.searchParams.set("repaired","1");
   setTimeout(()=>location.replace(target.href),250);
  }catch(e){
