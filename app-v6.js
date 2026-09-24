@@ -1,6 +1,6 @@
 (()=>{
 "use strict";
-window.ENDULUS_APP_BUILD="6.2.25";
+window.ENDULUS_APP_BUILD="6.2.26";
 document.documentElement.dataset.appBuild=window.ENDULUS_APP_BUILD;
 if(typeof D==="undefined") return;
 const KEY="endulusStateV6";
@@ -39,6 +39,11 @@ const save=()=>{
  localStorage.setItem("endulusBudgetV5",JSON.stringify({...state.expenses,stays:stayTotal(),attractions:"323.31"}));
  if(state.notes)localStorage.setItem("endulusNotesV5",JSON.stringify(state.notes));
 };
+if(localStorage.getItem("endulusFlightBudgetV1")!=="1"){
+ if(state.expenses&&(!state.expenses.flights||num(state.expenses.flights)===0))state.expenses.flights="216";
+ localStorage.setItem("endulusFlightBudgetV1","1");
+ localStorage.setItem(KEY,JSON.stringify(state));
+}
 const money=n=>new Intl.NumberFormat("tr-TR",{style:"currency",currency:"EUR"}).format(Number(n)||0);
 const num=v=>parseFloat(String(v||"").replace(",","."))||0;
 const stayTotal=()=>Object.values(state.stays).reduce((s,x)=>s+num(x.price),0);
@@ -117,7 +122,7 @@ function renderBookings(){
 function renderBudget(){
  const sec=document.querySelector("#v5realbudget");if(!sec)return;
  const labels={flights:"Uçuşlar",intercity:"Şehirlerarası ulaşım",local:"Yerel ulaşım",food:"Yemek",other:"Diğer"};
- sec.innerHTML='<div class="head"><div><div class="ey">TEK KAYNAK · 3 KİŞİ</div><h2>Trip budget</h2></div><span class="pill">otomatik</span></div><div class="v6budgetcards"><div class="v6bcard"><b>'+money(grand())+'</b><small>planlanan toplam</small></div><div class="v6bcard"><b>'+money(pp())+'</b><small>kişi başı</small></div><div class="v6bcard"><b>'+money(stayTotal())+'</b><small>konaklama</small></div><div class="v6bcard"><b>'+money(attractionPlan())+'</b><small>aktiviteler</small><div class="v6auto">baz plan</div></div><div class="v6bcard"><b>'+money(num(state.expenses.food))+'</b><small>yemek</small><div class="v6auto">girilen toplam</div></div></div><div class="v5warn">Aktivite baz planı mevcut listedeki '+money(attractionPlan())+' üzerinden otomatik geliyor. Konaklama ve diğer kategoriler Edit Mode’da girildikçe toplam güncellenir. Booked aktivitelerde kaydedilen/hesaplanan tutar: '+money(bookedActivityTotal())+'.</div><div class="v5budget v6expense">'+Object.keys(labels).map(k=>'<label><span>'+labels[k]+'</span><input inputmode="decimal" data-exp="'+k+'" value="'+escapeHtml(state.expenses[k])+'" placeholder="€"></label>').join("")+'</div>';
+ sec.innerHTML='<div class="head"><div><div class="ey">TEK KAYNAK · 3 KİŞİ</div><h2>Trip budget</h2></div><span class="pill">otomatik</span></div><div class="v6budgetcards"><div class="v6bcard"><b>'+money(grand())+'</b><small>planlanan toplam</small></div><div class="v6bcard"><b>'+money(pp())+'</b><small>kişi başı</small></div><div class="v6bcard"><b>'+money(stayTotal())+'</b><small>konaklama</small></div><div class="v6bcard"><b>'+money(attractionPlan())+'</b><small>aktiviteler</small><div class="v6auto">baz plan</div></div><div class="v6bcard"><b>'+money(num(state.expenses.food))+'</b><small>yemek</small><div class="v6auto">girilen toplam</div></div></div><div class="v5warn"><b>✈️ Bilinen uçuş maliyeti:</b> Strasbourg → Toulouse €111 + Toulouse → Málaga €105 = <b>€216</b>. Madrid → Montpellier ve Montpellier → Strasbourg fiyatları henüz eklenmedi.</div><div class="v5warn">Aktivite baz planı mevcut listedeki '+money(attractionPlan())+' üzerinden otomatik geliyor. Konaklama ve diğer kategoriler Edit Mode’da girildikçe toplam güncellenir. Booked aktivitelerde kaydedilen/hesaplanan tutar: '+money(bookedActivityTotal())+'.</div><div class="v5budget v6expense">'+Object.keys(labels).map(k=>'<label><span>'+labels[k]+'</span><input inputmode="decimal" data-exp="'+k+'" value="'+escapeHtml(state.expenses[k])+'" placeholder="€"></label>').join("")+'</div>';
  sec.querySelectorAll("[data-exp]").forEach(el=>el.oninput=()=>{state.expenses[el.dataset.exp]=el.value;save();const cards=sec.querySelectorAll(".v6bcard b");cards[0].textContent=money(grand());cards[1].textContent=money(pp())});
 }
 function renderActions(){
