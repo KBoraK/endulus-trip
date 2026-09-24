@@ -126,6 +126,10 @@ function renderActions(){
  if(required.length>1){const b=required[1];html+='<div class="v6action"><b>🟠 Sonra: '+escapeHtml(b[1])+'</b><span>'+escapeHtml(b[2])+'</span></div>'}
  if(missingStays)html+='<div class="v6action"><b>🏨 '+missingStays+' konaklama bekliyor</b><span>Konaklama sekmesinde seçtikçe Booked yap.</span></div>';
  if(!required.length&&!missingStays)html='<div class="v6action v6done"><b>✓ Ana rezervasyonlar tamam</b><span>Yalnız tarih yaklaşınca tatil saatlerini tekrar doğrula.</span></div>';
+ const today=localISO();
+ if(today>="2026-12-01"&&today<="2027-01-03"){
+   html='<div class="v6action"><b>🟠 Montpellier · oteli tekrar kontrol et</b><span>620’nin 1 Ocak gece ve 3 Ocak sabah 2027 tarifelerini doğrula. Saatler Campanile bağlantısına uymuyorsa rezervasyon koşullarına göre otel/ilk gece airport planını yeniden ayarla.</span></div>'+html;
+ }
  box.innerHTML=html;
 }
 function renderEditBar(){
