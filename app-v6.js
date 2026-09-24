@@ -1,6 +1,6 @@
 (()=>{
 "use strict";
-window.ENDULUS_APP_BUILD="6.2.22";
+window.ENDULUS_APP_BUILD="6.2.23";
 document.documentElement.dataset.appBuild=window.ENDULUS_APP_BUILD;
 if(typeof D==="undefined") return;
 const KEY="endulusStateV6";
@@ -78,7 +78,7 @@ const stayAlternatives={
  ],
  "Montpellier":[
   {name:"Campanile PRIME - Montpellier Centre St Roch",bookedCard:true,rating:"8,4 · 3.726 yorum",type:"BOOKED · Otel 3★",area:"Centre · Gare Saint-Roch",center:"~0,6 km · Place de la Comédie",stayLabel:"1–3 Oca · 2 gece",note:"✓ Rezerve. 11 rue Pagezy, Gare Saint-Roch yanında. 24 saat resepsiyon, restoran/bar, ücretsiz Wi-Fi, bagaj muhafazası ve spa/sauna olanakları listeleniyor.",airport:"✈️ Geliş: 1 Ocak 22:50 MPL. Hedef, Ocak 2027 tarifesi doğrulanırsa 23:30 620 → Place de l'Europe → Tram L1 → Gare Saint-Roch → otele kısa yürüyüş. 620'nin şu an yayımlı tarifesi 24.10.2026'ya kadar geçerli.",arrival:"🌙 Bu otel artık Montpellier planının sabit üssü. Gece shuttle kaçarsa direkt airport taxi; Ibis split-stay planı kaldırıldı.",pros:"Comédie ve Écusson yürünebilir; Gare Saint-Roch ulaşımı çok güçlü; 2 Ocak günü tüm ana rota otelden yürüyerek yapılabiliyor. 3 Ocak dönüşte L1 + 620 bağlantısı kolay.",cons:"1 Ocak 2027 için 620 kış/tatil tarifesi henüz yayımlı değil; 23:30 son sefer varsayımı seyahate yakın yeniden doğrulanmalı.",url:"https://www.booking.com/hotel/fr/campanile-montpellier-centre-gare-saint-roch.html?aid=2438770&checkin=2027-01-01&checkout=2027-01-03&no_rooms=1&group_adults=2&selected_currency=EUR",airportUrl:"https://www.herault-transport.fr/lignes-regulieres/620-navette-aeroport",mapQuery:"Campanile PRIME Montpellier Centre St Roch"}
-]
+],
  "Córdoba":[
   {name:"Apartamentos Ruz",price:70,rating:"8,5 · 318 yorum",type:"Apartman",area:"Judería · Puerta de Sevilla",center:"~0,8 km · Mezquita-Catedral",note:"Judería'nın Puerta de Sevilla tarafında; Córdoba'nın tarihi yürüyüş rotasına uygun.",pros:"Açık ara en ucuz seçenek; Judería konumu; Mezquita'ya yürünebilir.",cons:"Puanı diğer Córdoba alternatiflerinden biraz daha düşük.",url:"https://www.booking.com/hotel/es/apartamentos-ruz.html?aid=2438770&checkin=2026-12-27&checkout=2026-12-28&no_rooms=1&group_adults=3&selected_currency=EUR"},
   {name:"La Corte de Isabel",price:79,rating:"8,9 · 108 yorum",type:"Apartman",area:"Centro · Calle Isabel II",center:"~1,2 km · Mezquita-Catedral",note:"Merkez tarafında; tek gecelik Córdoba programında fiyatı düşük tutan bir alternatif.",pros:"Yüksek puan; €79 toplam; fiyat/puan dengesi güçlü.",cons:"Mezquita'ya Apartamentos Ruz'dan daha uzak; yorum sayısı daha sınırlı.",url:"https://www.booking.com/hotel/es/la-corte-de-isabel.html?aid=2438770&checkin=2026-12-27&checkout=2026-12-28&no_rooms=1&group_adults=3&selected_currency=EUR"},
@@ -211,4 +211,5 @@ if(window.matchMedia("(display-mode: standalone)").matches||navigator.standalone
 const deepLink={travel:"v61travel",book:"book",map:"v5mapview"}[location.hash.replace("#","")];if(deepLink){const b=document.querySelector('.tabs button[data-v="'+deepLink+'"]');if(b)setTimeout(()=>b.click(),50)}
 
 save();
+window.ENDULUS_APP_READY=true;
 })();
