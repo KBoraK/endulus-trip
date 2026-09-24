@@ -1,5 +1,5 @@
-const CACHE="endulus-v6.2.17";
-const CORE=["./","./index.html","./manifest.webmanifest","./icon.svg","./app-v6.js?v=6.2.17"];
+const CACHE="endulus-v6.2.18";
+const CORE=["./","./index.html","./manifest.webmanifest","./icon.svg","./app-v6.js?v=6.2.18"];
 self.addEventListener("install",event=>event.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
 self.addEventListener("activate",event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith("endulus-")&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener("fetch",event=>{
