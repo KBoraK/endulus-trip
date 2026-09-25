@@ -1,7 +1,7 @@
 {
   "name": "Endülüs Roadbook",
   "short_name": "Endülüs",
-  "start_url": "./?build=6.2.31",
+  "start_url": "./?build=6.2.32",
   "scope": "./",
   "display": "standalone",
   "background_color": "#eee8dc",
@@ -23,7 +23,7 @@
     {
       "name": "Travel Mode",
       "short_name": "Bugün",
-      "url": "./?build=6.2.31#travel",
+      "url": "./?build=6.2.32#travel",
       "icons": [
         {
           "src": "icon.svg",
@@ -35,7 +35,7 @@
     {
       "name": "Rezervasyonlar",
       "short_name": "Biletler",
-      "url": "./?build=6.2.31#book",
+      "url": "./?build=6.2.32#book",
       "icons": [
         {
           "src": "icon.svg",
