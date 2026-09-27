@@ -1,6 +1,6 @@
 (()=>{
 "use strict";
-window.ENDULUS_APP_BUILD="6.2.34";
+window.ENDULUS_APP_BUILD="6.2.35";
 document.documentElement.dataset.appBuild=window.ENDULUS_APP_BUILD;
 if(typeof D==="undefined") return;
 const KEY="endulusStateV6";
@@ -200,7 +200,7 @@ function renderTravel(){
  const d=D.days[activeDay],items=d[4],done=travelDone[d[0]]||{},count=items.filter((_,i)=>done[i]).length,p=Math.round(count/items.length*100);
  daySelect.value=String(activeDay);
  dayHero.innerHTML='<div class="ey">GÜN '+d[0]+' · '+d[1]+'</div><h3>'+escapeHtml(d[2])+'</h3><p>'+escapeHtml(d[3])+' · '+count+'/'+items.length+' tamamlandı</p><div class="v61progress"><i style="width:'+p+'%"></i></div>';
- dayTimeline.innerHTML=items.map((x,i)=>'<article class="v61item '+(done[i]?"done":"")+'"><div class="tm">'+escapeHtml(x[0])+'</div><button class="v61check" data-ti="'+i+'" aria-label="'+(done[i]?"Tamamlanmadı olarak işaretle":"Tamamlandı olarak işaretle")+'">'+(done[i]?"✓":"")+'</button><div><h4>'+escapeHtml(x[1])+'</h4><p>'+escapeHtml(x[2])+'</p></div></article>').join("")+(DAY_FOOD[d[0]]?'<article class="v61item"><div class="tm">🍴</div><div></div><div><h4>Rota üzerindeki yemek alternatifleri</h4><p>'+DAY_FOOD[d[0]].map(x=>'<a target="_blank" rel="noopener" href="'+travelSearch(x[0]+" "+d[2].split(" → ").pop())+'"><b>'+escapeHtml(x[0])+'</b></a> · '+escapeHtml(x[1])).join("<br>")+'</p></div></article>':"");
+ dayTimeline.innerHTML=items.map((x,i)=>'<article class="v61item '+(done[i]?"done":"")+'"><div class="tm">'+escapeHtml(x[0])+'</div><button class="v61check" data-ti="'+i+'" aria-label="'+(done[i]?"Tamamlanmadı olarak işaretle":"Tamamlandı olarak işaretle")+'">'+(done[i]?"✓":"")+'</button><div><h4>'+(x[6]?'<a class="ticketlink" target="_blank" rel="noopener" href="'+x[6]+'">'+escapeHtml(x[1])+' ↗</a>':escapeHtml(x[1]))+'</h4><p>'+escapeHtml(x[2])+'</p></div></article>').join("")+(DAY_FOOD[d[0]]?'<article class="v61item"><div class="tm">🍴</div><div></div><div><h4>Rota üzerindeki yemek alternatifleri</h4><p>'+DAY_FOOD[d[0]].map(x=>'<a target="_blank" rel="noopener" href="'+travelSearch(x[0]+" "+d[2].split(" → ").pop())+'"><b>'+escapeHtml(x[0])+'</b></a> · '+escapeHtml(x[1])).join("<br>")+'</p></div></article>':"");
  dayTimeline.querySelectorAll("[data-ti]").forEach(b=>b.onclick=()=>{travelDone[d[0]]=travelDone[d[0]]||{};travelDone[d[0]][b.dataset.ti]=!travelDone[d[0]][b.dataset.ti];localStorage.setItem(travelKey,JSON.stringify(travelDone));renderTravel()});
  const route=DAY_ROUTES[d[0]],city=d[2].split(" → ")[0];
  dayActions.innerHTML=(route?'<a class="primary" target="_blank" rel="noopener" href="'+travelDir(route)+'">🚶 Günlük rotayı aç</a>':"")+'<a target="_blank" rel="noopener" href="'+travelSearch(city)+'">⌖ '+escapeHtml(city)+' haritası</a>';
