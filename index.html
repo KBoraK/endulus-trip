@@ -150,7 +150,7 @@ body.pwa-standalone .hero{padding-top:calc(42px + env(safe-area-inset-top))}
 <section id="book" class="view"><div class="head"><div><div class="ey">CHECKLIST</div><h2>Rezervasyonlar</h2></div><span id="progtext" class="pill"></span></div><div class="progress"><i id="prog"></i></div><div id="books"></div></section>
 <section id="budget" class="view"><div class="head"><div><div class="ey">3 YETİŞKİN</div><h2>Atraksiyon bütçesi</h2></div></div><div class="budget"><span>Planlama toplamı</span><strong id="total"></strong><small>Aşağıdaki fiyatı girilmiş atraksiyonlar. Ulaşım, yemek, otel, Ronda ve flamenco dahil değil.</small></div><div class="warn">⚠️ Bu rakam planlama tahminidir. Özellikle 2026/27 tatil dönemi tarifeleri ve Medina Azahara ulaşımı satın almadan önce yeniden doğrulanmalı.</div><div id="rows"></div></section>
 <section id="todo" class="view"><div class="head"><div><div class="ey">AÇIK NOKTALAR</div><h2>Tarih yaklaşınca kontrol</h2></div></div><div class="questions" id="questions"></div></section>
-</main><footer>Endülüs Trip Dashboard · v6.2.39 · Son plan güncellemesi 28.09.2026</footer><script>
+</main><footer>Endülüs Trip Dashboard · v6.2.40 · Son plan güncellemesi 28.09.2026</footer><script>
 const D={
 flights:[["22 Ara","Strasbourg (SXB) → Toulouse (TLS)","19:50–21:20",111,3],["23 Ara","Toulouse (TLS) → Málaga (AGP)","06:15–08:05",105,3],["1 Oca","Madrid (MAD) → Montpellier (MPL)","21:15–22:50",54,2],["3 Oca","Montpellier (MPL) → Strasbourg (SXB)","12:50–14:15",66,2]],
 stays:[["Toulouse","22–23 Ara",1,"Première Classe Toulouse - Blagnac Aéroport"],["Málaga","23–25 Ara",2,"Malaga Vibes Apartment · Málaga Centro"],["Granada","25–27 Ara",2,"Aljibe de San Miguel Bajo · Albaicín"],["Córdoba","27–29 Ara",2,"Limehome Cordoba Calle Pozanco · C. Pozanco 9"],["Sevilla","29–31 Ara",2,"Airbnb · Calle Atanasio Barrón 8"],["Madrid","31 Ara–1 Oca",1,"Capsule Inn Madrid · Centro"],["Montpellier","1–3 Oca",2,"Campanile PRIME · Gare Saint-Roch"]],
@@ -176,9 +176,9 @@ const cityData=[
 ["Málaga","2 gece","Alcazaba · Soho","Centro / Soho","Alcazaba + Teatro Romano; Centro Histórico; Muelle Uno + Soho.","Mesón Mariano · chivo malagueño / alcachofas.","Malaga Spain"],
 ["Ronda","günübirlik","Baños Árabes · Tajo","—","Baños Árabes; eski şehir ve surlar; Puente Nuevo. Setenil yalnız lojistik uygunsa.","El Lechuguita · tapas.","Ronda Spain"],
 ["Granada","2 gece","Alhambra · Albaicín","Centro / Realejo","Alhambra; Albaicín; Carrera del Darro; Mirador San Nicolás; Sacromonte.","Bar Ávila · jamón asado + tapas.","Granada Spain"],
-["Córdoba","1 gece","Mezquita · Madinat","Judería / Centro","Medina Azahara; Mezquita-Catedral; Judería; Puente Romano.","Taberna San Cristóbal · salmorejo / berenjenas.","Cordoba Spain"],
+["Córdoba","2 gece","Mezquita · Madinat","Centro · Calle Pozanco","Medina Azahara; Mezquita-Catedral; Judería; Puente Romano.","Taberna San Cristóbal · salmorejo / berenjenas.","Cordoba Spain"],
 ["Sevilla","2 gece","Alcázar · Giralda","Arenal / Triana","Real Alcázar; Catedral + Giralda; Santa Cruz; Las Setas; Plaza de España.","Las Golondrinas + Casa Moreno.","Seville Spain"],
-["Madrid","2 gece","Prado · Austrias","Atocha / Letras","Prado; Barrio de las Letras; Retiro; Madrid de los Austrias; Lavapiés.","La Sanabresa; 31 Aralık yemeği ayrıca seçilecek.","Madrid Spain"],
+["Madrid","1 gece","Yılbaşı · Austrias","Centro · Plaza de España","Puerta del Sol; Plaza Mayor; Madrid de los Austrias; Barrio de las Letras / Prado çevresi; 1 Ocak Gran Vía + La Latina.","La Sanabresa; 31 Aralık yemeği ayrıca seçilecek.","Madrid Spain"],
 ["Montpellier","2 gece","Écusson · Peyrou","Campanile PRIME · Gare Saint-Roch","Campanile → Comédie → Musée Fabre/Écusson → Saint-Pierre → Jardin des Plantes → Peyrou → Aqueduc. 3 Ocak L1 + 620 ile airport.","Ripailles / Bistrot Sainte Anne; kahvaltı için otel veya Bonobo.","Montpellier France"]
 ];
 const official={
@@ -213,7 +213,7 @@ document.querySelector("#questions").innerHTML=D.questions.map(x=>'<div class="q
 </script><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script><script>
 (()=>{
 const C=[["Toulouse",43.6047,1.4442],["Málaga",36.7213,-4.4214],["Ronda",36.7462,-5.1612],["Granada",37.1773,-3.5986],["Córdoba",37.8882,-4.7794],["Sevilla",37.3891,-5.9845],["Madrid",40.4168,-3.7038],["Montpellier",43.6108,3.8767]];
-const T=[["✈️","22 Ara","Strasbourg → Toulouse","19:50–21:20","FIX"],["✈️","23 Ara","Toulouse → Málaga","06:15–08:05","FIX"],["🚌","24 Ara","Málaga ↔ Ronda","Toplu taşıma baz planı · Noel arifesi saati doğrulanacak","BEKLİYOR"],["🚌","25 Ara","Málaga → Granada","Direkt toplu taşıma baz planı · Noel seferi doğrulanacak","BEKLİYOR"],["🚆","27 Ara","Granada → Córdoba","Erken bağlantı seçilecek","BEKLİYOR"],["🚌","27 Ara","Córdoba ↔ Medina Azahara","Ulaşım/shuttle doğrulanacak","BEKLİYOR"],["🚆","28 Ara","Córdoba → Sevilla","Öğleden sonra","BEKLİYOR"],["🚆","30 Ara","Sevilla → Madrid","~12:00–13:00 hedef","BEKLİYOR"],["✈️","1 Oca","Madrid → Montpellier","21:15–22:50","FIX"],["🚌","1 Oca · gece","MPL → Campanile PRIME","Hedef: 23:30 620 → Place de l'Europe (~23:45) → Tram L1 → Gare Saint-Roch → 11 rue Pagezy. Yayımlı 620 tarifesi yalnız 24.10.2026'ya kadar geçerli; 1 Ocak 2027'yi tekrar doğrula. Shuttle kaçarsa havalimanı taksisi.","KONTROL"],["🏨","1–3 Oca","Campanile PRIME - Montpellier Centre St Roch","BOOKED · 11 rue Pagezy · Gare Saint-Roch. Şehir yürüyüşünün başlangıç/bitiş noktası ve airport bağlantısının ana üssü.","BOOKED"],["🚌","3 Oca · sabah","Campanile PRIME → MPL","~09:25 otelden çık → L1 Gare Saint-Roch → Place de l'Europe → 10:00 hedef 620; 10:30 yedek. Uçuş 12:50. Ocak 2027 tarifesi yayınlanınca kesinleştir.","KONTROL"],["✈️","3 Oca","Montpellier → Strasbourg","12:50–14:15","FIX"]];
+const T=[["✈️","22 Ara","Strasbourg → Toulouse","19:50–21:20","FIX"],["✈️","23 Ara","Toulouse → Málaga","06:15–08:05","FIX"],["🚌","24 Ara","Málaga ↔ Ronda","Toplu taşıma baz planı · Noel arifesi saati doğrulanacak","BEKLİYOR"],["🚌","25 Ara","Málaga → Granada","Direkt toplu taşıma baz planı · Noel seferi doğrulanacak","BEKLİYOR"],["🚆","27 Ara","Granada → Córdoba","Erken bağlantı seçilecek","BEKLİYOR"],["🚌","27 Ara","Córdoba ↔ Medina Azahara","Ulaşım/shuttle doğrulanacak","BEKLİYOR"],["🚆","29 Ara","Córdoba → Sevilla","Sabah bağlantısı seçilecek","BEKLİYOR"],["🚆","31 Ara","Sevilla → Madrid","Madrid'de tek gece için mümkün olduğunca erken tren","BEKLİYOR"],["✈️","1 Oca","Madrid → Montpellier","21:15–22:50","FIX"],["🚌","1 Oca · gece","MPL → Campanile PRIME","Hedef: 23:30 620 → Place de l'Europe (~23:45) → Tram L1 → Gare Saint-Roch → 11 rue Pagezy. Yayımlı 620 tarifesi yalnız 24.10.2026'ya kadar geçerli; 1 Ocak 2027'yi tekrar doğrula. Shuttle kaçarsa havalimanı taksisi.","KONTROL"],["🏨","1–3 Oca","Campanile PRIME - Montpellier Centre St Roch","BOOKED · 11 rue Pagezy · Gare Saint-Roch. Şehir yürüyüşünün başlangıç/bitiş noktası ve airport bağlantısının ana üssü.","BOOKED"],["🚌","3 Oca · sabah","Campanile PRIME → MPL","~09:25 otelden çık → L1 Gare Saint-Roch → Place de l'Europe → 10:00 hedef 620; 10:30 yedek. Uçuş 12:50. Ocak 2027 tarifesi yayınlanınca kesinleştir.","KONTROL"],["✈️","3 Oca","Montpellier → Strasbourg","12:50–14:15","FIX"]];
 const F=[
 ["Málaga","Mesón Mariano","Chivo malagueño · alcachofas · balık","23 Ara","Geleneksel Málaga yemekleri için ana akşam yemeği adayımız.","4.7/5 · 3.503 yorum"],
 ["Málaga","La Plancha Taberna","Izgara · tapas · İspanyol mutfağı","Alternatif","El Perchel'de merkezin turist yoğunluğundan biraz uzakta; taze ürün ve ızgara ağırlıklı yerel alternatif.","4.6/5 · 985 yorum"],
@@ -238,12 +238,12 @@ const F=[
 ["Córdoba","Taberna Salinas","Salmorejo · flamenquín · rabo de toro","28 Ara alternatifi","1879'a uzanan köklü taberna; klasik Córdoba mutfağı ve tarihî atmosfer için güçlü yerel seçenek.","4.6/5 · 5.298 yorum"],
 ["Córdoba","Sociedad Plateros María Auxiliadora","Endülüs · geleneksel · Montilla-Moriles","Alternatif","Merkez turist hattının biraz dışında, tarihî ve salaş Córdoba atmosferi; fiyat/yerellik dengesi iyi.","4.4/5 · 2.633 yorum"],
 ["Córdoba","The Coffee Club","☕ Kahvaltı · brunch · specialty coffee","Kahvaltı","Mezquita yakınında kahvaltı/brunch ve specialty coffee için konumu çok pratik.","4.6/5 · 400 yorum"],
-["Sevilla","Las Golondrinas","Solomillo · caballito · chipirones","28 Ara","Triana akşamında küçük tabaklar ve tapas için ana seçenek.","4.4/5 · 1.556 yorum"],
-["Sevilla","Casa Moreno","Pringá · mojama · vermut/sherry","29 Ara","Bakkal-bar havası ve yerel karakteri için özellikle ilginç kısa tapas durağı.","4.7/5 · 1.783 yorum"],
+["Sevilla","Las Golondrinas","Solomillo · caballito · chipirones","29 Ara","Triana akşamında küçük tabaklar ve tapas için ana seçenek.","4.4/5 · 1.556 yorum"],
+["Sevilla","Casa Moreno","Pringá · mojama · vermut/sherry","30 Ara","Bakkal-bar havası ve yerel karakteri için özellikle ilginç kısa tapas durağı.","4.7/5 · 1.783 yorum"],
 ["Sevilla","Blanca Paloma","Triana · balık/deniz ürünü · tapas","Alternatif","San Jacinto'da Sevillalıların da gittiği klasik; daha turistik merkez barlarına güçlü alternatif.","4.5/5 · 5.911 yorum"],
 ["Sevilla","Paradas 7","☕ Specialty coffee · tost · brunch","Kahvaltı","Kendi 85+ SCA kahvesi, doğal mayalı ekmekler ve güçlü kahvaltı menüsü; rahat başlangıç için.","4.5/5 · 1.547 yorum"],
-["Madrid","La Sanabresa","Old-school local öğle yemeği","31 Ara","Prado/Barrio de las Letras günü için geleneksel ve pratik öğle yemeği adayı.","4.6/5 · 3.173 yorum"],
-["Madrid","Bodegas Alfaro","Lavapiés · vermut/tapas · alternatif","30 Ara–1 Oca · seçenek","Lavapiés yürüyüşüne uyabilecek mahalle tipi vermut/tapas alternatifi.","3.9/5 · 54 yorum"],
+["Madrid","La Sanabresa","Old-school local öğle yemeği","31 Ara","Madrid'deki tek tam/ana gün için, merkez ve Prado çevresine uyabilecek geleneksel öğle yemeği adayı.","4.6/5 · 3.173 yorum"],
+["Madrid","Bodegas Alfaro","Lavapiés · vermut/tapas · alternatif","31 Ara–1 Oca · seçenek","Lavapiés yürüyüşüne uyabilecek mahalle tipi vermut/tapas alternatifi.","3.9/5 · 54 yorum"],
 ["Madrid","Casa Dani","Tortilla de patatas · menú del día","Alternatif","Mercado de la Paz içinde; özellikle tortilla için Madrid klasiği ve gündelik yerel öğle yemeği.","4.1/5 · 907 yorum"],
 ["Madrid","Bodega de la Ardosa","Tortilla · vermut · kroket · bira","Alternatif","Malasaña'da tarihî bodega; ayakta tapas/vermut ve yerel bar atmosferi için.","4.2/5 · 7.625 yorum"],
 ["Madrid","HanSo Café","☕ Specialty coffee · tost · all-day brunch","Kahvaltı","Madrid'in specialty coffee sahnesinin güçlü adreslerinden; iyi kahve + ciddi kahvaltı birlikte.","4.4/5 · 1.491 yorum"],
@@ -265,12 +265,12 @@ let notes=JSON.parse(localStorage.getItem("endulusNotesV5")||"{}");document.quer
 document.querySelector("#v5export").onclick=()=>{let data={version:5,checks:JSON.parse(localStorage.getItem("endulusChecks")||"{}"),budget,notes};let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:"application/json"}));a.download="endulus-roadbook-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)};
 document.querySelector("#v5import").onchange=e=>{let file=e.target.files[0];if(!file)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(d.checks)localStorage.setItem("endulusChecks",JSON.stringify(d.checks));if(d.budget)localStorage.setItem("endulusBudgetV5",JSON.stringify(d.budget));if(d.notes)localStorage.setItem("endulusNotesV5",JSON.stringify(d.notes));location.reload()}catch(_){alert("Geçerli Roadbook JSON dosyası değil.")}};r.readAsText(file)};
 document.querySelector("#v5reset").onclick=()=>{if(confirm("Bu cihazdaki not, bütçe ve rezervasyon işaretleri sıfırlansın mı?")){["endulusChecks","endulusBudgetV5","endulusNotesV5"].forEach(k=>localStorage.removeItem(k));location.reload()}};
-const iso=new Date().toISOString().slice(0,10),tripDates={"2026-12-23":"Málaga","2026-12-24":"Ronda","2026-12-25":"Granada","2026-12-26":"Granada","2026-12-27":"Córdoba","2026-12-28":"Sevilla","2026-12-29":"Sevilla","2026-12-30":"Madrid","2026-12-31":"Madrid","2027-01-01":"Madrid","2027-01-02":"Montpellier","2027-01-03":"Montpellier"};if(tripDates[iso]){let c=tripDates[iso],w=W[c];document.querySelector("#v5travel").innerHTML='<div class="v5travel"><div class="ey">BUGÜN · SEYAHAT MODU</div><h3>'+c+'</h3><p>Bugünkü programa hızlı erişim.</p>'+(w?'<a target="_blank" rel="noopener" href="'+dir(...w)+'">🚶 Yürüyüş rotasını aç</a>':"")+'</div>'}
+const iso=new Date().toISOString().slice(0,10),tripDates={"2026-12-23":"Málaga","2026-12-24":"Ronda","2026-12-25":"Granada","2026-12-26":"Granada","2026-12-27":"Córdoba","2026-12-28":"Córdoba","2026-12-29":"Sevilla","2026-12-30":"Sevilla","2026-12-31":"Madrid","2027-01-01":"Madrid","2027-01-02":"Montpellier","2027-01-03":"Montpellier"};if(tripDates[iso]){let c=tripDates[iso],w=W[c];document.querySelector("#v5travel").innerHTML='<div class="v5travel"><div class="ey">BUGÜN · SEYAHAT MODU</div><h3>'+c+'</h3><p>Bugünkü programa hızlı erişim.</p>'+(w?'<a target="_blank" rel="noopener" href="'+dir(...w)+'">🚶 Yürüyüş rotasını aç</a>':"")+'</div>'}
 if("serviceWorker" in navigator)window.addEventListener("load",async()=>{
  try{
   let reloading=false;
   navigator.serviceWorker.addEventListener("controllerchange",()=>{if(!reloading){reloading=true;location.reload()}});
-  const reg=await navigator.serviceWorker.register("./sw.js?v=6.2.39",{updateViaCache:"none"});
+  const reg=await navigator.serviceWorker.register("./sw.js?v=6.2.40",{updateViaCache:"none"});
   await reg.update();
  }catch(e){}
 });
@@ -293,7 +293,7 @@ if("serviceWorker" in navigator)window.addEventListener("load",async()=>{
    paint();
  });
 })();
-</script><script src="./app-v6.js?v=6.2.39"></script><script>
+</script><script src="./app-v6.js?v=6.2.40"></script><script>
 setTimeout(()=>{
  if(window.ENDULUS_APP_READY===true)return;
  const box=document.querySelector("#staygrid");
