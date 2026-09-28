@@ -1,6 +1,6 @@
 (()=>{
 "use strict";
-window.ENDULUS_APP_BUILD="6.2.37";
+window.ENDULUS_APP_BUILD="6.2.38";
 document.documentElement.dataset.appBuild=window.ENDULUS_APP_BUILD;
 if(typeof D==="undefined") return;
 const KEY="endulusStateV6";
@@ -10,9 +10,69 @@ const STATUS={
  later:["Tarih yaklaşınca kontrol","later"],
  booked:["Booked","booked"]
 };
+const bookedStayData={
+ "Toulouse":{
+  name:"Première Classe Toulouse - Blagnac Aéroport",price:56,provider:"Booking.com",
+  area:"Blagnac · Toulouse-Blagnac Havalimanı çevresi",
+  url:"https://www.booking.com/hotel/fr/hotelpremiereclassedetoulouseblagnac.de.html",
+  mapQuery:"Première Classe Toulouse Blagnac Aéroport",
+  note:"22–23 Aralık · 1 gece · €56 toplam."
+ },
+ "Málaga":{
+  name:"Malaga Vibes Apartment",price:214,provider:"Booking.com",
+  area:"Málaga Centro · Calle de San Quintín 52",
+  url:"https://www.booking.com/Share-TxihQt",
+  mapQuery:"Calle de San Quintín 52, Málaga, Spain",
+  note:"23–25 Aralık · 2 gece · 3 kişi · €214 toplam · rezervasyon ekranında ücretsiz iptal."
+ },
+ "Granada":{
+  name:"Aljibe de San Miguel Bajo",price:227.70,provider:"Booking.com",
+  area:"Albaicín · C. Cascajal 2",
+  url:"https://www.booking.com/hotel/es/aljibe-de-san-miguel-bajo.html?aid=2438770&checkin=2026-12-25&checkout=2026-12-27&no_rooms=1&group_adults=3&selected_currency=EUR",
+  mapQuery:"Calle Cascajal 2, Granada, Spain",
+  note:"25–27 Aralık · 2 gece · 3 kişi · €227,70 toplam · rezervasyon ekranında ücretsiz iptal."
+ },
+ "Córdoba":{
+  name:"Limehome Cordoba Calle Pozanco",price:166.75,provider:"Booking.com",
+  area:"Centro · C. Pozanco 9",
+  url:"https://www.booking.com/hotel/es/los-patios-de-san-agustin.html?aid=2438770&checkin=2026-12-27&checkout=2026-12-29&no_rooms=1&group_adults=3&selected_currency=EUR",
+  mapQuery:"Calle Pozanco 9, Córdoba, Spain",
+  note:"27–29 Aralık · 2 gece · 3 kişi · €166,75 ödenen rezervasyon fiyatı · rezervasyon ekranında ücretsiz iptal."
+ },
+ "Sevilla":{
+  name:"Airbnb · Calle Atanasio Barrón 8",price:265,provider:"Airbnb",
+  area:"Calle Atanasio Barrón 8 · Sevilla",
+  url:"https://www.airbnb.de/rooms/649130724648390816?unique_share_id=7e37299c-c575-4fe5-81a7-5cd3117f247f&viralityEntryPoint=1&s=76",
+  mapQuery:"Calle Atanasio Barrón 8, Sevilla, Spain",
+  note:"29–31 Aralık · 2 gece · €265 toplam. Check-in 29 Aralık 15:00, check-out 31 Aralık 11:00."
+ },
+ "Madrid":{
+  name:"Capsule Inn Madrid",price:164.40,provider:"Booking.com",
+  area:"Centro · Travesía de las Beatas 3",
+  url:"https://www.booking.com/hotel/es/urban-inn-madrid.html?aid=2438770&checkin=2026-12-31&checkout=2027-01-01&no_rooms=1&group_adults=3&selected_currency=EUR",
+  mapQuery:"Travesía de las Beatas 3, Madrid, Spain",
+  note:"31 Aralık–1 Ocak · 1 gece · 3 kişi · €164,40 ödenen rezervasyon fiyatı · rezervasyon ekranında ücretsiz iptal."
+ },
+ "Montpellier":{
+  name:"Campanile PRIME - Montpellier Centre St Roch",price:167,provider:"Booking.com",
+  area:"Centre · Gare Saint-Roch · 11 rue Pagezy",
+  url:"https://www.booking.com/hotel/fr/campanile-montpellier-centre-gare-saint-roch.html?aid=2438770&checkin=2027-01-01&checkout=2027-01-03&no_rooms=1&group_adults=2&selected_currency=EUR",
+  mapQuery:"Campanile PRIME Montpellier Centre St Roch",
+  note:"1–3 Ocak · 2 gece · 2 kişi · €167 toplam · kahvaltı dahil."
+ }
+};
 const stayDefaults={};
-D.stays.forEach(s=>stayDefaults[s[0]]={status:"todo",name:"",price:"",checkin:s[1].split("–")[0]||"",checkout:s[1].split("–")[1]||"",area:s[3]});
-if(stayDefaults.Montpellier)Object.assign(stayDefaults.Montpellier,{status:"booked",name:"Campanile PRIME - Montpellier Centre St Roch",price:"167",area:"Centre · Gare Saint-Roch · 11 rue Pagezy"});
+D.stays.forEach(s=>{
+ const b=bookedStayData[s[0]];
+ stayDefaults[s[0]]={
+  status:b?"booked":"todo",
+  name:b?.name||"",
+  price:b?String(b.price):"",
+  checkin:s[1].split("–")[0]||"",
+  checkout:s[1].split("–")[1]||"",
+  area:b?.area||s[3]
+ };
+});
 const reservationDefaults={};
 D.bookings.forEach(b=>reservationDefaults[b[0]]={status:["train"].includes(b[0])?"waiting":"required",time:"",total:"",verified:""});
 function load(){
@@ -38,6 +98,13 @@ if(localStorage.getItem("endulusCordoba2Madrid1V1")!=="1"){
  if(state.stays?.Sevilla)Object.assign(state.stays.Sevilla,{checkin:"29",checkout:"31"});
  if(state.stays?.Madrid)Object.assign(state.stays.Madrid,{checkin:"31",checkout:"1"});
  localStorage.setItem("endulusCordoba2Madrid1V1","1");
+ localStorage.setItem(KEY,JSON.stringify(state));
+}
+if(localStorage.getItem("endulusFinalBookedStaysV1")!=="1"){
+ Object.entries(bookedStayData).forEach(([city,b])=>{
+  if(state.stays?.[city])Object.assign(state.stays[city],{status:"booked",name:b.name,price:String(b.price),area:b.area});
+ });
+ localStorage.setItem("endulusFinalBookedStaysV1","1");
  localStorage.setItem(KEY,JSON.stringify(state));
 }
 const save=()=>{
@@ -66,59 +133,20 @@ function bookingEstimatedTotal(id){
 }
 function bookedActivityTotal(){return Object.keys(state.reservations).reduce((s,id)=>s+bookingEstimatedTotal(id),0)}
 function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
-const stayAlternatives={
- "Toulouse":[
-  {name:"Première Classe Toulouse - Blagnac Aéroport",price:56,rating:"",type:"Otel · Budget",area:"Blagnac · Toulouse-Blagnac Havalimanı çevresi",center:"Havalimanı yakınında",note:"22–23 Aralık transit gecesi için havaalanı odaklı seçenek. Première Classe bu tesisi Blagnac'ta Toulouse-Blagnac Havalimanı yakınında listeliyor.",pros:"Ertesi sabah erken Málaga uçuşu için pratik; merkez gezisi gerektirmeyen transit gece planına uygun.",cons:"Toulouse şehir merkezinde değil; fiyat henüz dashboard'a girilmedi.",url:"https://www.booking.com/hotel/fr/hotelpremiereclassedetoulouseblagnac.de.html"}
- ],
- "Málaga":[
-  {name:"VARELA 30 Apartamentos",price:212.52,rating:"8,6 · 921 yorum",type:"Apartman",area:"Málaga Centro",center:"~1,3 km",note:"Centro içinde ama tarihi merkezin tam göbeğinde değil; merkeze yürüyerek ulaşılabilir.",pros:"Listedeki daha uygun fiyatlı apartmanlardan; apartman tipi; merkez erişimi iyi.",cons:"Calle Granada ve Carretería seçeneklerine göre ana tarihi noktalara daha fazla yürüyüş.",url:"https://www.booking.com/hotel/es/varela-30-apartamentos.html?aid=2438770&checkin=2026-12-23&checkout=2026-12-25&no_rooms=1&group_adults=3&selected_currency=EUR"},
-  {name:"Coeo Hernan Ruiz Rooftop Pool Hostel",price:238.72,rating:"",type:"Hostel / özel oda",area:"Málaga Centro",center:"~0,2 km",note:"Tarihi merkezin çok merkezi bir noktasında; şehir içi program için konum odaklı seçenek.",pros:"Merkeze çok kısa yürüme; Alcazaba, katedral çevresi ve restoranlara erişim pratik.",cons:"Hostel konsepti; oda ve yatak düzeni apartman seçenekleri kadar net değil, rezervasyon öncesi kontrol edilmeli.",url:"https://www.booking.com/hotel/es/coeo-hernan.html?aid=2438770&checkin=2026-12-23&checkout=2026-12-25&no_rooms=1&group_adults=3&selected_currency=EUR"},
-  {name:"Apartamentos Pinar Málaga Centro - Carretería",price:282,rating:"8,8 · 7.367 yorum",type:"Apartman",area:"Centro · Carretería",center:"~0,3 km",note:"Carretería tarafında, Centro Histórico'ya çok yakın ve yürüyüş programına uygun.",pros:"Apartman; güçlü yorum sayısı; tarihi merkeze çok kısa yürüme.",cons:"Málaga listesindeki daha pahalı seçeneklerden.",url:"https://www.booking.com/hotel/es/apartamento-marmoles-m1-centro.html?aid=2438770&checkin=2026-12-23&checkout=2026-12-25&no_rooms=1&group_adults=3&selected_currency=EUR"},
-  {name:"Apartamentos Málaga Premium - Calle Granada",price:234.09,rating:"8,7 · 1.722 yorum",type:"Apartman",area:"Centro · Calle Granada",center:"~0,25 km",note:"Calle Granada üzerinde/çevresinde; tarihi merkez ve ana gezi aksına çok yakın.",pros:"Apartman + merkezi konum; fiyat/konum dengesi güçlü; Alcazaba ve katedral tarafına yürümek kolay.",cons:"Çok merkezi konum nedeniyle çevre daha hareketli olabilir.",url:"https://www.booking.com/hotel/es/apartamentos-malaga-premium.html?aid=2438770&checkin=2026-12-23&checkout=2026-12-25&no_rooms=1&group_adults=3&selected_currency=EUR"},
-  {name:"Airbnb · 1715238413556590874",price:231,rating:"",type:"Airbnb",area:"Málaga Centro · Calle Madre de Dios / Teatro Cervantes civarı (Airbnb harita pini, yaklaşık)",center:"~0,5–0,6 km · Málaga Katedrali",note:"Gönderilen Airbnb harita pini Teatro Cervantes’in hemen batısında, Plaza de la Merced’in kuzeybatısında görünüyor. En iyi eşleşme Calle Madre de Dios 39 civarı; Airbnb kesin bina numarasını paylaşmadığı için yaklaşık konum olarak tutuluyor.",pros:"23–25 Aralık için doğrudan paylaşılan Airbnb alternatifi; toplam fiyat 231 €. Teatro Cervantes, Plaza de la Merced ve tarihi merkeze çok yakın; yürüyüş programı için güçlü konum.",cons:"Kesin bina numarası ve puan Airbnb tarafından doğrulanmadı.",url:"https://www.airbnb.de/properties/1715238413556590874?unique_share_id=57229741-23f2-40d2-b7fc-5e980ed66fb8&viralityEntryPoint=1&s=76&anchor_room_id=26437687",mapQuery:"Calle Madre de Dios, Teatro Cervantes, Málaga, Spain"},
-  {name:"Airbnb · 1715253353160267450",price:259,rating:"",type:"Airbnb",area:"Málaga Centro · Calle Mariblanca / Calle Peña civarı (Airbnb harita pini, yaklaşık)",center:"~0,6 km · Málaga Katedrali",note:"Airbnb harita pini El Mesón de Cervantes (Calle Álamos 11) ile Parking Atlántida (Calle Refino 16) arasındaki Mariblanca–Peña çevresini gösteriyor; kesin bina/adres Airbnb tarafından paylaşılmıyor.",pros:"23–25 Aralık için doğrudan paylaşılan Airbnb alternatifi; toplam fiyat 259 €. Centro Histórico’ya çok yakın, yürüyüş programı için avantajlı.",cons:"Kesin bina numarası ve puan henüz doğrulanmadı.",url:"https://www.airbnb.de/properties/1715253353160267450?unique_share_id=3de1e05b-ca24-4830-a491-cd329fa7dc42&viralityEntryPoint=1&s=76&anchor_room_id=48579718",mapQuery:"Calle Mariblanca, Calle Peña, Málaga, Spain"},
-  {name:"Malaga Vibes Apartment",price:null,rating:"9,6 · 29 yorum",type:"Apartman · Booking",area:"Málaga Centro · Calle de San Quintín 52",center:"~1,5 km · Málaga Katedrali",note:"Booking.com'da Calle de San Quintín 52, 29009 Málaga adresinde listeleniyor. 60 m² civarında tüm daire; 1 yatak odası, 2 yatak ve 1 banyo. Jorge Rando Museum'a 1 km'den az, Málaga Katedrali'ne yaklaşık 1,5 km.",pros:"9,6 puan; 3 kişi için uygun 2 yatak; özel mutfak/kitchenette, çamaşır makinesi, klima, teras ve ücretsiz Wi‑Fi. Merkeze yürünebilir ama turistik çekirdeğin biraz dışında olduğu için daha sakin olabilir.",cons:"Calle Granada / Carretería alternatifleri kadar tarihi merkezin göbeğinde değil; fiyat 23–25 Aralık için dashboard'a henüz eklenmedi. Check-in 15:00–23:30 ve varış saatinin önceden bildirilmesi isteniyor.",url:"https://www.booking.com/Share-TxihQt",mapQuery:"Calle de San Quintín 52, Málaga, Spain"},
-  {name:"Casa Luque 9",price:153.90,rating:"8,5 · 110 yorum",type:"Apartman · Booking · 3★",area:"Málaga Centro · Calle Luque 9",center:"~1,4 km · Málaga Katedrali",note:"Booking.com'da 9 Calle Luque, Málaga Centro, 29013 adresinde listeleniyor. Senin gönderdiğin Booking bağlantısı 2 yetişkin içindi; dashboard fiyatı aynı tarihler için 3 yetişkin aramasıyla €153,90 toplam olarak güncellendi.",pros:"Málaga alternatifleri içinde çok güçlü fiyat: 23–25 Aralık, 3 kişi için €153,90 toplam. 8,5 puan; klima, ücretsiz Wi‑Fi, teras ve aile odaları mevcut. Centro sınırlarında olduğu için merkeze yürünebilir.",cons:"Calle Granada / Teatro Cervantes çevresindeki seçeneklere göre tarihi merkezin tam göbeğinde değil; ana gezi noktalarına biraz daha fazla yürüyüş gerekir.",url:"https://www.booking.com/hotel/es/casa-con-patio-tranquila.html?aid=2438770&checkin=2026-12-23&checkout=2026-12-25&no_rooms=1&group_adults=3&selected_currency=EUR",mapQuery:"Calle Luque 9, Málaga, Spain"}
- ],
- "Sevilla":[
-  {name:"Airbnb · 635203765526746475",price:196,rating:"",type:"Airbnb · Apartman",area:"Los Remedios · Plaza de Cuba / Av. República Argentina civarı (Airbnb harita pini, yaklaşık)",center:"~1,2 km · Sevilla Katedrali",note:"Harita pini Plaza de Cuba metrosu ve República Argentina çevresini gösteriyor; Triana'nın güney ucuna ve nehre yakın.",pros:"En ucuz Sevilla seçeneği; Plaza de Cuba metro erişimi çok iyi; Triana ve nehir yürüyüşleri için avantajlı; bölge düz.",cons:"Katedral/Alcázar Casco Antiguo seçenekleri kadar kapının önünde değil; tarihi merkeze nehri geçerek yürümek gerekiyor.",url:"https://www.airbnb.de/rooms/635203765526746475?unique_share_id=a90c93e3-e12b-4fa8-ae27-2548de6960f8&viralityEntryPoint=1&s=76"},
-  {name:"Airbnb · 23970555",price:244,rating:"",type:"Airbnb · Apartman",area:"Sevilla · konum teyit edilecek",center:"—",note:"Bu ilan için henüz güvenilir harita pini veya mahalle bilgisi yok.",pros:"Apartman tipi; fiyat diğer Sevilla alternatifleriyle aynı bantta.",cons:"Konum doğrulanmadığı için yürünebilirlik ve toplu taşıma avantajı henüz karşılaştırılamıyor.",url:"https://www.airbnb.de/rooms/23970555?unique_share_id=0e42d997-0416-4914-baa7-36e2fb58f20a&viralityEntryPoint=1&s=76"},
-  {name:"Airbnb · 1006965952595172368",price:238,rating:"",type:"Airbnb · Apartman",area:"Casco Antiguo · Calle Feria / Plaza de los Maldonados civarı (Airbnb harita pini, yaklaşık)",center:"~1,5 km · Sevilla Katedrali",note:"Gönderilen harita pini Calle Feria, Plaza de los Maldonados ve Cruz Verde çevresini gösteriyor; Casco Antiguo içinde.",pros:"Tarihi merkez dokusunun içinde; Alameda/Feria çevresine çok yakın; akşam yürüyerek dönmek pratik.",cons:"Katedral ve Alcázar'a Plaza de Cuba seçeneğinden kilometre olarak çok farklı olmasa da eski şehrin kuzeyinden daha uzun yürüyüş var.",url:"https://www.airbnb.de/rooms/1006965952595172368?unique_share_id=5bd88d85-6036-4530-a7fd-c889306eb258&viralityEntryPoint=1&s=76"}
- ],
- "Madrid":[
-  {name:"Capsule Inn Madrid",price:145.35,rating:"",type:"Kapsül otel · Booking",area:"Centro · Travesía de las Beatas / Plaza de España",center:"~1,0 km · Puerta del Sol",note:"Booking.com'da yeni Madrid tarihleri 31 Aralık 2026–1 Ocak 2027 / 1 gece / 3 yetişkin için toplam €145,35 görünüyor. Adres: Travesía de las Beatas 3.",pros:"Çok merkezi; Gran Vía, Plaza de España, Palacio Real ve Sol programı için yürüyüş avantajı; tek gecelik Madrid planına konum olarak çok uygun.",cons:"Kapsül konsepti ve ortak alan/banyo düzeni apartman konforundan farklı; 3 kişi için oda/kapsül dağılımını rezervasyon ekranında ayrıca kontrol etmek gerekir.",url:"https://www.booking.com/hotel/es/urban-inn-madrid.html?aid=2438770&checkin=2026-12-31&checkout=2027-01-01&no_rooms=1&group_adults=3&selected_currency=EUR",geniusNote:"💡 Booking.com hesabınla giriş yapınca Genius veya üyeye özel ek indirim olup olmadığını rezervasyon öncesi tekrar kontrol et."},
-  {name:"Vértice Roomspace",price:204.25,rating:"8,1 · 12.583 yorum",type:"Otel · 3★ · Booking",area:"Villaverde · San Cristóbal Industrial",center:"~8–9 km · Puerta del Sol",note:"Booking.com'da 31 Aralık–1 Ocak / 1 gece / 3 yetişkin için toplam €204,25 görünüyor. San Cristóbal Industrial tren istasyonuna yakın.",pros:"Çok yüksek yorum sayısı; tren istasyonuna yakın; bazı oda tiplerinde kitchenette bulunuyor.",cons:"Madrid'de yalnız bir gece kalınacağı için tarihi merkezin dışında olması önemli dezavantaj; yılbaşı gecesi dönüşü daha zahmetli.",url:"https://www.booking.com/hotel/es/vertice-rooms.html?aid=2438770&checkin=2026-12-31&checkout=2027-01-01&no_rooms=1&group_adults=3&selected_currency=EUR",geniusNote:"💡 Booking.com hesabınla giriş yapınca Genius veya üyeye özel ek indirim olup olmadığını rezervasyon öncesi tekrar kontrol et."},
-  
-  {name:"Exe Madrid Norte",price:155.69,rating:"8,4 · 3.607 yorum",type:"Otel · 4★ · Booking",area:"Hortaleza · Las Tablas / Madrid Norte",center:"~11 km · Puerta del Sol",note:"Booking.com'da 31 Aralık–1 Ocak / 1 gece / 3 yetişkin için toplam €155,69 görünüyor. Adres: Calle Martina Díaz 4.",pros:"4 yıldızlı klasik otel konforu ve fiyatı tek gece için düşük.",cons:"Merkezden oldukça uzak; Madrid'de sadece bir gece ve yılbaşı programı olduğu için konum dezavantajı fiyat avantajından daha önemli olabilir.",geniusNote:"💡 Booking.com hesabınla giriş yapınca Genius veya üyeye özel ek indirim olup olmadığını rezervasyon öncesi tekrar kontrol et.",url:"https://www.booking.com/hotel/es/exe-madrid-norte.html?aid=2438770&checkin=2026-12-31&checkout=2027-01-01&no_rooms=1&group_adults=3&selected_currency=EUR"},
-  {name:"B&B HOTEL Madrid San Fermín",price:207,rating:"9,1 · 375 yorum",type:"Otel · 3★ · Booking",area:"Usera · San Fermín",center:"~5,6 km · Puerta del Sol",note:"Booking.com'da 31 Aralık–1 Ocak / 1 gece / 3 yetişkin için toplam €207 görünüyor. Calle Magacela 6; San Fermín-Orcasur metro L3 yaklaşık kısa yürüyüş mesafesinde.",pros:"9,1 puan; L3 ile Sol'a direkt bağlantı; 24 saat resepsiyon, özel banyo ve ücretsiz Wi-Fi.",cons:"Tek gecelik Madrid planında yine de merkez dışında; yılbaşı gecesi metro ve özel ulaşım düzenlemelerini seyahate yakın kontrol etmek gerekir.",geniusNote:"💡 Booking.com hesabınla giriş yapınca Genius/üyelik indirimi ve iptal koşullarını rezervasyon öncesi tekrar kontrol et.",url:"https://www.booking.com/hotel/es/b-amp-b-madrid-san-fermin.html?aid=2438770&checkin=2026-12-31&checkout=2027-01-01&no_rooms=1&group_adults=3&selected_currency=EUR"},
-  {name:"Airbnb · La Elipa / Ventas",price:null,rating:"",type:"Airbnb · Apartman",area:"La Elipa / Ventas · Ciudad Lineal",center:"~4–5 km · Puerta del Sol",note:"Airbnb harita pinine göre Calle de San Emilio ile Calle de San Secundino çevresi; Horizon, Oficina de Correos ve Mi Alcampo yakınında. Airbnb rezervasyon öncesi exact kapı numarasını göstermediği için konum yaklaşık verilmiştir. Eski fiyat referansı €320, 30 Ara–1 Oca / 2 gece içindi; yeni tek gece fiyatını Airbnb’de yeniden kontrol et.",pros:"Eski 2-gece fiyatı €320 idi; yeni tek-gece fiyatını yeniden kontrol et; çevrede market, restoran ve günlük ihtiyaç noktaları var. La Elipa / Ventas tarafı, Madrid'in çok dışındaki otel seçeneklerine göre merkeze daha yakın.",cons:"Sol / Gran Vía / Barrio de las Letras kadar merkezi değil; 31 Aralık gecesi dönüşte metro/otobüs saatlerini ayrıca kontrol etmek gerekir. Exact adres ve check-in ayrıntıları rezervasyon ekranında teyit edilmeli.",url:"https://www.airbnb.de/rooms/1104900166361471701?adults=3&check_in=2026-12-30&check_out=2027-01-01&search_mode=regular_search&source_impression_id=p3_1790332545_P3WY6ee0iU9KkGvV&previous_page_section_name=1001&federated_search_id=b55fad07-f80d-44c1-ae0f-b976cce9938b&guests=3&room_id=1104900166361471701",mapQuery:"Calle de San Emilio, Madrid"},
-  {name:"Airbnb · Puerta del Ángel",price:null,rating:"",type:"Airbnb · Apartman",area:"Puerta del Ángel · Latina",center:"~2,5–3 km · Puerta del Sol",note:"Airbnb harita pinine göre Puerta del Ángel'de, Calle de Caramuel / Calle de Doña Urraca / Calle de Juan Tornero çevresinde. Pin; Gozar Neotaberna Castiza, María Del Río ve La Siesta referanslarına yakın. Exact kapı numarası Airbnb tarafından rezervasyon öncesi gizleniyor. Eski fiyat referansı €273, 30 Ara–1 Oca / 2 gece içindi; yeni tek gece fiyatını Airbnb’de yeniden kontrol et.",pros:"Eski 2-gece fiyatı €273 idi; yeni tek-gece fiyatını yeniden kontrol et. Konum açısından güçlü. La Elipa seçeneğine göre merkeze daha yakın; Puerta del Ángel çevresinden Plaza Mayor / Callao yönüne direkt otobüs seçenekleri var ve tarihi merkeze yürüyüş de yaklaşık 30–40 dk bandında mümkün.",cons:"Sol'un içinde değil; yılbaşı gecesi geç dönüşte toplu taşıma saatleri ayrıca kontrol edilmeli. Exact adres ve check-in ayrıntıları rezervasyon ekranında teyit edilmeli.",url:"https://www.airbnb.de/rooms/1757392744346382547?unique_share_id=e05b6fe9-d46a-4704-b49f-5ad610b31432&viralityEntryPoint=1&s=76",mapQuery:"Calle de Caramuel, Puerta del Ángel, Madrid"}
- ],
- "Montpellier":[
-  {name:"Campanile PRIME - Montpellier Centre St Roch",bookedCard:true,price:167,rating:"8,4 · 3.726 yorum",type:"BOOKED · Otel 3★",area:"Centre · Gare Saint-Roch",center:"~0,6 km · Place de la Comédie",stayLabel:"1–3 Oca · 2 gece",note:"✓ Rezerve · €167 toplam · kahvaltı dahil. 11 rue Pagezy, Gare Saint-Roch yanında. 24 saat resepsiyon, restoran/bar, ücretsiz Wi-Fi, bagaj muhafazası ve spa/sauna olanakları listeleniyor.",airport:"✈️ Geliş: 1 Ocak 22:50 MPL. Hedef, Ocak 2027 tarifesi doğrulanırsa 23:30 620 → Place de l'Europe → Tram L1 → Gare Saint-Roch → otele kısa yürüyüş. 620'nin şu an yayımlı tarifesi 24.10.2026'ya kadar geçerli.",arrival:"🌙 Bu otel artık Montpellier planının sabit üssü. Gece shuttle kaçarsa direkt airport taxi; Ibis split-stay planı kaldırıldı.",pros:"€167 toplam fiyata kahvaltı dahil. Comédie ve Écusson yürünebilir; Gare Saint-Roch ulaşımı çok güçlü; 2 Ocak günü tüm ana rota otelden yürüyerek yapılabiliyor. 3 Ocak dönüşte L1 + 620 bağlantısı kolay.",cons:"1 Ocak 2027 için 620 kış/tatil tarifesi henüz yayımlı değil; 23:30 son sefer varsayımı seyahate yakın yeniden doğrulanmalı.",url:"https://www.booking.com/hotel/fr/campanile-montpellier-centre-gare-saint-roch.html?aid=2438770&checkin=2027-01-01&checkout=2027-01-03&no_rooms=1&group_adults=2&selected_currency=EUR",airportUrl:"https://www.herault-transport.fr/lignes-regulieres/620-navette-aeroport",mapQuery:"Campanile PRIME Montpellier Centre St Roch"}
-],
- "Córdoba":[
-  {name:"Apartamentos Ruz",price:null,rating:"8,5 · 318 yorum",type:"Apartman · Booking",area:"Judería · Puerta de Sevilla",center:"~0,8 km · Mezquita-Catedral",note:"Yeni Córdoba tarihleri 27–29 Aralık 2026 / 2 gece / 3 yetişkin için Booking.com'da kontrol edildi; bu tarihlerde müsaitlik görünmüyor.",pros:"Judería konumu; Mezquita'ya yürünebilir.",cons:"27–29 Aralık için şu anda müsait değil; fiyat yerine müsaitlik durumunu takip etmek gerekiyor.",url:"https://www.booking.com/hotel/es/apartamentos-ruz.html?aid=2438770&checkin=2026-12-27&checkout=2026-12-29&no_rooms=1&group_adults=3&selected_currency=EUR"},
-  {name:"La Corte de Isabel",price:null,rating:"8,9 · 108 yorum",type:"Apartman · Booking",area:"Centro · Calle Isabel II",center:"~1,2 km · Mezquita-Catedral",note:"Yeni Córdoba tarihleri 27–29 Aralık 2026 / 2 gece / 3 yetişkin için Booking.com'da kontrol edildi; bu tarihlerde müsaitlik görünmüyor.",pros:"Yüksek puan ve merkeze yürünebilir konum.",cons:"27–29 Aralık için şu anda müsait değil; eski €79 fiyatı tek gece içindi ve artık gösterilmiyor.",url:"https://www.booking.com/hotel/es/la-corte-de-isabel.html?aid=2438770&checkin=2026-12-27&checkout=2026-12-29&no_rooms=1&group_adults=3&selected_currency=EUR"},
-  {name:"Califa SuitesGP",price:null,rating:"8,8 · 405 yorum",type:"Apartman · Booking",area:"Centro · Campo Madre de Dios",center:"~1,1 km · Mezquita-Catedral",note:"Yeni Córdoba tarihleri 27–29 Aralık 2026 / 2 gece / 3 yetişkin için Booking.com'da kontrol edildi; bu tarihlerde müsaitlik görünmüyor.",pros:"İyi puan; apartman; tarihi merkeze makul yürüyüş.",cons:"27–29 Aralık için şu anda müsait değil; eski €103 fiyatı tek gece içindi ve artık gösterilmiyor.",url:"https://www.booking.com/hotel/es/mezquitasuitesgp.html?aid=2438770&checkin=2026-12-27&checkout=2026-12-29&no_rooms=1&group_adults=3&selected_currency=EUR"},
-  {name:"Vial Suites GP",price:222,rating:"8,7 · 267 yorum",type:"Apartman · Booking · 3★",area:"Vial Norte · Antonio de la Torre y del Cerro",center:"~2,0 km · Mezquita-Catedral",note:"Booking.com'da yeni tarihler 27–29 Aralık 2026 / 2 gece / 3 yetişkin için toplam €222 görünüyor. Adres: Calle Antonio de la Torre y del Cerro 10.",pros:"Yeni Córdoba tarihleri için şu anda müsait olan mevcut listedeki seçenek; istasyon bağlantısı iyi, apartman ve puanı 8,7.",cons:"Mezquita ve Judería'ya diğer Córdoba alternatiflerinden daha uzak; toplam €222.",url:"https://www.booking.com/hotel/es/vial-suites-gp.html?aid=2438770&checkin=2026-12-27&checkout=2026-12-29&no_rooms=1&group_adults=3&selected_currency=EUR"}
- ],
- "Granada":[
-  {name:"Aljibe de San Miguel Bajo",price:215.50,rating:"9,1 · 101 yorum",type:"Apartman",area:"Albaicín · San Miguel Bajo",center:"~0,8 km",note:"San Miguel Bajo, Albaicín'in tarihi dokusu içinde; çevrede Endülüs/İslam mirası güçlü. Konum atmosfer açısından özel.",pros:"Daha karakterli ve tarihî çevre; yüksek puan; Wekey'den daha ucuz.",cons:"Albaicín eğimli ve taş döşeli sokaklara sahip; valizle Centro seçeneğine göre daha zahmetli olabilir.",url:"https://www.booking.com/hotel/es/aljibe-de-san-miguel-bajo.html?aid=2438770&checkin=2026-12-25&checkout=2026-12-27&no_rooms=1&group_adults=3&selected_currency=EUR"},
-  {name:"Wekey Homes – Apartamento con 2 camas V",price:259,rating:"4,66 · 352 yorum",type:"Airbnb · Apartman",area:"Centro · Placeta de Santo Cristo / Cerrajeros civarı (Airbnb harita pini, yaklaşık)",center:"~0,3 km · Granada Katedrali",note:"Harita pini Centro-Sagrario'da Placeta de Santo Cristo / Cerrajeros çevresini gösteriyor; katedral ve merkez aksına çok yakın.",pros:"Daha düz ve valizle daha pratik Centro konumu; katedrale çok yakın; restoran ve şehir merkezi erişimi kolay.",cons:"Aljibe'ye göre €43,50 daha pahalı; Albaicín'in tarihî mahalle atmosferi kapının önünde değil.",url:"https://www.airbnb.de/properties/1715260200657483940?unique_share_id=20d6aeef-ea46-4f4b-9923-e8628d53a164&viralityEntryPoint=1&s=76&anchor_room_id=1394087409052626820"}
- ]
-};
 let stayCity="Málaga";
 function renderStays(){
  const box=document.querySelector("#staygrid");if(!box)return;
  box.className="";
  const cities=D.stays.map(x=>x[0]);
  if(!cities.includes(stayCity))stayCity=cities[0];
- const s=D.stays.find(x=>x[0]===stayCity),v=state.stays[s[0]]||stayDefaults[s[0]],booked=v.status==="booked",alts=stayAlternatives[stayCity]||[];
+ const s=D.stays.find(x=>x[0]===stayCity),b=bookedStayData[stayCity],v=state.stays[stayCity]||stayDefaults[stayCity];
  box.innerHTML='<div class="filters v6staycities">'+cities.map(c=>'<button class="filter '+(c===stayCity?"on":"")+'" data-staycity="'+escapeHtml(c)+'">'+escapeHtml(c)+'</button>').join("")+'</div>'+
- '<article class="v6stay" data-city="'+escapeHtml(s[0])+'"><div class="v6staytop"><div><div class="ey">'+escapeHtml(s[1])+' · '+s[2]+' gece</div><h3>'+escapeHtml(s[0])+'</h3></div><span class="v6badge '+(booked?"booked":"todo")+'">'+(booked?"✓ Rezerve":"Bekliyor")+'</span></div><div class="v6summary">'+(v.name?'<b>'+escapeHtml(v.name)+'</b><br>':"")+escapeHtml(v.area)+(v.price?'<br><b>'+money(v.price)+'</b> · toplam konaklama':"")+'</div><div class="actions"><a class="action" target="_blank" rel="noopener" href="'+maps(v.area.split(";")[0]+" "+s[0])+'">⌖ Bölge</a></div><div class="v6fields"><label>Durum<select data-stay="'+escapeHtml(s[0])+'" data-field="status"><option value="todo" '+(v.status==="todo"?"selected":"")+'>Bekliyor</option><option value="booked" '+(v.status==="booked"?"selected":"")+'>Rezerve</option></select></label><label>Toplam fiyat (€)<input inputmode="decimal" data-stay="'+escapeHtml(s[0])+'" data-field="price" value="'+escapeHtml(v.price)+'" placeholder="0"></label><label class="wide">Otel / apartman adı<input data-stay="'+escapeHtml(s[0])+'" data-field="name" value="'+escapeHtml(v.name)+'" placeholder="Henüz seçilmedi"></label><label class="wide">Bölge<input data-stay="'+escapeHtml(s[0])+'" data-field="area" value="'+escapeHtml(v.area)+'"></label></div></article>'+
- (alts.length?'<div class="head" style="margin-top:22px"><div><div class="ey">KARAR LİSTESİ · '+(stayCity==="Montpellier"?"2":"3")+' YETİŞKİN</div><h2>'+escapeHtml(stayCity)+' alternatifleri</h2></div><span class="pill">'+escapeHtml(s[1])+' · '+s[2]+' gece</span></div><p class="muted">Kartlardaki Booking fiyatları seçili konaklama tarihleri için 28.09.2026 tarihinde kontrol edildi; fiyat ve müsaitlik rezervasyona kadar değişebilir. Airbnb fiyatları yalnız kullanıcı tarafından paylaşılan son değerlerdir.</p><div class="v5warn" style="margin:10px 0 14px"><b>Booking Genius:</b> Booking.com hesabınla giriş yapınca listedeki tesislerde Genius veya üyeye özel ek indirim olup olmadığını rezervasyon öncesi kontrol et.</div><div class="v6staygrid">'+alts.map(a=>'<article class="v6stay"><div class="v6staytop"><div><div class="ey">'+escapeHtml(a.type)+' · '+escapeHtml(a.area)+'</div><h3>'+escapeHtml(a.name)+'</h3></div></div><div class="v6summary">'+(a.rating?'<b>'+escapeHtml(a.rating)+'</b><br>':"")+(a.stayLabel?escapeHtml(a.stayLabel):s[2]+' gece')+' · '+(stayCity==="Montpellier"?"2":"3")+' kişi<br><b>📍 Merkez: '+escapeHtml(a.center||'—')+'</b><br>'+(a.bookedCard?'<b>✓ Rezerve'+(a.price!=null?' · '+money(a.price):'')+'</b>':(a.price!=null?'<b>'+money(a.price)+'</b> · güncel toplam':'<b>Fiyatı platformda kontrol et</b>'))+'</div><div class="actions">'+(a.url?'<a class="action primary" target="_blank" rel="noopener" href="'+a.url+'">'+(a.type.startsWith("Airbnb")?"Airbnb":"Booking.com")+' ↗</a>':"")+(a.map===false?"":'<a class="action" target="_blank" rel="noopener" href="'+maps(a.mapQuery||a.name+" "+stayCity)+'">⌖ Harita</a>')+'</div>'+(a.note?'<div class="v5warn" style="margin-top:12px"><b>Konum notu:</b> '+escapeHtml(a.note)+'</div>':'')+(a.airport?'<div class="v6summary" style="margin-top:10px"><b>✈️ Havalimanı ulaşımı</b><br>'+escapeHtml(a.airport.replace("✈️ Havalimanı: ",""))+(a.airportUrl?'<br><a class="ticketlink" target="_blank" rel="noopener" href="'+a.airportUrl+'">620 shuttle resmî bilgi ↗</a>':'')+'</div>':'')+(a.arrival?'<div class="v5warn" style="margin-top:10px"><b>🌙 Gece varış raporu</b><br>'+escapeHtml(a.arrival.replace("🌙 ",""))+'<br><small>Not: 1 Ocak 2027 resmî kış/tatil tarifesi yayınlanınca son kez doğrulanacak.</small></div>':'')+(a.pros?'<div class="v6summary" style="margin-top:10px"><b>✓ Avantajlar</b><br>'+escapeHtml(a.pros)+'</div>':'')+(a.cons?'<div class="v6summary" style="margin-top:8px"><b>− Dezavantajlar</b><br>'+escapeHtml(a.cons)+'</div>':'')+'</article>').join("")+'</div>':'<div class="v5warn" style="margin-top:18px">Bu şehir için karar verdiğimiz alternatifler henüz eklenmedi.</div>');
- box.querySelectorAll("[data-staycity]").forEach(b=>b.onclick=()=>{stayCity=b.dataset.staycity;renderStays();renderEditBar()});
+ '<article class="v6stay"><div class="v6staytop"><div><div class="ey">'+escapeHtml(s[1])+' · '+s[2]+' gece</div><h3>'+escapeHtml(b.name)+'</h3></div><span class="v6badge booked">✓ Rezerve</span></div>'+
+ '<div class="v6summary"><b>'+escapeHtml(stayCity)+'</b><br>'+escapeHtml(b.area)+'<br><b>'+money(v.price||b.price)+'</b> · toplam konaklama</div>'+
+ '<div class="actions"><a class="action primary" target="_blank" rel="noopener" href="'+b.url+'">'+escapeHtml(b.provider)+' ↗</a><a class="action" target="_blank" rel="noopener" href="'+maps(b.mapQuery||b.area+" "+stayCity)+'">⌖ Harita</a></div>'+
+ '<div class="v5warn" style="margin-top:12px"><b>Rezervasyon:</b> '+escapeHtml(b.note)+'</div>'+
+ '<div class="v6fields"><label>Durum<select data-stay="'+escapeHtml(stayCity)+'" data-field="status"><option value="booked" selected>Rezerve</option><option value="todo">Bekliyor</option></select></label><label>Toplam fiyat (€)<input inputmode="decimal" data-stay="'+escapeHtml(stayCity)+'" data-field="price" value="'+escapeHtml(v.price||String(b.price))+'"></label><label class="wide">Konaklama adı<input data-stay="'+escapeHtml(stayCity)+'" data-field="name" value="'+escapeHtml(v.name||b.name)+'"></label><label class="wide">Adres / bölge<input data-stay="'+escapeHtml(stayCity)+'" data-field="area" value="'+escapeHtml(v.area||b.area)+'"></label></div></article>';
+ box.querySelectorAll("[data-staycity]").forEach(btn=>btn.onclick=()=>{stayCity=btn.dataset.staycity;renderStays();renderEditBar()});
  box.querySelectorAll("[data-stay]").forEach(el=>el.onchange=()=>{state.stays[el.dataset.stay][el.dataset.field]=el.value;save();renderStays();renderBudget();renderActions();renderEditBar()});
 }
 function renderBookings(){
