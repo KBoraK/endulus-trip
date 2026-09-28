@@ -1,5 +1,5 @@
 {
-  "build": "6.2.40",
+  "build": "6.2.41",
   "updated": "2026-09-28",
-  "note": "Removed stale Madrid 2-night and shifted-route references across all dashboard subpages"
+  "note": "General budget total now excludes Montpellier, Montpellier extras and 2-person return flights"
 }
