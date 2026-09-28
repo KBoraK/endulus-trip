@@ -1,6 +1,6 @@
 (()=>{
 "use strict";
-window.ENDULUS_APP_BUILD="6.2.42";
+window.ENDULUS_APP_BUILD="6.2.43";
 document.documentElement.dataset.appBuild=window.ENDULUS_APP_BUILD;
 if(typeof D==="undefined") return;
 const KEY="endulusStateV6";
@@ -74,7 +74,7 @@ D.stays.forEach(s=>{
  };
 });
 const reservationDefaults={};
-D.bookings.forEach(b=>reservationDefaults[b[0]]={status:["train"].includes(b[0])?"waiting":"required",time:"",total:"",verified:""});
+D.bookings.forEach(b=>reservationDefaults[b[0]]={status:b[0]==="alhambra"?"booked":(["train"].includes(b[0])?"waiting":"required"),time:b[0]==="alhambra"?"14:00":"",total:"",verified:b[0]==="alhambra"?"2026-09-29":""});
 function load(){
  let s={version:6,stays:stayDefaults,reservations:reservationDefaults,expenses:{flights:"",intercity:"",local:"",food:"",other:"",montpellier:""}};
  try{const old=JSON.parse(localStorage.getItem(KEY)||"null");if(old)s=merge(s,old)}catch(e){}
@@ -105,6 +105,11 @@ if(localStorage.getItem("endulusFinalBookedStaysV1")!=="1"){
   if(state.stays?.[city])Object.assign(state.stays[city],{status:"booked",name:b.name,price:String(b.price),area:b.area});
  });
  localStorage.setItem("endulusFinalBookedStaysV1","1");
+ localStorage.setItem(KEY,JSON.stringify(state));
+}
+if(localStorage.getItem("endulusAlhambraBooked1400V1")!=="1"&&state.reservations?.alhambra){
+ Object.assign(state.reservations.alhambra,{status:"booked",time:"14:00",verified:"2026-09-29"});
+ localStorage.setItem("endulusAlhambraBooked1400V1","1");
  localStorage.setItem(KEY,JSON.stringify(state));
 }
 const save=()=>{
