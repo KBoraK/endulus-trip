@@ -1,5 +1,5 @@
 {
-  "build": "6.2.37",
+  "build": "6.2.38",
   "updated": "2026-09-28",
-  "note": "Booking prices rechecked for revised Cordoba and Madrid stay dates"
+  "note": "Accommodation section reduced to final booked stays only"
 }
