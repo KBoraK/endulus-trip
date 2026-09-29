@@ -1,5 +1,5 @@
 {
-  "build": "6.2.44",
+  "build": "6.2.45",
   "updated": "2026-09-29",
-  "note": "Museum and attraction costs count toward budget only after the reservation is marked BOOKED"
+  "note": "Transport page redesigned with city-by-city public-transit ticket and tourist-pass comparisons"
 }
