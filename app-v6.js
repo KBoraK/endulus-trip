@@ -1,6 +1,6 @@
 (()=>{
 "use strict";
-window.ENDULUS_APP_BUILD="6.2.43";
+window.ENDULUS_APP_BUILD="6.2.44";
 document.documentElement.dataset.appBuild=window.ENDULUS_APP_BUILD;
 if(typeof D==="undefined") return;
 const KEY="endulusStateV6";
@@ -115,7 +115,7 @@ if(localStorage.getItem("endulusAlhambraBooked1400V1")!=="1"&&state.reservations
 const save=()=>{
  localStorage.setItem(KEY,JSON.stringify(state));
  const checks={};Object.entries(state.reservations).forEach(([k,v])=>checks[k]=v.status==="booked");localStorage.setItem("endulusChecks",JSON.stringify(checks));
- localStorage.setItem("endulusBudgetV5",JSON.stringify({...state.expenses,stays:stayTotal(),attractions:"323.31"}));
+ localStorage.setItem("endulusBudgetV5",JSON.stringify({...state.expenses,stays:stayTotal(),attractions:String(bookedActivityTotal())}));
  if(state.notes)localStorage.setItem("endulusNotesV5",JSON.stringify(state.notes));
 };
 if(localStorage.getItem("endulusFlightBudgetV2")!=="1"){
@@ -137,14 +137,14 @@ const outbound3Flight=()=>Math.min(flightTotal(),216);
 const return2Flight=()=>Math.max(0,flightTotal()-outbound3Flight());
 const montpellierExtra=()=>num(state.expenses?.montpellier);
 const mainRouteExtras=()=>["intercity","local","food","other"].reduce((s,k)=>s+num(state.expenses?.[k]),0);
-const mainRouteTotal=()=>mainRouteStay()+attractionPlan()+outbound3Flight()+mainRouteExtras();
+const mainRouteTotal=()=>mainRouteStay()+bookedActivityTotal()+outbound3Flight()+mainRouteExtras();
 const montpellierTotal=()=>montpellierStay()+return2Flight()+montpellierExtra();
 const mainRoutePP=()=>mainRouteTotal()/3;
 const montpellierPP=()=>montpellierTotal()/2;
 const getBooking=id=>D.bookings.find(b=>b[0]===id);
 function bookingEstimatedTotal(id){
- const b=getBooking(id),v=state.reservations[id];if(!b||!v)return 0;
- return num(v.total)||(v.status==="booked"&&b[3]!=null?num(b[3])*3:0);
+ const b=getBooking(id),v=state.reservations[id];if(!b||!v||v.status!=="booked")return 0;
+ return num(v.total)||(b[3]!=null?num(b[3])*3:0);
 }
 function bookedActivityTotal(){return Object.keys(state.reservations).reduce((s,id)=>s+bookingEstimatedTotal(id),0)}
 function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
@@ -184,9 +184,9 @@ function renderBudget(){
    '<div class="v6bcard"><b>'+money(montpellierTotal())+'</b><small>Montpellier + dönüş · 2 kişi</small><div class="v6auto">'+money(montpellierPP())+' / kişi</div></div>'+
    '<div class="v6bcard"><b>'+money(mainRouteStay())+'</b><small>ana rota konaklama</small></div>'+
    '<div class="v6bcard"><b>'+money(montpellierStay())+'</b><small>Montpellier konaklama</small><div class="v6auto">2 kişi</div></div>'+
-   '<div class="v6bcard"><b>'+money(attractionPlan())+'</b><small>aktiviteler</small><div class="v6auto">3 kişi baz plan</div></div>'+
+   '<div class="v6bcard"><b>'+money(bookedActivityTotal())+'</b><small>rezerve müze / biletler</small><div class="v6auto">yalnız BOOKED</div></div>'+
  '</div>'+
- '<div class="v5warn"><b>🇪🇸 Genel toplam · Montpellier hariç:</b><br>Yukarıdaki genel toplam yalnız 3 kişilik ana rotayı kapsıyor. Montpellier konaklaması, Montpellier ek harcamaları ve 2 kişilik Madrid → Montpellier → Strasbourg dönüş uçuşları genel toplama dahil değil. Ana rota konaklama: <b>'+money(mainRouteStay())+'</b>. Gidiş uçuşları: <b>'+money(outbound3Flight())+'</b>.</div>'+
+ '<div class="v5warn"><b>🇪🇸 Genel toplam · Montpellier hariç:</b><br>Yukarıdaki genel toplam yalnız 3 kişilik ana rotayı kapsıyor. Müze ve atraksiyon fiyatları <b>yalnız rezervasyon BOOKED olduğunda</b> bütçeye eklenir; henüz alınmamış biletlerin planlama fiyatları toplamı şişirmez. Montpellier konaklaması, Montpellier ek harcamaları ve 2 kişilik Madrid → Montpellier → Strasbourg dönüş uçuşları da genel toplama dahil değil.</div>'+
  '<div class="v5warn"><b>🇫🇷 Montpellier + dönüş · 2 kişi:</b><br>Campanile PRIME: <b>'+money(montpellierStay())+'</b> + Madrid → Montpellier / Montpellier → Strasbourg dönüş uçuşları: <b>'+money(return2Flight())+'</b>'+(montpellierExtra()?'+ Montpellier ek harcama: <b>'+money(montpellierExtra())+'</b>':'')+'.<br><b>Bu bölüm toplam: '+money(montpellierTotal())+'.</b></div>'+
  '<div class="v5warn"><b>✈️ Uçuş ayrımı:</b><br>3 kişi gidiş: Strasbourg → Toulouse €111 + Toulouse → Málaga €105 = <b>€216</b>.<br>2 kişi dönüş: Madrid → Montpellier €54 + Montpellier → Strasbourg €66 = <b>€120</b>.<br>Uçuşların tamamı: <b>'+money(flightTotal())+'</b>.</div>'+
  '<div class="v5budget v6expense">'+Object.keys(labels).map(k=>'<label><span>'+labels[k]+'</span><input inputmode="decimal" data-exp="'+k+'" value="'+escapeHtml(state.expenses[k])+'" placeholder="€"></label>').join("")+'</div>';
