@@ -1,5 +1,5 @@
 {
-  "build": "6.2.45",
+  "build": "6.2.46",
   "updated": "2026-09-29",
-  "note": "Transport page redesigned with city-by-city public-transit ticket and tourist-pass comparisons"
+  "note": "Seville transport page now compares TUSSAM tourist cards with the Seville Pass and separate attraction tickets"
 }
