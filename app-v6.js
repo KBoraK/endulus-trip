@@ -1,6 +1,6 @@
 (()=>{
 "use strict";
-window.ENDULUS_APP_BUILD="6.2.46";
+window.ENDULUS_APP_BUILD="6.2.47";
 document.documentElement.dataset.appBuild=window.ENDULUS_APP_BUILD;
 if(typeof D==="undefined") return;
 const KEY="endulusStateV6";
@@ -74,7 +74,7 @@ D.stays.forEach(s=>{
  };
 });
 const reservationDefaults={};
-D.bookings.forEach(b=>reservationDefaults[b[0]]={status:b[0]==="alhambra"?"booked":(["train"].includes(b[0])?"waiting":"required"),time:b[0]==="alhambra"?"14:00":"",total:"",verified:b[0]==="alhambra"?"2026-09-29":""});
+D.bookings.forEach(b=>reservationDefaults[b[0]]={status:["alhambra","train"].includes(b[0])?"booked":"required",time:b[0]==="alhambra"?"14:00":(b[0]==="train"?"07:13–09:52":""),total:b[0]==="train"?"51":"",verified:b[0]==="alhambra"?"2026-09-29":(b[0]==="train"?"2026-10-03":"")});
 function load(){
  let s={version:6,stays:stayDefaults,reservations:reservationDefaults,expenses:{flights:"",intercity:"",local:"",food:"",other:"",montpellier:""}};
  try{const old=JSON.parse(localStorage.getItem(KEY)||"null");if(old)s=merge(s,old)}catch(e){}
@@ -112,6 +112,13 @@ if(localStorage.getItem("endulusAlhambraBooked1400V1")!=="1"&&state.reservations
  localStorage.setItem("endulusAlhambraBooked1400V1","1");
  localStorage.setItem(KEY,JSON.stringify(state));
 }
+if(localStorage.getItem("endulusOuigoMadridBookedV1")!=="1"&&state.reservations?.train){
+ Object.assign(state.reservations.train,{status:"booked",time:"07:13–09:52",total:"51",verified:"2026-10-03"});
+ const intercityNow=parseFloat(String(state.expenses?.intercity||"").replace(",", "."))||0;
+ if(state.expenses&&intercityNow===0)state.expenses.intercity="51";
+ localStorage.setItem("endulusOuigoMadridBookedV1","1");
+ localStorage.setItem(KEY,JSON.stringify(state));
+}
 const save=()=>{
  localStorage.setItem(KEY,JSON.stringify(state));
  const checks={};Object.entries(state.reservations).forEach(([k,v])=>checks[k]=v.status==="booked");localStorage.setItem("endulusChecks",JSON.stringify(checks));
@@ -146,7 +153,7 @@ function bookingEstimatedTotal(id){
  const b=getBooking(id),v=state.reservations[id];if(!b||!v||v.status!=="booked")return 0;
  return num(v.total)||(b[3]!=null?num(b[3])*3:0);
 }
-function bookedActivityTotal(){return Object.keys(state.reservations).reduce((s,id)=>s+bookingEstimatedTotal(id),0)}
+function bookedActivityTotal(){return Object.keys(state.reservations).filter(id=>id!=="train").reduce((s,id)=>s+bookingEstimatedTotal(id),0)}
 function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 let stayCity="Málaga";
 function renderStays(){
