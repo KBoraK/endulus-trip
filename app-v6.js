@@ -1,6 +1,6 @@
 (()=>{
 "use strict";
-window.ENDULUS_APP_BUILD="6.2.48";
+window.ENDULUS_APP_BUILD="6.2.49";
 document.documentElement.dataset.appBuild=window.ENDULUS_APP_BUILD;
 if(typeof D==="undefined") return;
 const KEY="endulusStateV6";
@@ -199,24 +199,35 @@ function renderBookings(){
 }
 function renderBudget(){
  const sec=document.querySelector("#v5realbudget");if(!sec)return;
- const labels={flights:"Uçuşlar · toplam",intercity:"Şehirlerarası ulaşım · diğer / manuel",local:"Yerel ulaşım",food:"Yemek",other:"Diğer",montpellier:"Montpellier · ek harcama"};
+ const mainLabels={flights:"Uçuşlar · toplam",intercity:"Şehirlerarası ulaşım · diğer / manuel",local:"Yerel ulaşım",food:"Yemek",other:"Diğer"};
  const trainRows=bookedTrainRows();
  const trainBreakdown=trainRows.length?trainRows.map(x=>escapeHtml(x.date+" · "+x.name+(x.time?" · "+x.time:""))+" — <b>"+money(x.total)+"</b>").join("<br>"):"Henüz BOOKED tren bileti yok.";
  sec.innerHTML='<div class="head"><div><div class="ey">KARIŞIK GRUP · AYRI HESAP</div><h2>Trip budget</h2></div><span class="pill">otomatik</span></div>'+
- '<div class="v6budgetcards">'+
-   '<div class="v6bcard"><b>'+money(grand())+'</b><small>genel toplam · Montpellier hariç</small><div class="v6auto">3 kişi ana rota</div></div>'+
-   '<div class="v6bcard"><b>'+money(mainRouteTotal())+'</b><small>ana rota · 3 kişi</small><div class="v6auto">'+money(mainRoutePP())+' / kişi</div></div>'+
-   '<div class="v6bcard"><b>'+money(montpellierTotal())+'</b><small>Montpellier + dönüş · 2 kişi</small><div class="v6auto">'+money(montpellierPP())+' / kişi</div></div>'+
-   '<div class="v6bcard"><b>'+money(mainRouteStay())+'</b><small>ana rota konaklama</small></div>'+
-   '<div class="v6bcard"><b>'+money(montpellierStay())+'</b><small>Montpellier konaklama</small><div class="v6auto">2 kişi</div></div>'+
-   '<div class="v6bcard"><b>'+money(bookedActivityTotal())+'</b><small>rezerve müze / biletler</small><div class="v6auto">yalnız BOOKED</div></div>'+
-   '<div class="v6bcard"><b>'+money(bookedTrainTotal())+'</b><small>rezerve trenler</small><div class="v6auto">BOOKED + toplam ödeme</div></div>'+
- '</div>'+
- '<div class="v5warn"><b>🚆 Rezerve trenler · otomatik bütçe:</b><br>'+trainBreakdown+'<br><b>Toplam: '+money(bookedTrainTotal())+'</b>. Bir tren BOOKED yapılıp “Toplam ödeme” girildiğinde bu tutar otomatik olarak genel bütçeye eklenir.</div>'+
- '<div class="v5warn"><b>🇪🇸 Genel toplam · Montpellier hariç:</b><br>Yukarıdaki genel toplam yalnız 3 kişilik ana rotayı kapsıyor. Müze ve atraksiyon fiyatları <b>yalnız rezervasyon BOOKED olduğunda</b> bütçeye eklenir. Tren biletleri de <b>BOOKED + toplam ödeme</b> girildiğinde otomatik eklenir; henüz alınmamış biletlerin planlama fiyatları toplamı şişirmez. Montpellier konaklaması, Montpellier ek harcamaları ve 2 kişilik Madrid → Montpellier → Strasbourg dönüş uçuşları da genel toplama dahil değil.</div>'+
- '<div class="v5warn"><b>🇫🇷 Montpellier + dönüş · 2 kişi:</b><br>Campanile PRIME: <b>'+money(montpellierStay())+'</b> + Madrid → Montpellier / Montpellier → Strasbourg dönüş uçuşları: <b>'+money(return2Flight())+'</b>'+(montpellierExtra()?'+ Montpellier ek harcama: <b>'+money(montpellierExtra())+'</b>':'')+'.<br><b>Bu bölüm toplam: '+money(montpellierTotal())+'.</b></div>'+
- '<div class="v5warn"><b>✈️ Uçuş ayrımı:</b><br>3 kişi gidiş: Strasbourg → Toulouse €111 + Toulouse → Málaga €105 = <b>€216</b>.<br>2 kişi dönüş: Madrid → Montpellier €54 + Montpellier → Strasbourg €66 = <b>€120</b>.<br>Uçuşların tamamı: <b>'+money(flightTotal())+'</b>.</div>'+
- '<div class="v5budget v6expense">'+Object.keys(labels).map(k=>'<label><span>'+labels[k]+'</span><input inputmode="decimal" data-exp="'+k+'" value="'+escapeHtml(state.expenses[k])+'" placeholder="€"></label>').join("")+'</div>';
+ '<section class="v6budgetgroup v6budgetgroup-main">'+
+   '<div class="v6budgetgrouphead"><div><div class="ey">🇪🇸 ANA ROTA · 3 KİŞİ</div><h3>İspanya ana bütçesi</h3></div><span class="v6budgettag">Montpellier hariç</span></div>'+
+   '<div class="v6budgethero"><strong>'+money(mainRouteTotal())+'</strong><span>ana rota toplamı</span><small>'+money(mainRoutePP())+' / kişi</small></div>'+
+   '<div class="v6budgetcards">'+
+     '<div class="v6bcard"><b>'+money(mainRouteStay())+'</b><small>ana rota konaklama</small></div>'+
+     '<div class="v6bcard"><b>'+money(bookedActivityTotal())+'</b><small>rezerve müze / biletler</small><div class="v6auto">yalnız BOOKED</div></div>'+
+     '<div class="v6bcard"><b>'+money(bookedTrainTotal())+'</b><small>rezerve trenler</small><div class="v6auto">BOOKED + toplam ödeme</div></div>'+
+     '<div class="v6bcard"><b>'+money(outbound3Flight())+'</b><small>3 kişilik gidiş uçuşları</small><div class="v6auto">STR → TLS → AGP</div></div>'+
+   '</div>'+
+   '<div class="v5warn"><b>🚆 Rezerve trenler · otomatik bütçe:</b><br>'+trainBreakdown+'<br><b>Toplam: '+money(bookedTrainTotal())+'</b>. Bir tren BOOKED yapılıp “Toplam ödeme” girildiğinde bu tutar otomatik olarak ana bütçeye eklenir.</div>'+
+   '<div class="v5warn"><b>🇪🇸 Ana rota hesabı:</b><br>Konaklama + BOOKED müze/biletler + BOOKED trenler + 3 kişilik gidiş uçuşları + şehirlerarası/yerel ulaşım + yemek + diğer harcamalar. <b>Montpellier ve 2 kişilik dönüş uçuşları bu toplama dahil değildir.</b></div>'+
+   '<div class="v5budget v6expense">'+Object.keys(mainLabels).map(k=>'<label><span>'+mainLabels[k]+'</span><input inputmode="decimal" data-exp="'+k+'" value="'+escapeHtml(state.expenses[k])+'" placeholder="€"></label>').join("")+'</div>'+
+ '</section>'+
+ '<div class="v6budgetseparator"><span>AYRI HESAP</span></div>'+
+ '<section class="v6budgetgroup v6budgetgroup-mpl">'+
+   '<div class="v6budgetgrouphead"><div><div class="ey">🇫🇷 MONTPELLIER + DÖNÜŞ · 2 KİŞİ</div><h3>Montpellier bütçesi</h3></div><span class="v6budgettag v6budgettag-mpl">Ana toplama dahil değil</span></div>'+
+   '<div class="v6budgethero v6budgethero-mpl"><strong>'+money(montpellierTotal())+'</strong><span>Montpellier + dönüş toplamı</span><small>'+money(montpellierPP())+' / kişi</small></div>'+
+   '<div class="v6budgetcards v6budgetcards-mpl">'+
+     '<div class="v6bcard"><b>'+money(montpellierStay())+'</b><small>Campanile PRIME</small><div class="v6auto">1–3 Ocak · 2 kişi</div></div>'+
+     '<div class="v6bcard"><b>'+money(return2Flight())+'</b><small>2 kişilik dönüş uçuşları</small><div class="v6auto">MAD → MPL → SXB</div></div>'+
+     '<div class="v6bcard"><b>'+money(montpellierExtra())+'</b><small>Montpellier ek harcama</small><div class="v6auto">şehir içi / yemek / diğer</div></div>'+
+   '</div>'+
+   '<div class="v6mplbreakdown"><div><span>Madrid → Montpellier</span><b>€54</b></div><div><span>Montpellier → Strasbourg</span><b>€66</b></div><div class="total"><span>Dönüş uçuşları toplamı</span><b>'+money(return2Flight())+'</b></div></div>'+
+   '<div class="v5budget v6expense v6mplexpense"><label><span>Montpellier · ek harcama</span><input inputmode="decimal" data-exp="montpellier" value="'+escapeHtml(state.expenses.montpellier)+'" placeholder="€"></label></div>'+
+ '</section>';
  sec.querySelectorAll("[data-exp]").forEach(el=>el.oninput=()=>{state.expenses[el.dataset.exp]=el.value;save();renderBudget()});
 }
 function renderActions(){
