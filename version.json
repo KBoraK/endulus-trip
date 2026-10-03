@@ -1,5 +1,5 @@
 {
-  "build": "6.2.49",
+  "build": "6.2.50",
   "updated": "2026-10-03",
-  "note": "Budget now separates the 3-person Spain main route from the 2-person Montpellier + return section with distinct totals and breakdowns"
+  "note": "Restored the outbound flight breakdown in the main budget: Strasbourg–Toulouse €111 and Toulouse–Málaga €105"
 }
