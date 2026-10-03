@@ -1,5 +1,5 @@
 {
-  "build": "6.2.48",
+  "build": "6.2.49",
   "updated": "2026-10-03",
-  "note": "Booked train tickets now flow automatically into the trip budget; Madrid OUIGO €51 is included and future booked trains are added from their total payment"
+  "note": "Budget now separates the 3-person Spain main route from the 2-person Montpellier + return section with distinct totals and breakdowns"
 }
