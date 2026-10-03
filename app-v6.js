@@ -1,6 +1,6 @@
 (()=>{
 "use strict";
-window.ENDULUS_APP_BUILD="6.2.49";
+window.ENDULUS_APP_BUILD="6.2.50";
 document.documentElement.dataset.appBuild=window.ENDULUS_APP_BUILD;
 if(typeof D==="undefined") return;
 const KEY="endulusStateV6";
@@ -212,6 +212,7 @@ function renderBudget(){
      '<div class="v6bcard"><b>'+money(bookedTrainTotal())+'</b><small>rezerve trenler</small><div class="v6auto">BOOKED + toplam ödeme</div></div>'+
      '<div class="v6bcard"><b>'+money(outbound3Flight())+'</b><small>3 kişilik gidiş uçuşları</small><div class="v6auto">STR → TLS → AGP</div></div>'+
    '</div>'+
+   '<div class="v5warn"><b>✈️ Gidiş uçuşları · 3 kişi:</b><br>Strasbourg → Toulouse: <b>€111</b><br>Toulouse → Málaga: <b>€105</b><br><b>Gidiş uçuşları toplamı: '+money(outbound3Flight())+'</b>.</div>'+
    '<div class="v5warn"><b>🚆 Rezerve trenler · otomatik bütçe:</b><br>'+trainBreakdown+'<br><b>Toplam: '+money(bookedTrainTotal())+'</b>. Bir tren BOOKED yapılıp “Toplam ödeme” girildiğinde bu tutar otomatik olarak ana bütçeye eklenir.</div>'+
    '<div class="v5warn"><b>🇪🇸 Ana rota hesabı:</b><br>Konaklama + BOOKED müze/biletler + BOOKED trenler + 3 kişilik gidiş uçuşları + şehirlerarası/yerel ulaşım + yemek + diğer harcamalar. <b>Montpellier ve 2 kişilik dönüş uçuşları bu toplama dahil değildir.</b></div>'+
    '<div class="v5budget v6expense">'+Object.keys(mainLabels).map(k=>'<label><span>'+mainLabels[k]+'</span><input inputmode="decimal" data-exp="'+k+'" value="'+escapeHtml(state.expenses[k])+'" placeholder="€"></label>').join("")+'</div>'+
