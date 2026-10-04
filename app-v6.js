@@ -1,6 +1,6 @@
 (()=>{
 "use strict";
-window.ENDULUS_APP_BUILD="6.2.53";
+window.ENDULUS_APP_BUILD="6.2.54";
 document.documentElement.dataset.appBuild=window.ENDULUS_APP_BUILD;
 if(typeof D==="undefined") return;
 const KEY="endulusStateV6";
@@ -263,14 +263,14 @@ const TRIP_DATES=["2026-12-22","2026-12-23","2026-12-24","2026-12-25","2026-12-2
 const DAY_HOTEL_CITY={1:"Toulouse",2:"Málaga",3:"Málaga",4:"Granada",5:"Granada",6:"Córdoba",7:"Córdoba",8:"Sevilla",9:"Sevilla",10:"Madrid",11:"Montpellier",12:"Montpellier",13:"Montpellier"};
 const DAY_ROUTES={
   1:["Toulouse-Blagnac Airport","Toulouse-Blagnac Airport hotels"],
-  2:["Alcazaba Malaga","Muelle Uno Malaga",["Teatro Romano Malaga","Catedral de Malaga","Soho Malaga"]],
+  2:["Teatro Romano Malaga","Soho Malaga",["Alcazaba Malaga","Castillo de Gibralfaro Malaga","Museo Picasso Malaga","Catedral de Malaga","Parque de Malaga","Centre Pompidou Malaga","Muelle Uno Malaga"]],
   3:["Puente Nuevo Ronda","Baños Arabes Ronda",["Old Town Ronda"]],
   4:["Carrera del Darro Granada","Sacromonte Granada",["Albaicin Granada","Mirador San Nicolas Granada"]],
-  5:["Alhambra Granada","Realejo Granada",["Generalife Granada"]],
-  6:["Medina Azahara Cordoba","Puente Romano Cordoba",["Judería Cordoba"]],
+  5:["Alhambra Granada","Centro Jose Guerrero Granada",["Realejo Granada"]],
+  6:["Puerta de Almodovar Cordoba","Puente Romano Cordoba",["Calle Cairuan Cordoba","Estatua de Averroes Cordoba","Plaza de Tiberiades Cordoba","Calle Judios Cordoba","Calleja de las Flores Cordoba"]],
   7:["Mezquita Catedral Cordoba","Puente Romano Cordoba",["Torre Campanario Cordoba","Judería Cordoba"]],
-  8:["Plaza de España Sevilla","Triana Sevilla",["Parque Maria Luisa Sevilla","Torre del Oro Sevilla"]],
-  9:["Real Alcazar Sevilla","Las Setas Sevilla",["Catedral Sevilla","Santa Cruz Sevilla"]],
+  8:["Centro Andaluz de Arte Contemporaneo Sevilla","Torre del Oro Sevilla",["Triana Sevilla","Puente de Isabel II Sevilla","Plaza de Toros de la Maestranza Sevilla"]],
+  9:["Real Alcazar Sevilla","Las Setas Sevilla",["Catedral Sevilla","Patio de Banderas Sevilla","Callejon del Agua Sevilla","Plaza de Dona Elvira Sevilla","Calle Reinoso Sevilla","Plaza de los Venerables Sevilla","Jardines de Murillo Sevilla","Plaza de la Alfalfa Sevilla"]],
   10:["Puerta del Sol Madrid","Retiro Madrid",["Plaza Mayor Madrid","Barrio de las Letras Madrid","Paseo del Prado Madrid","Cibeles Madrid"]],
   11:["Gran Via Madrid","Madrid Barajas Airport",["Callao Madrid","La Latina Madrid","Lavapies Madrid"]],
   12:["Campanile PRIME Montpellier Centre St Roch","Campanile PRIME Montpellier Centre St Roch",["Place de la Comedie Montpellier","Esplanade Charles de Gaulle Montpellier","Musee Fabre Montpellier","Place Jean Jaures Montpellier","Cathedrale Saint Pierre Montpellier","Jardin des Plantes Montpellier","Arc de Triomphe Montpellier","Promenade du Peyrou Montpellier","Aqueduc Saint Clement Montpellier"]],
