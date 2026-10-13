@@ -10,10 +10,23 @@
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(145deg,var(--bg),#f2ece3);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.wrap{max-width:980px;margin:auto;padding:0 14px}.hero{padding:30px 0 20px}.ey{font-size:11px;letter-spacing:.16em;color:var(--accent);font-weight:850}.hero h1{font:700 clamp(40px,8vw,62px)/.96 Georgia,serif;margin:9px 0 11px;letter-spacing:-.04em}.lead{max-width:700px;color:var(--muted);line-height:1.55}.back{display:inline-flex;margin-top:14px;text-decoration:none;color:var(--text);background:var(--card);border:1px solid var(--line);padding:9px 11px;border-radius:11px;font-weight:800;font-size:12px}
 .chips{display:flex;gap:7px;overflow-x:auto;padding:9px 0 15px;scrollbar-width:none;position:sticky;top:0;z-index:20;background:rgba(236,231,220,.94);backdrop-filter:blur(14px)}.chips::-webkit-scrollbar{display:none}.chips a{white-space:nowrap;text-decoration:none;color:var(--text);background:var(--card);border:1px solid var(--line);padding:8px 10px;border-radius:99px;font-size:12px;font-weight:800}
 section{padding:14px 0 8px}.head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:10px}.head h2{font:700 29px Georgia;margin:4px 0}.pill{font-size:10px;padding:5px 8px;border:1px solid var(--line);background:var(--card);border-radius:99px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:9px}.card{background:linear-gradient(145deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:17px;padding:14px;box-shadow:var(--shadow)}.card h3{font:700 19px Georgia;margin:6px 0 7px}.card p{font-size:12px;color:var(--muted);line-height:1.52;margin:5px 0}.big{font-size:27px}.tag{display:inline-block;font-size:10px;background:#e6ddd0;padding:4px 7px;border-radius:99px;margin-top:7px}.good{color:var(--olive);font-weight:850}.action{display:inline-flex;margin-top:9px;text-decoration:none;color:white;background:var(--olive);padding:8px 10px;border-radius:10px;font-size:11px;font-weight:850}.note{background:#ead9bc;border:1px solid #d4b77d;border-radius:14px;padding:12px;font-size:12px;line-height:1.5;margin:11px 0}.fact{display:grid;grid-template-columns:38px 1fr;gap:9px;align-items:start}.fact b{display:block;margin-bottom:3px}.fact span:last-child{font-size:12px;color:var(--muted);line-height:1.48}.route{border-left:3px solid var(--gold);padding-left:12px}.mini{font-size:11px;color:var(--muted)}footer{text-align:center;color:#8b8175;padding:28px 14px 40px;font-size:11px}
+.tabs{position:sticky;top:0;z-index:50;display:flex;gap:6px;overflow-x:auto;padding:9px max(10px,calc((100vw - 1050px)/2));background:rgba(236,231,220,.94);backdrop-filter:blur(16px);border-block:1px solid var(--line);scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}.tabs a{white-space:nowrap;border:1px solid var(--line);background:rgba(248,242,232,.85);color:var(--text);border-radius:11px;padding:9px 11px;text-decoration:none;font-size:12px;cursor:pointer}.tabs a.on{background:var(--olive);color:white;border-color:var(--olive)}
+@media(min-width:1100px){body{padding-left:180px}.tabs{position:fixed;left:16px;top:18px;bottom:18px;width:154px;flex-direction:column;align-items:stretch;padding:82px 9px 10px;border:1px solid var(--line);border-radius:20px}.tabs:before{content:"SKOPJE";position:absolute;top:28px;left:18px;font:700 20px Georgia;color:var(--accent)}.tabs a{text-align:left}.wrap{max-width:980px}}
+@media(max-width:650px){body{padding-bottom:82px}.tabs{position:fixed;top:auto;bottom:0;left:0;right:0;z-index:100;height:calc(66px + env(safe-area-inset-bottom));padding:6px 6px env(safe-area-inset-bottom);justify-content:flex-start;overflow-x:auto}.tabs a{flex:0 0 auto;min-width:78px;height:54px;display:flex;align-items:center;justify-content:center}.chips{top:0}}
 @media(max-width:600px){.hero h1{font-size:43px}.head{align-items:stretch;flex-direction:column}.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
+<nav class="tabs" aria-label="Skopje ana navigasyon">
+ <a href="./?view=home">⌂ Ana Sayfa</a>
+ <a href="./?view=plan">📅 Plan</a>
+ <a href="./?view=mapview">🗺️ Harita</a>
+ <a href="./?view=stays">🛏️ Konaklama</a>
+ <a href="./?view=food">🍴 Yemek</a>
+ <a class="on" href="./guide.html">✨ Rehber</a>
+ <a href="./?view=transport">🚌 Ulaşım</a>
+ <a href="./?view=notes">💶 Bütçe</a>
+</nav>
 <div class="wrap">
 <header class="hero">
  <div class="ey">🇲🇰 SKOPJE · KISA &amp; İŞE YARAR</div>

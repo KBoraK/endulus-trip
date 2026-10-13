@@ -399,6 +399,8 @@ footer{text-align:center;color:#8b8175;padding:14px;font-size:11px}
 (()=>{
  function go(id){document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("on",b.dataset.v===id));document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id===id));scrollTo({top:0,behavior:"smooth"});if(id==="mapview")setTimeout(()=>map.invalidateSize(),80)}
  document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>go(b.dataset.v));document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));
+ const requestedView=new URLSearchParams(location.search).get("view");
+ if(["home","plan","mapview","stays","food","transport","notes"].includes(requestedView)) go(requestedView);
  const pts=[
   {name:"Macedonia Square",lat:41.99569,lon:21.43179,type:"sight"},
   {name:"Stone Bridge",lat:41.9966,lon:21.4334,type:"sight"},
