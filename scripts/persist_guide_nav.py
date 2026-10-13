@@ -28,3 +28,4 @@ s = s.replace(old_js, new_js, 1)
 p.write_text(s, encoding='utf-8')
 
 print('Persistent guide navigation applied')
+# trigger workflow
