@@ -1,0 +1,29 @@
+name: Update Skopje booked costs once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/skopje-booked-costs-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Apply booked costs
+        run: python scripts/set_skopje_airbnb_108.py
+      - name: Commit and clean one-shot files
+        run: |
+          rm .github/workflows/skopje-booked-costs-once.yml scripts/set_skopje_airbnb_108.py
+          git config user.name "ChatGPT Update"
+          git config user.email "actions@users.noreply.github.com"
+          git add october/index.html .github/workflows/skopje-booked-costs-once.yml scripts/set_skopje_airbnb_108.py
+          git diff --cached --check
+          git commit -m "Add Skopje Airbnb and flight costs"
+          git push origin main
