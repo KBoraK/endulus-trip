@@ -1,6 +1,6 @@
 (()=>{
 "use strict";
-window.ENDULUS_APP_BUILD="6.2.58";
+window.ENDULUS_APP_BUILD="6.2.59";
 document.documentElement.dataset.appBuild=window.ENDULUS_APP_BUILD;
 if(typeof D==="undefined") return;
 const KEY="endulusStateV6";
@@ -77,8 +77,8 @@ const reservationDefaults={};
 D.bookings.forEach(b=>reservationDefaults[b[0]]={status:["alhambra","train"].includes(b[0])?"booked":"required",time:b[0]==="alhambra"?"14:00":(b[0]==="train"?"07:13–09:52":""),total:b[0]==="train"?"51":"",verified:b[0]==="alhambra"?"2026-09-29":(b[0]==="train"?"2026-10-03":"")});
 Object.assign(reservationDefaults,{"train-cordoba-sevilla":{status:"booked",time:"08:12–09:05",total:"45",verified:"2026-10-29"}});
 const alsaDefaults={
- "bus-malaga-granada":{status:"booked",time:"09:25–11:00",total:"",verified:"2026-10-29"},
- "bus-granada-cordoba":{status:"booked",time:"08:30–11:15",total:"",verified:"2026-10-29"}
+ "bus-malaga-granada":{status:"booked",time:"09:25–11:00",total:"42.36",verified:"2026-10-29"},
+ "bus-granada-cordoba":{status:"booked",time:"08:30–11:15",total:"54.99",verified:"2026-10-29"}
 };
 Object.assign(reservationDefaults,alsaDefaults);
 function load(){
@@ -137,6 +137,11 @@ if(localStorage.getItem("endulusCordobaSevillaBookedV1")!=="1"){
 if(localStorage.getItem("endulusAlsaBookedV1")!=="1"){
  Object.entries(alsaDefaults).forEach(([id,v])=>{const existing=state.reservations[id]?.total;state.reservations[id]={...v,total:existing||""}});
  localStorage.setItem("endulusAlsaBookedV1","1");
+ localStorage.setItem(KEY,JSON.stringify(state));
+}
+if(localStorage.getItem("endulusAlsaPaidV1")!=="1"){
+ Object.entries(alsaDefaults).forEach(([id,v])=>{state.reservations[id]={...state.reservations[id],...v}});
+ localStorage.setItem("endulusAlsaPaidV1","1");
  localStorage.setItem(KEY,JSON.stringify(state));
 }
 const save=()=>{
