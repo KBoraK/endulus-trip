@@ -1,6 +1,6 @@
 (()=>{
 "use strict";
-window.ENDULUS_APP_BUILD="6.2.54";
+window.ENDULUS_APP_BUILD="6.2.55";
 document.documentElement.dataset.appBuild=window.ENDULUS_APP_BUILD;
 if(typeof D==="undefined") return;
 const KEY="endulusStateV6";
@@ -75,6 +75,7 @@ D.stays.forEach(s=>{
 });
 const reservationDefaults={};
 D.bookings.forEach(b=>reservationDefaults[b[0]]={status:["alhambra","train"].includes(b[0])?"booked":"required",time:b[0]==="alhambra"?"14:00":(b[0]==="train"?"07:13–09:52":""),total:b[0]==="train"?"51":"",verified:b[0]==="alhambra"?"2026-09-29":(b[0]==="train"?"2026-10-03":"")});
+Object.assign(reservationDefaults,{"train-cordoba-sevilla":{status:"booked",time:"08:12–09:05",total:"45",verified:"2026-10-29"}});
 function load(){
  let s={version:6,stays:stayDefaults,reservations:reservationDefaults,expenses:{flights:"",intercity:"",local:"",food:"",other:"",montpellier:""}};
  try{const old=JSON.parse(localStorage.getItem(KEY)||"null");if(old)s=merge(s,old)}catch(e){}
@@ -121,6 +122,11 @@ if(localStorage.getItem("endulusAutoTrainBudgetV1")!=="1"){
  const intercityNow=parseFloat(String(state.expenses?.intercity||"").replace(",", "."))||0;
  if(state.expenses&&intercityNow===51)state.expenses.intercity="";
  localStorage.setItem("endulusAutoTrainBudgetV1","1");
+ localStorage.setItem(KEY,JSON.stringify(state));
+}
+if(localStorage.getItem("endulusCordobaSevillaBookedV1")!=="1"){
+ Object.assign(state.reservations["train-cordoba-sevilla"],reservationDefaults["train-cordoba-sevilla"]);
+ localStorage.setItem("endulusCordobaSevillaBookedV1","1");
  localStorage.setItem(KEY,JSON.stringify(state));
 }
 const save=()=>{
