@@ -1,6 +1,6 @@
-const BUILD="6.2.57";
+const BUILD="6.2.58";
 const CACHE="endulus-v6-runtime";
-const CORE=["./","./index.html","./manifest.webmanifest","./icon.svg","./app-v6.js?v=6.2.57"];
+const CORE=["./","./index.html","./manifest.webmanifest","./icon.svg","./app-v6.js?v=6.2.58"];
 
 self.addEventListener("install",event=>{
  event.waitUntil(
@@ -52,10 +52,10 @@ self.addEventListener("fetch",event=>{
   event.respondWith(
    networkFresh()
     .then(res=>{
-     if(res.ok){const copy=res.clone();caches.open(CACHE).then(c=>c.put("./app-v6.js?v=6.2.57",copy))}
+     if(res.ok){const copy=res.clone();caches.open(CACHE).then(c=>c.put("./app-v6.js?v=6.2.58",copy))}
      return res;
     })
-    .catch(()=>caches.match("./app-v6.js?v=6.2.57"))
+    .catch(()=>caches.match("./app-v6.js?v=6.2.58"))
   );
   return;
  }
