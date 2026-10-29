@@ -1,6 +1,6 @@
 (()=>{
 "use strict";
-window.ENDULUS_APP_BUILD="6.2.55";
+window.ENDULUS_APP_BUILD="6.2.56";
 document.documentElement.dataset.appBuild=window.ENDULUS_APP_BUILD;
 if(typeof D==="undefined") return;
 const KEY="endulusStateV6";
@@ -76,6 +76,11 @@ D.stays.forEach(s=>{
 const reservationDefaults={};
 D.bookings.forEach(b=>reservationDefaults[b[0]]={status:["alhambra","train"].includes(b[0])?"booked":"required",time:b[0]==="alhambra"?"14:00":(b[0]==="train"?"07:13–09:52":""),total:b[0]==="train"?"51":"",verified:b[0]==="alhambra"?"2026-09-29":(b[0]==="train"?"2026-10-03":"")});
 Object.assign(reservationDefaults,{"train-cordoba-sevilla":{status:"booked",time:"08:12–09:05",total:"45",verified:"2026-10-29"}});
+const alsaDefaults={
+ "bus-malaga-granada":{status:"booked",time:"09:25–11:00",total:"",verified:"2026-10-29"},
+ "bus-granada-cordoba":{status:"booked",time:"08:30–11:15",total:"",verified:"2026-10-29"}
+};
+Object.assign(reservationDefaults,alsaDefaults);
 function load(){
  let s={version:6,stays:stayDefaults,reservations:reservationDefaults,expenses:{flights:"",intercity:"",local:"",food:"",other:"",montpellier:""}};
  try{const old=JSON.parse(localStorage.getItem(KEY)||"null");if(old)s=merge(s,old)}catch(e){}
@@ -129,10 +134,15 @@ if(localStorage.getItem("endulusCordobaSevillaBookedV1")!=="1"){
  localStorage.setItem("endulusCordobaSevillaBookedV1","1");
  localStorage.setItem(KEY,JSON.stringify(state));
 }
+if(localStorage.getItem("endulusAlsaBookedV1")!=="1"){
+ Object.entries(alsaDefaults).forEach(([id,v])=>{const existing=state.reservations[id]?.total;state.reservations[id]={...v,total:existing||""}});
+ localStorage.setItem("endulusAlsaBookedV1","1");
+ localStorage.setItem(KEY,JSON.stringify(state));
+}
 const save=()=>{
  localStorage.setItem(KEY,JSON.stringify(state));
  const checks={};Object.entries(state.reservations).forEach(([k,v])=>checks[k]=v.status==="booked");localStorage.setItem("endulusChecks",JSON.stringify(checks));
- localStorage.setItem("endulusBudgetV5",JSON.stringify({...state.expenses,stays:stayTotal(),attractions:String(bookedActivityTotal()),trains:String(bookedTrainTotal())}));
+ localStorage.setItem("endulusBudgetV5",JSON.stringify({...state.expenses,stays:stayTotal(),attractions:String(bookedActivityTotal()),trains:String(bookedTransportTotal())}));
  if(state.notes)localStorage.setItem("endulusNotesV5",JSON.stringify(state.notes));
 };
 if(localStorage.getItem("endulusFlightBudgetV2")!=="1"){
@@ -154,19 +164,19 @@ const outbound3Flight=()=>Math.min(flightTotal(),216);
 const return2Flight=()=>Math.max(0,flightTotal()-outbound3Flight());
 const montpellierExtra=()=>num(state.expenses?.montpellier);
 const mainRouteExtras=()=>["intercity","local","food","other"].reduce((s,k)=>s+num(state.expenses?.[k]),0);
-const isTrainBooking=id=>{
+const isTransportBooking=id=>{
  const b=getBooking(id);if(!b)return false;
- return /(^|\s)(tren|train)(\s|$)/i.test(String(b[1]||""))||/tren|train/i.test(String(id||""));
+ return /^(bus-|train)/i.test(id)||/(tren|otobüs)/i.test(String(b[1]||""));
 };
-const bookedTrainTotal=()=>Object.keys(state.reservations).reduce((s,id)=>{
+const bookedTransportTotal=()=>Object.keys(state.reservations).reduce((s,id)=>{
  const v=state.reservations[id];
- return s+(isTrainBooking(id)&&v?.status==="booked"?num(v.total):0);
+ return s+(isTransportBooking(id)&&v?.status==="booked"?num(v.total):0);
 },0);
-const bookedTrainRows=()=>Object.keys(state.reservations).filter(id=>isTrainBooking(id)&&state.reservations[id]?.status==="booked").map(id=>{
+const bookedTransportRows=()=>Object.keys(state.reservations).filter(id=>isTransportBooking(id)&&state.reservations[id]?.status==="booked").map(id=>{
  const b=getBooking(id),v=state.reservations[id];
- return {name:b?.[1]||id,date:b?.[2]||"",time:v?.time||"",total:num(v?.total)};
+ return {name:b?.[1]||id,date:b?.[2]||"",time:v?.time||"",total:String(v?.total??"").trim()?num(v.total):null};
 });
-const mainRouteTotal=()=>mainRouteStay()+bookedActivityTotal()+bookedTrainTotal()+outbound3Flight()+mainRouteExtras();
+const mainRouteTotal=()=>mainRouteStay()+bookedActivityTotal()+bookedTransportTotal()+outbound3Flight()+mainRouteExtras();
 const montpellierTotal=()=>montpellierStay()+return2Flight()+montpellierExtra();
 const mainRoutePP=()=>mainRouteTotal()/3;
 const montpellierPP=()=>montpellierTotal()/2;
@@ -175,7 +185,7 @@ function bookingEstimatedTotal(id){
  const b=getBooking(id),v=state.reservations[id];if(!b||!v||v.status!=="booked")return 0;
  return num(v.total)||(b[3]!=null?num(b[3])*3:0);
 }
-function bookedActivityTotal(){return Object.keys(state.reservations).filter(id=>!isTrainBooking(id)).reduce((s,id)=>s+bookingEstimatedTotal(id),0)}
+function bookedActivityTotal(){return Object.keys(state.reservations).filter(id=>!isTransportBooking(id)).reduce((s,id)=>s+bookingEstimatedTotal(id),0)}
 function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 let stayCity="Málaga";
 function renderStays(){
@@ -206,21 +216,21 @@ function renderBookings(){
 function renderBudget(){
  const sec=document.querySelector("#v5realbudget");if(!sec)return;
  const mainLabels={flights:"Uçuşlar · toplam",intercity:"Şehirlerarası ulaşım · diğer / manuel",local:"Yerel ulaşım",food:"Yemek",other:"Diğer"};
- const trainRows=bookedTrainRows();
- const trainBreakdown=trainRows.length?trainRows.map(x=>escapeHtml(x.date+" · "+x.name+(x.time?" · "+x.time:""))+" — <b>"+money(x.total)+"</b>").join("<br>"):"Henüz BOOKED tren bileti yok.";
+ const trainRows=bookedTransportRows();
+ const trainBreakdown=trainRows.length?trainRows.map(x=>escapeHtml(x.date+" · "+x.name+(x.time?" · "+x.time:""))+" — <b>"+(x.total===null?"Tutar bekleniyor · toplama dahil değil":money(x.total))+"</b>").join("<br>"):"Henüz BOOKED şehirlerarası bilet yok.";
  sec.innerHTML='<div class="head"><div><div class="ey">KARIŞIK GRUP · AYRI HESAP</div><h2>Trip budget</h2></div><span class="pill">otomatik</span></div>'+
  '<section class="v6budgetgroup v6budgetgroup-main">'+
    '<div class="v6budgetgrouphead"><div><div class="ey">🇪🇸 ANA ROTA · 3 KİŞİ</div><h3>İspanya ana bütçesi</h3></div><span class="v6budgettag">Montpellier hariç</span></div>'+
-   '<div class="v6budgethero"><strong>'+money(mainRouteTotal())+'</strong><span>ana rota toplamı</span><small>'+money(mainRoutePP())+' / kişi</small></div>'+
+   '<div class="v6budgethero"><strong>'+money(mainRouteTotal())+'</strong><span>bilinen ödemeler toplamı</span><small>'+money(mainRoutePP())+' / kişi</small></div>'+
    '<div class="v6budgetcards">'+
      '<div class="v6bcard"><b>'+money(mainRouteStay())+'</b><small>ana rota konaklama</small></div>'+
      '<div class="v6bcard"><b>'+money(bookedActivityTotal())+'</b><small>rezerve müze / biletler</small><div class="v6auto">yalnız BOOKED</div></div>'+
-     '<div class="v6bcard"><b>'+money(bookedTrainTotal())+'</b><small>rezerve trenler</small><div class="v6auto">BOOKED + toplam ödeme</div></div>'+
+     '<div class="v6bcard"><b>'+money(bookedTransportTotal())+'</b><small>rezerve tren + otobüs</small><div class="v6auto">BOOKED + toplam ödeme</div></div>'+
      '<div class="v6bcard"><b>'+money(outbound3Flight())+'</b><small>3 kişilik gidiş uçuşları</small><div class="v6auto">STR → TLS → AGP</div></div>'+
    '</div>'+
    '<div class="v5warn"><b>✈️ Gidiş uçuşları · 3 kişi:</b><br>Strasbourg → Toulouse: <b>€111</b><br>Toulouse → Málaga: <b>€105</b><br><b>Gidiş uçuşları toplamı: '+money(outbound3Flight())+'</b>.</div>'+
-   '<div class="v5warn"><b>🚆 Rezerve trenler · otomatik bütçe:</b><br>'+trainBreakdown+'<br><b>Toplam: '+money(bookedTrainTotal())+'</b>. Bir tren BOOKED yapılıp “Toplam ödeme” girildiğinde bu tutar otomatik olarak ana bütçeye eklenir.</div>'+
-   '<div class="v5warn"><b>🇪🇸 Ana rota hesabı:</b><br>Konaklama + BOOKED müze/biletler + BOOKED trenler + 3 kişilik gidiş uçuşları + şehirlerarası/yerel ulaşım + yemek + diğer harcamalar. <b>Montpellier ve 2 kişilik dönüş uçuşları bu toplama dahil değildir.</b></div>'+
+   '<div class="v5warn"><b>🚆 Rezerve tren + otobüs · otomatik bütçe:</b><br>'+trainBreakdown+'<br><b>Toplam: '+money(bookedTransportTotal())+'</b>. Bir tren/otobüs BOOKED yapılıp “Toplam ödeme” girildiğinde bu tutar otomatik olarak ana bütçeye eklenir. Tutarı beklenen biletler yukarıda ayrıca işaretlenir ve ödenen toplam girilene kadar hesaba katılmaz.</div>'+
+   '<div class="v5warn"><b>🇪🇸 Ana rota hesabı:</b><br>Konaklama + BOOKED müze/biletler + BOOKED tren/otobüsler + 3 kişilik gidiş uçuşları + şehirlerarası/yerel ulaşım + yemek + diğer harcamalar. <b>Montpellier ve 2 kişilik dönüş uçuşları bu toplama dahil değildir.</b></div>'+
    '<div class="v5budget v6expense">'+Object.keys(mainLabels).map(k=>'<label><span>'+mainLabels[k]+'</span><input inputmode="decimal" data-exp="'+k+'" value="'+escapeHtml(state.expenses[k])+'" placeholder="€"></label>').join("")+'</div>'+
  '</section>'+
  '<div class="v6budgetseparator"><span>AYRI HESAP</span></div>'+
