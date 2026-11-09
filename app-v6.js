@@ -76,6 +76,7 @@ D.stays.forEach(s=>{
 const reservationDefaults={};
 D.bookings.forEach(b=>reservationDefaults[b[0]]={status:["alhambra","train"].includes(b[0])?"booked":"required",time:b[0]==="alhambra"?"14:00":(b[0]==="train"?"07:13–09:52":""),total:b[0]==="train"?"51":"",verified:b[0]==="alhambra"?"2026-09-29":(b[0]==="train"?"2026-10-03":"")});
 Object.assign(reservationDefaults,{"train-cordoba-sevilla":{status:"booked",time:"08:12–09:05",total:"45",verified:"2026-10-29"}});
+Object.assign(reservationDefaults,{"alcazar":{status:"booked",time:"10:00",total:"46.50",verified:"2026-11-09"}});
 const alsaDefaults={
  "bus-malaga-granada":{status:"booked",time:"09:25–11:00",total:"42.36",verified:"2026-10-29"},
  "bus-granada-cordoba":{status:"booked",time:"08:30–11:15",total:"54.99",verified:"2026-10-29"}
@@ -97,6 +98,13 @@ function merge(base,extra){
  });return out;
 }
 let state=load(),edit=false;
+// Apply newly confirmed Alcázar booking once, also for visitors with older saved state.
+if(localStorage.getItem("endulusAlcazarBooked20261230V1")!=="1"){
+ if(state.reservations?.alcazar) Object.assign(state.reservations.alcazar,{status:"booked",time:"10:00",total:"46.50",verified:"2026-11-09"});
+ localStorage.setItem("endulusAlcazarBooked20261230V1","1");
+ localStorage.setItem(KEY,JSON.stringify(state));
+}
+
 if(localStorage.getItem("endulusMplCampanileBookedV1")!=="1"&&state.stays?.Montpellier){Object.assign(state.stays.Montpellier,{status:"booked",name:"Campanile PRIME - Montpellier Centre St Roch",area:"Centre · Gare Saint-Roch · 11 rue Pagezy"});localStorage.setItem("endulusMplCampanileBookedV1","1")}
 if(localStorage.getItem("endulusMplCampanileBookedV2")!=="1"&&state.stays?.Montpellier){Object.assign(state.stays.Montpellier,{status:"booked",name:"Campanile PRIME - Montpellier Centre St Roch",price:"167",area:"Centre · Gare Saint-Roch · 11 rue Pagezy"});localStorage.setItem("endulusMplCampanileBookedV2","1")}
 if(localStorage.getItem("endulusCordoba2Madrid1V1")!=="1"){
