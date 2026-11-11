@@ -291,19 +291,28 @@ const reset=document.getElementById("v5reset");if(reset)reset.onclick=()=>{if(co
 const TRIP_DATES=["2026-12-22","2026-12-23","2026-12-24","2026-12-25","2026-12-26","2026-12-27","2026-12-28","2026-12-29","2026-12-30","2026-12-31","2027-01-01","2027-01-02","2027-01-03"];
 const DAY_HOTEL_CITY={1:"Toulouse",2:"Málaga",3:"Málaga",4:"Granada",5:"Granada",6:"Córdoba",7:"Córdoba",8:"Sevilla",9:"Sevilla",10:"Madrid",11:"Montpellier",12:"Montpellier",13:"Montpellier"};
 const DAY_ROUTES={
-  1:["Toulouse-Blagnac Airport","Toulouse-Blagnac Airport hotels"],
-  2:["Teatro Romano Malaga","Soho Malaga",["Alcazaba Malaga","Castillo de Gibralfaro Malaga","Museo Picasso Malaga","Catedral de Malaga","Parque de Malaga","Centre Pompidou Malaga","Muelle Uno Malaga"]],
+  1:["Toulouse-Blagnac Airport","Première Classe Toulouse Blagnac Aéroport"],
+  2:["Calle de San Quintín 52, Málaga, Spain","Soho Malaga",["Alcazaba Malaga","Castillo de Gibralfaro Malaga","Teatro Romano Malaga","Museo Picasso Malaga","Catedral de Malaga","Parque de Malaga","Centre Pompidou Malaga","Muelle Uno Malaga"]],
   3:["Puente Nuevo Ronda","Baños Arabes Ronda",["Old Town Ronda"]],
-  4:["Carrera del Darro Granada","Sacromonte Granada",["Albaicin Granada","Mirador San Nicolas Granada"]],
-  5:["Alhambra Granada","Centro Jose Guerrero Granada",["Realejo Granada"]],
-  6:["Puerta de Almodovar Cordoba","Puente Romano Cordoba",["Calle Cairuan Cordoba","Estatua de Averroes Cordoba","Plaza de Tiberiades Cordoba","Calle Judios Cordoba","Calleja de las Flores Cordoba"]],
-  7:["Mezquita Catedral Cordoba","Puente Romano Cordoba",["Torre Campanario Cordoba","Judería Cordoba"]],
-  8:["Centro Andaluz de Arte Contemporaneo Sevilla","Torre del Oro Sevilla",["Triana Sevilla","Puente de Isabel II Sevilla","Plaza de Toros de la Maestranza Sevilla"]],
-  9:["Real Alcazar Sevilla","Las Setas Sevilla",["Catedral Sevilla","Patio de Banderas Sevilla","Callejon del Agua Sevilla","Plaza de Dona Elvira Sevilla","Calle Reinoso Sevilla","Plaza de los Venerables Sevilla","Jardines de Murillo Sevilla","Plaza de la Alfalfa Sevilla"]],
-  10:["Puerta del Sol Madrid","Retiro Madrid",["Plaza Mayor Madrid","Barrio de las Letras Madrid","Paseo del Prado Madrid","Cibeles Madrid"]],
-  11:["Gran Via Madrid","Madrid Barajas Airport",["Callao Madrid","La Latina Madrid","Lavapies Madrid"]],
+  4:["Calle Cascajal 2, Granada, Spain","Mirador San Nicolas Granada",["Carrera del Darro Granada","Sacromonte Granada"]],
+  5:["Calle Cascajal 2, Granada, Spain","Centro Jose Guerrero Granada",["Alhambra Granada","Realejo Granada"]],
+  6:["Calle Pozanco 9, Córdoba, Spain","Puente Romano Cordoba",["Puerta de Almodovar Cordoba","Calle Cairuan Cordoba","Estatua de Averroes Cordoba","Plaza de Tiberiades Cordoba","Calle Judios Cordoba","Calleja de las Flores Cordoba"]],
+  7:["Calle Pozanco 9, Córdoba, Spain","Puente Romano Cordoba",["Mezquita Catedral Cordoba","Torre Campanario Cordoba","Judería Cordoba"]],
+  8:["Calle Atanasio Barrón 8, Sevilla, Spain","Torre del Oro Sevilla",["Plaza de Espana Sevilla","Parque de Maria Luisa Sevilla","Centro Andaluz de Arte Contemporaneo Sevilla","Triana Sevilla","Puente de Isabel II Sevilla","Plaza de Toros de la Maestranza Sevilla"]],
+  9:["Calle Atanasio Barrón 8, Sevilla, Spain","Las Setas Sevilla",["Real Alcazar Sevilla","Catedral Sevilla","Patio de Banderas Sevilla","Callejon del Agua Sevilla","Plaza de Dona Elvira Sevilla","Plaza de los Venerables Sevilla","Jardines de Murillo Sevilla","Plaza de la Alfalfa Sevilla"]],
+  10:["Travesía de las Beatas 3, Madrid, Spain","Retiro Madrid",["Puerta del Sol Madrid","Plaza Mayor Madrid","Barrio de las Letras Madrid","Paseo del Prado Madrid","Cibeles Madrid"]],
+  11:["Travesía de las Beatas 3, Madrid, Spain","Lavapies Madrid",["Gran Via Madrid","Callao Madrid","La Latina Madrid"]],
   12:["Campanile PRIME Montpellier Centre St Roch","Campanile PRIME Montpellier Centre St Roch",["Place de la Comedie Montpellier","Esplanade Charles de Gaulle Montpellier","Musee Fabre Montpellier","Place Jean Jaures Montpellier","Cathedrale Saint Pierre Montpellier","Jardin des Plantes Montpellier","Arc de Triomphe Montpellier","Promenade du Peyrou Montpellier","Aqueduc Saint Clement Montpellier"]],
   13:["Campanile PRIME Montpellier Centre St Roch","Place de l Europe Montpellier",["Gare Saint Roch Montpellier"]]
+};
+const DAY_TRANSFER_ROUTES={
+  2:{from:"Malaga Airport",to:"Calle de San Quintín 52, Málaga, Spain",mode:"transit",label:"Havalimanı → Málaga konaklama"},
+  3:{from:"Calle de San Quintín 52, Málaga, Spain",to:"Estación de Autobuses de Málaga",mode:"transit",label:"Málaga konaklama → otogar"},
+  4:{from:"Granada Estación de Autobuses",to:"Calle Cascajal 2, Granada, Spain",mode:"transit",label:"Granada otogarı → konaklama"},
+  6:{from:"Estación de Autobuses de Córdoba",to:"Calle Pozanco 9, Córdoba, Spain",mode:"transit",label:"Córdoba otogarı → konaklama"},
+  8:{from:"Sevilla Santa Justa",to:"Calle Atanasio Barrón 8, Sevilla, Spain",mode:"transit",label:"Sevilla istasyonu → Airbnb"},
+  10:{from:"Madrid Puerta de Atocha",to:"Travesía de las Beatas 3, Madrid, Spain",mode:"transit",label:"Madrid Atocha → konaklama"},
+  11:{from:"Travesía de las Beatas 3, Madrid, Spain",to:"Aeropuerto Adolfo Suárez Madrid-Barajas",mode:"transit",label:"Madrid konaklama → havalimanı"}
 };
 const DAY_FOOD={
   2:[["Mesón Mariano","Chivo malagueño · alcachofas · balık"],["La Plancha Taberna","Izgara · tapas · İspanyol mutfağı"],["El Gastronauta","Tapas · Akdeniz · çağdaş İspanyol"],["Next Level Specialty Coffee","Kahvaltı · specialty coffee"]],
@@ -320,7 +329,7 @@ const DAY_FOOD={
   13:[["Campanile kahvaltısı","Rezervasyona dahil · check-out öncesi"],["Bonobo","Yalnız ekstra kahve istersen"]]
 };
 const travelKey="endulusTravelV61";let travelDone={};try{travelDone=JSON.parse(localStorage.getItem(travelKey)||"{}")}catch(e){}
-const travelDir=r=>"https://www.google.com/maps/dir/?api=1&travelmode=walking&origin="+encodeURIComponent(r[0])+"&destination="+encodeURIComponent(r[1])+(r[2]?.length?"&waypoints="+encodeURIComponent(r[2].join("|")):"");
+const travelDir=(r,mode="walking")=>"https://www.google.com/maps/dir/?api=1&travelmode="+encodeURIComponent(mode)+"&origin="+encodeURIComponent(r[0])+"&destination="+encodeURIComponent(r[1])+(r[2]?.length?"&waypoints="+encodeURIComponent(r[2].join("|")):"");
 const travelSearch=q=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
 const daySelect=document.getElementById("v61dayselect"),dayHero=document.getElementById("v61dayhero"),dayTimeline=document.getElementById("v61timeline"),dayActions=document.getElementById("v61travelactions");
 let activeDay=0;
@@ -335,7 +344,8 @@ function renderTravel(){
  dayTimeline.innerHTML=hotelCard+items.map((x,i)=>'<article class="v61item '+(done[i]?"done":"")+'"><div class="tm">'+escapeHtml(x[0])+'</div><button class="v61check" data-ti="'+i+'" aria-label="'+(done[i]?"Tamamlanmadı olarak işaretle":"Tamamlandı olarak işaretle")+'">'+(done[i]?"✓":"")+'</button><div><h4>'+(x[6]?'<a class="ticketlink" target="_blank" rel="noopener" href="'+x[6]+'">'+escapeHtml(x[1])+' ↗</a>':escapeHtml(x[1]))+'</h4><p>'+escapeHtml(x[2])+'</p>'+sevillaStory(d[0],x[1])+sevillaVideoFood(d[0],x[1])+tourVideoNotes(d[0],x[1])+'</div></article>').join("")+(DAY_FOOD[d[0]]?'<article class="v61item"><div class="tm">🍴</div><div></div><div><h4>Rota üzerindeki yemek alternatifleri</h4><p>'+DAY_FOOD[d[0]].map(x=>'<a target="_blank" rel="noopener" href="'+travelSearch(x[0]+" "+d[2].split(" → ").pop())+'"><b>'+escapeHtml(x[0])+'</b></a> · '+escapeHtml(x[1])).join("<br>")+'</p></div></article>':"");
  dayTimeline.querySelectorAll("[data-ti]").forEach(b=>b.onclick=()=>{travelDone[d[0]]=travelDone[d[0]]||{};travelDone[d[0]][b.dataset.ti]=!travelDone[d[0]][b.dataset.ti];localStorage.setItem(travelKey,JSON.stringify(travelDone));renderTravel()});
  const route=DAY_ROUTES[d[0]],city=d[2].split(" → ")[0];
- dayActions.innerHTML=(route?'<a class="primary" target="_blank" rel="noopener" href="'+travelDir(route)+'">🚶 Günlük rotayı aç</a>':"")+'<a target="_blank" rel="noopener" href="'+travelSearch(city)+'">⌖ '+escapeHtml(city)+' haritası</a>';
+ const transfer=DAY_TRANSFER_ROUTES[d[0]];
+ dayActions.innerHTML=(route?'<a class="primary" target="_blank" rel="noopener" href="'+travelDir(route)+'">🚶 Konaklamadan günlük yürüyüş rotası</a>':"")+(transfer?'<a target="_blank" rel="noopener" href="'+travelDir([transfer.from,transfer.to],transfer.mode)+'">🚌 '+escapeHtml(transfer.label)+'</a>':"")+'<a target="_blank" rel="noopener" href="'+travelSearch(city)+'">⌖ '+escapeHtml(city)+' haritası</a>';
  document.getElementById("v61prev").disabled=activeDay===0;document.getElementById("v61next").disabled=activeDay===D.days.length-1;
 }
 if(daySelect){
