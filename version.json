@@ -1,5 +1,5 @@
 {
-  "build": "6.2.61",
+  "build": "6.2.62",
   "updated": "2026-11-11",
-  "note": "Spain daily walking routes now start at booked accommodation addresses; transfer-day station and airport routes are shown separately."
+  "note": "Revised holiday itinerary, expandable venue notes and accommodation-based walking and transfer links."
 }

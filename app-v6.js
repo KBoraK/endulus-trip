@@ -1,6 +1,6 @@
 (()=>{
 "use strict";
-window.ENDULUS_APP_BUILD="6.2.60";
+window.ENDULUS_APP_BUILD="6.2.62";
 document.documentElement.dataset.appBuild=window.ENDULUS_APP_BUILD;
 if(typeof D==="undefined") return;
 const KEY="endulusStateV6";
@@ -280,8 +280,6 @@ if(btn)btn.onclick=()=>setEdit(!edit);
 renderStays();renderBookings();renderBudget();renderActions();setEdit(false);
 const mapNav=document.querySelector('.tabs button[data-v="v5mapview"]');if(mapNav)mapNav.addEventListener("click",()=>{const q=document.querySelector('[data-v5go="v5mapview"]');if(q)setTimeout(()=>q.click(),0)});
 
-// Keep notes in the central state as they change.
-document.querySelectorAll("#v5noteslist textarea").forEach(t=>t.addEventListener("input",()=>{state.notes=state.notes||{};state.notes[t.dataset.d]=t.value;save()}));
 // Replace export/import with v6 single-state backup.
 const ex=document.getElementById("v5export");if(ex)ex.onclick=()=>{save();const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:"application/json"}));a.download="endulus-roadbook-v6-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)};
 const im=document.getElementById("v5import");if(im)im.onchange=e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||Number(d.version)<6)throw new Error();localStorage.setItem(KEY,JSON.stringify(d));location.reload()}catch(_){alert("Bu dosya v6 Roadbook yedeği değil.")}};r.readAsText(file)};
@@ -289,30 +287,63 @@ const reset=document.getElementById("v5reset");if(reset)reset.onclick=()=>{if(co
 
 /* v6.1 Daily Travel Mode */
 const TRIP_DATES=["2026-12-22","2026-12-23","2026-12-24","2026-12-25","2026-12-26","2026-12-27","2026-12-28","2026-12-29","2026-12-30","2026-12-31","2027-01-01","2027-01-02","2027-01-03"];
-const DAY_HOTEL_CITY={1:"Toulouse",2:"Málaga",3:"Málaga",4:"Granada",5:"Granada",6:"Córdoba",7:"Córdoba",8:"Sevilla",9:"Sevilla",10:"Madrid",11:"Montpellier",12:"Montpellier",13:"Montpellier"};
-const DAY_ROUTES={
-  1:["Toulouse-Blagnac Airport","Première Classe Toulouse Blagnac Aéroport"],
-  2:["Calle de San Quintín 52, Málaga, Spain","Soho Malaga",["Alcazaba Malaga","Castillo de Gibralfaro Malaga","Teatro Romano Malaga","Museo Picasso Malaga","Catedral de Malaga","Parque de Malaga","Centre Pompidou Malaga","Muelle Uno Malaga"]],
-  3:["Puente Nuevo Ronda","Baños Arabes Ronda",["Old Town Ronda"]],
-  4:["Calle Cascajal 2, Granada, Spain","Mirador San Nicolas Granada",["Carrera del Darro Granada","Sacromonte Granada"]],
-  5:["Calle Cascajal 2, Granada, Spain","Centro Jose Guerrero Granada",["Alhambra Granada","Realejo Granada"]],
-  6:["Calle Pozanco 9, Córdoba, Spain","Puente Romano Cordoba",["Puerta de Almodovar Cordoba","Calle Cairuan Cordoba","Estatua de Averroes Cordoba","Plaza de Tiberiades Cordoba","Calle Judios Cordoba","Calleja de las Flores Cordoba"]],
-  7:["Calle Pozanco 9, Córdoba, Spain","Puente Romano Cordoba",["Mezquita Catedral Cordoba","Torre Campanario Cordoba","Judería Cordoba"]],
-  8:["Calle Atanasio Barrón 8, Sevilla, Spain","Torre del Oro Sevilla",["Plaza de Espana Sevilla","Parque de Maria Luisa Sevilla","Centro Andaluz de Arte Contemporaneo Sevilla","Triana Sevilla","Puente de Isabel II Sevilla","Plaza de Toros de la Maestranza Sevilla"]],
-  9:["Calle Atanasio Barrón 8, Sevilla, Spain","Las Setas Sevilla",["Real Alcazar Sevilla","Catedral Sevilla","Patio de Banderas Sevilla","Callejon del Agua Sevilla","Plaza de Dona Elvira Sevilla","Plaza de los Venerables Sevilla","Jardines de Murillo Sevilla","Plaza de la Alfalfa Sevilla"]],
-  10:["Travesía de las Beatas 3, Madrid, Spain","Retiro Madrid",["Puerta del Sol Madrid","Plaza Mayor Madrid","Barrio de las Letras Madrid","Paseo del Prado Madrid","Cibeles Madrid"]],
-  11:["Travesía de las Beatas 3, Madrid, Spain","Lavapies Madrid",["Gran Via Madrid","Callao Madrid","La Latina Madrid"]],
-  12:["Campanile PRIME Montpellier Centre St Roch","Campanile PRIME Montpellier Centre St Roch",["Place de la Comedie Montpellier","Esplanade Charles de Gaulle Montpellier","Musee Fabre Montpellier","Place Jean Jaures Montpellier","Cathedrale Saint Pierre Montpellier","Jardin des Plantes Montpellier","Arc de Triomphe Montpellier","Promenade du Peyrou Montpellier","Aqueduc Saint Clement Montpellier"]],
-  13:["Campanile PRIME Montpellier Centre St Roch","Place de l Europe Montpellier",["Gare Saint Roch Montpellier"]]
+/* Daily routes. Each walking link starts at the booked address for that part of the day. */
+const DAY_HOTELS=[
+ null,"Toulouse","Málaga","Málaga","Granada","Granada","Córdoba","Córdoba",
+ "Sevilla","Sevilla","Madrid","Montpellier","Montpellier","Montpellier"
+];
+const DAY_WALKS={
+ 2:["Málaga","Alcazaba → Picasso → liman","Muelle Uno Málaga",["Alcazaba Málaga","Museo Picasso Málaga","Catedral de Málaga"]],
+ 4:["Granada","Darro → San Nicolás","Mirador de San Nicolás Granada",["Carrera del Darro Granada","Paseo de los Tristes Granada"]],
+ 5:["Granada","Alhambra girişi","Alhambra Generalife ticket office Granada",["Plaza Nueva Granada"]],
+ 6:["Córdoba","Judería → Roma Köprüsü","Puente Romano Córdoba",["Puerta de Almodóvar Córdoba","Calle Judíos Córdoba"]],
+ 7:["Córdoba","Mezquita → Judería","Calle Judíos Córdoba",["Mezquita-Catedral Córdoba","Puente Romano Córdoba"]],
+ 8:["Sevilla","Plaza de España → María Luisa","Parque de María Luisa Sevilla",["Plaza de España Sevilla"]],
+ 9:["Sevilla","Alcázar → Santa Cruz → Las Setas","Setas de Sevilla",["Puerta del León Sevilla","Puerta del Lagarto Catedral Sevilla","Jardines de Murillo Sevilla"]],
+ 10:["Madrid","Prado → Plaza Mayor","Plaza Mayor Madrid",["Museo del Prado Madrid","Plaza de Santa Ana Madrid","Puerta del Sol Madrid"]],
+ 11:["Madrid","Callao → La Latina","Plaza de la Cebada Madrid",["Plaza del Callao Madrid","Plaza de Oriente Madrid"]],
+ 12:["Montpellier","Comédie → Fabre → Peyrou","Promenade du Peyrou Montpellier",["Place de la Comédie Montpellier","Musée Fabre Montpellier","Cathédrale Saint-Pierre Montpellier"]],
+ 13:["Montpellier","Comédie (vakit varsa)","Place de la Comédie Montpellier"]
 };
-const DAY_TRANSFER_ROUTES={
-  2:{from:"Malaga Airport",to:"Calle de San Quintín 52, Málaga, Spain",mode:"transit",label:"Havalimanı → Málaga konaklama"},
-  3:{from:"Calle de San Quintín 52, Málaga, Spain",to:"Estación de Autobuses de Málaga",mode:"transit",label:"Málaga konaklama → otogar"},
-  4:{from:"Granada Estación de Autobuses",to:"Calle Cascajal 2, Granada, Spain",mode:"transit",label:"Granada otogarı → konaklama"},
-  6:{from:"Estación de Autobuses de Córdoba",to:"Calle Pozanco 9, Córdoba, Spain",mode:"transit",label:"Córdoba otogarı → konaklama"},
-  8:{from:"Sevilla Santa Justa",to:"Calle Atanasio Barrón 8, Sevilla, Spain",mode:"transit",label:"Sevilla istasyonu → Airbnb"},
-  10:{from:"Madrid Puerta de Atocha",to:"Travesía de las Beatas 3, Madrid, Spain",mode:"transit",label:"Madrid Atocha → konaklama"},
-  11:{from:"Travesía de las Beatas 3, Madrid, Spain",to:"Aeropuerto Adolfo Suárez Madrid-Barajas",mode:"transit",label:"Madrid konaklama → havalimanı"}
+const stayMap=city=>D.hotels[city].map;
+const DAY_TRANSFERS={
+ 1:[["Toulouse havalimanı → otel","Toulouse-Blagnac Airport",stayMap("Toulouse"),"driving"]],
+ 2:[
+  ["Toulouse oteli → havalimanı",stayMap("Toulouse"),"Toulouse-Blagnac Airport","driving"],
+  ["Málaga havalimanı → konaklama","Málaga Airport",stayMap("Málaga"),"transit"]
+ ],
+ 3:[
+  ["Málaga konaklama → otogar",stayMap("Málaga"),"Estación de Autobuses de Málaga","walking"],
+  ["Ronda otogarı → eski şehir","Estación de Autobuses de Ronda","Baños Árabes Ronda","walking",["Alameda del Tajo Ronda","Puente Nuevo Ronda","Puente Viejo Ronda"]]
+ ],
+ 4:[
+  ["Málaga konaklama → otogar",stayMap("Málaga"),"Estación de Autobuses de Málaga","walking"],
+  ["Granada otogarı → konaklama","Granada Estación de Autobuses",stayMap("Granada"),"transit"]
+ ],
+ 5:[["Alhambra → Realejo","Puerta de la Justicia Alhambra Granada","Campo del Príncipe Granada","walking"]],
+ 6:[
+  ["Granada konaklama → otogar",stayMap("Granada"),"Granada Estación de Autobuses","driving"],
+  ["Córdoba otogarı → konaklama","Estación de Autobuses de Córdoba",stayMap("Córdoba"),"walking"],
+  ["Córdoba otogarı → Medina ziyaretçi merkezi","Estación de Autobuses de Córdoba","Centro de Visitantes Medina Azahara Córdoba","driving"]
+ ],
+ 8:[
+  ["Córdoba konaklama → istasyon",stayMap("Córdoba"),"Estación Córdoba Julio Anguita","walking"],
+  ["Santa Justa → Sevilla Airbnb","Sevilla Santa Justa",stayMap("Sevilla"),"walking"],
+  ["Airbnb → Triana → Torre del Oro",stayMap("Sevilla"),"Torre del Oro Sevilla","walking",["Mercado de Triana Sevilla","Puente de Isabel II Sevilla","Plaza de Toros de la Maestranza Sevilla"]]
+ ],
+ 10:[
+  ["Sevilla Airbnb → Santa Justa",stayMap("Sevilla"),"Sevilla Santa Justa","driving"],
+  ["Atocha → Madrid konaklama","Madrid Puerta de Atocha",stayMap("Madrid"),"transit"]
+ ],
+ 11:[
+  ["Madrid konaklama → Barajas",stayMap("Madrid"),"Aeropuerto Adolfo Suárez Madrid-Barajas","transit"],
+  ["Montpellier havalimanı → otel (taksi)","Aéroport Montpellier Méditerranée",stayMap("Montpellier"),"driving"]
+ ],
+ 12:[["Saint-Pierre → botanik bahçesi → Peyrou","Cathédrale Saint-Pierre Montpellier","Promenade du Peyrou Montpellier","walking",["Jardin des Plantes Montpellier"]]],
+ 13:[
+  ["Montpellier oteli → 620 durağı",stayMap("Montpellier"),"Place de l'Europe Montpellier","transit"],
+  ["Montpellier oteli → havalimanı (taksi)",stayMap("Montpellier"),"Aéroport Montpellier Méditerranée","driving"]
+ ]
 };
 const DAY_FOOD={
   2:[["Mesón Mariano","Chivo malagueño · alcachofas · balık"],["La Plancha Taberna","Izgara · tapas · İspanyol mutfağı"],["El Gastronauta","Tapas · Akdeniz · çağdaş İspanyol"],["Next Level Specialty Coffee","Kahvaltı · specialty coffee"]],
@@ -328,33 +359,195 @@ const DAY_FOOD={
   12:[["Campanile kahvaltısı","Rezervasyona dahil · güne otelde başla"],["Bonobo","İstersen sonradan kahve/brunch alternatifi"],["Ripailles","Öğle/akşam · Fransız bistro"],["Bistrot Sainte Anne","Écusson · bistro"]],
   13:[["Campanile kahvaltısı","Rezervasyona dahil · check-out öncesi"],["Bonobo","Yalnız ekstra kahve istersen"]]
 };
-const travelKey="endulusTravelV61";let travelDone={};try{travelDone=JSON.parse(localStorage.getItem(travelKey)||"{}")}catch(e){}
-const travelDir=(r,mode="walking")=>"https://www.google.com/maps/dir/?api=1&travelmode="+encodeURIComponent(mode)+"&origin="+encodeURIComponent(r[0])+"&destination="+encodeURIComponent(r[1])+(r[2]?.length?"&waypoints="+encodeURIComponent(r[2].join("|")):"");
-const travelSearch=q=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
-const daySelect=document.getElementById("v61dayselect"),dayHero=document.getElementById("v61dayhero"),dayTimeline=document.getElementById("v61timeline"),dayActions=document.getElementById("v61travelactions");
-let activeDay=0;
-function localISO(){const d=new Date(),off=d.getTimezoneOffset();return new Date(d.getTime()-off*60000).toISOString().slice(0,10)}
-function defaultDay(){const iso=localISO(),n=TRIP_DATES.indexOf(iso);return n>=0?n:(iso<TRIP_DATES[0]?0:TRIP_DATES.length-1)}
+const travelKey="endulusTravelV61";
+let travelDone={};
+try{travelDone=JSON.parse(localStorage.getItem(travelKey)||"{}")||{}}catch(e){}
+// The service worker can load this script alongside an older cached itinerary.
+D.days.forEach(day=>day[4].forEach((item,index)=>{item[7]??={id:index}}));
+
+const externalLink=(url,label,classes="ticketlink")=>
+  '<a class="'+classes+'" href="'+escapeHtml(url)+'" target="_blank" rel="noopener">'+escapeHtml(label)+' ↗</a>';
+
+function travelDir(origin,destination,mode,waypoints){
+ const params=new URLSearchParams({api:"1",origin,destination,travelmode:mode});
+ if(waypoints?.length)params.set("waypoints",waypoints.join("|"));
+ return "https://www.google.com/maps/dir/?"+params;
+}
+
+function dayRoutes(day){
+ const walk=DAY_WALKS[day];
+ const primary=walk?externalLink(travelDir(stayMap(walk[0]),walk[2],"walking",walk[3]),"Yürü · "+walk[1],"primary"):"";
+ const transfers=(DAY_TRANSFERS[day]||[]).map(([label,from,to,mode,via])=>
+  externalLink(travelDir(from,to,mode,via),label,""));
+ return '<div class="v61travelactions">'+primary+transfers.join("")+'</div>';
+}
+
+function dayLodging(day){
+ const hotel=D.hotels[DAY_HOTELS[day]];
+ const label=day===3?"Ronda çıkış noktası":day===11?"Gece varışındaki konaklama":"Konaklama";
+ return '<div class="day-lodging"><strong>'+label+'</strong><span>'+escapeHtml(hotel.location)+'</span>'+
+  externalLink(maps(hotel.map),hotel.name)+'</div>';
+}
+
+function itemDetails(day,item){
+ const options=item[7];
+ const name=(options.storyName||item[1]).replace(/ · BOOKED$/,"");
+ const videoName=day===6&&name==="Judería + Puente Romano"?"Judería düşünce & tarih yürüyüşü":name;
+ const legacy=sevillaStory(day,name)+sevillaVideoFood(day,name)+tourVideoNotes(day,videoName);
+ const detail=options.detail?'<p>'+escapeHtml(options.detail)+'</p>':"";
+ const story=options.story?'<p>'+escapeHtml(options.story)+'</p>':"";
+ const references=(options.references||[]).map(([label,url])=>externalLink(url,label));
+ if(options.source&&options.source!==item[6])references.unshift(externalLink(options.source,"Resmî kaynak"));
+ if(!legacy&&!detail&&!story&&!references.length)return "";
+ return '<details class="item-details"><summary>Detaylar ve notlar</summary><div class="detail-content">'+
+  detail+story+legacy+(references.length?'<div class="item-links">'+references.join("")+'</div>':"")+'</div></details>';
+}
+
+function renderDayItem(day,item,done,isTravel){
+ const [time,fullName,brief,tag,price,,link,options]=item;
+ const name=fullName.replace(/ · BOOKED$/,"");
+ const mapLink=options.map?externalLink(maps(options.map),"Harita"):"";
+ const officialLink=link?externalLink(link,tag==="Tur alternatifi"?"Tur bağlantısı":"Ziyaret bağlantısı"):"";
+ const meta=[tag.includes("BOOKED")?"Rezerveli":"",price!=null?money(price)+" / kişi":""].filter(Boolean);
+ const details=itemDetails(day,item);
+ const links=mapLink||officialLink?'<div class="item-links">'+mapLink+officialLink+'</div>':"";
+ const badge=meta.length?'<div class="item-meta">'+escapeHtml(meta.join(" · "))+'</div>':"";
+ const body='<div class="item-body"><h4>'+escapeHtml(name)+'</h4><p class="note">'+escapeHtml(brief)+'</p>'+badge+links+details+'</div>';
+ const isDone=Boolean(done?.[options.id]);
+ const check=isTravel?'<button type="button" class="v61check" data-ti="'+escapeHtml(options.id)+
+  '" aria-label="'+escapeHtml(name)+' tamamlandı" aria-pressed="'+isDone+'">'+(isDone?"✓":"")+'</button>':"";
+ return '<article class="agenda-item'+(isTravel?' v61item'+(isDone?' done':''):'')+'"><div class="time">'+
+  escapeHtml(time)+'</div>'+check+body+'</article>';
+}
+
+function renderAgenda(day,done){
+ const isTravel=done!==undefined;
+ const items=day[4];
+ const main=items.filter(x=>!x[7].optional);
+ const optional=items.filter(x=>x[7].optional);
+ const renderItems=rows=>rows.map(item=>renderDayItem(day[0],item,done,isTravel)).join("");
+ const food=DAY_FOOD[day[0]];
+ const foodDetails=food?'<div class="day-food">'+food.map(([name,description])=>
+  '<p>'+externalLink(maps(name+" "+(day[0]===3&&name==="La Telera 1860"?"Setenil":day[2].split(" → ").pop())),name)+
+  ' · '+escapeHtml(description)+'</p>').join("")+'</div>':"";
+ return renderItems(main)+
+  (optional.length?'<details class="agenda-options"><summary>İsteğe bağlı duraklar · '+optional.length+'</summary>'+renderItems(optional)+'</details>':"")+
+  (foodDetails?'<details class="agenda-options"><summary>Yemek ve kahve seçenekleri</summary>'+foodDetails+'</details>':"");
+}
+
+function renderPlan(){
+ const filters=document.querySelector("#filters");
+ const days=document.querySelector("#days");
+ const cityNames=["Tümü",...new Set(D.days.flatMap(d=>d[2].split(" → ")))];
+ filters.replaceChildren();
+ cityNames.forEach((city,i)=>{
+  const button=document.createElement("button");
+  button.type="button";
+  button.className="plan-filter"+(i===0?" on":"");
+  button.setAttribute("aria-pressed",String(i===0));
+  button.textContent=city;
+  button.onclick=()=>{
+   filters.querySelectorAll("button").forEach(b=>{
+    b.classList.toggle("on",b===button);
+    b.setAttribute("aria-pressed",String(b===button));
+   });
+   days.querySelectorAll(".day").forEach(d=>d.hidden=city!=="Tümü"&&!d.dataset.city.split(" → ").includes(city));
+  };
+  filters.appendChild(button);
+ });
+ days.innerHTML=D.days.map((day,i)=>'<details class="day" data-city="'+escapeHtml(day[2])+'"'+(i===0?" open":"")+
+  '><summary><div class="dt"><div class="num">'+day[0]+'</div><div><h3>'+escapeHtml(day[2])+
+  '</h3><div class="date">'+escapeHtml(day[1])+' · '+escapeHtml(day[3])+'</div></div></div><b aria-hidden="true">⌄</b></summary>'+
+  '<div class="timeline">'+dayLodging(day[0])+dayRoutes(day[0])+renderAgenda(day)+'</div></details>').join("");
+ const expand=document.querySelector("#expand");
+ expand.onclick=()=>{
+  const visible=[...days.querySelectorAll(".day:not([hidden])")];
+  const open=visible.some(d=>!d.open);
+  visible.forEach(d=>d.open=open);
+  expand.textContent=open?"Tümünü kapat":"Tümünü aç";
+ };
+}
+
+function renderNotes(){
+ const notes=document.querySelector("#v5noteslist");
+ notes.innerHTML=D.days.map(d=>'<div class="v5panel"><b>Gün '+d[0]+' · '+escapeHtml(d[2])+'</b>'+
+  dayRoutes(d[0])+'<textarea data-d="'+d[0]+'" aria-label="Gün '+d[0]+' notu" placeholder="Not ekle…"></textarea></div>').join("");
+ notes.querySelectorAll("textarea").forEach(t=>{
+  t.value=state.notes?.[t.dataset.d]||"";
+  t.oninput=()=>{
+   state.notes=state.notes||{};
+   state.notes[t.dataset.d]=t.value;
+   save();
+  };
+ });
+}
+
+const daySelect=document.getElementById("v61dayselect");
+const dayHero=document.getElementById("v61dayhero");
+const dayTimeline=document.getElementById("v61timeline");
+const dayActions=document.getElementById("v61travelactions");
+const previousDay=document.getElementById("v61prev");
+const nextDay=document.getElementById("v61next");
+const today=new Intl.DateTimeFormat("sv-SE",{timeZone:"Europe/Madrid"}).format(new Date());
+const todayIndex=TRIP_DATES.indexOf(today);
+let activeDay=todayIndex>=0?todayIndex:today<TRIP_DATES[0]?0:TRIP_DATES.length-1;
+
+function travelProgress(day,done){
+ const items=day[4].filter(x=>!x[7].optional);
+ const count=items.filter(x=>done[x[7].id]).length;
+ dayHero.querySelector(".day-progress-text").textContent=count+"/"+items.length+" tamamlandı";
+ dayHero.querySelector(".v61progress i").style.width=Math.round(count/items.length*100)+"%";
+}
+
 function renderTravel(){
- if(!daySelect||!dayHero||!dayTimeline)return;
- const d=D.days[activeDay],items=d[4],done=travelDone[d[0]]||{},count=items.filter((_,i)=>done[i]).length,p=Math.round(count/items.length*100);
+ const day=D.days[activeDay];
+ const done=travelDone[day[0]]||{};
  daySelect.value=String(activeDay);
- dayHero.innerHTML='<div class="ey">GÜN '+d[0]+' · '+d[1]+'</div><h3>'+escapeHtml(d[2])+'</h3><p>'+escapeHtml(d[3])+' · '+count+'/'+items.length+' tamamlandı</p><div class="v61progress"><i style="width:'+p+'%"></i></div>';
- const hotelCity=DAY_HOTEL_CITY[d[0]],hotel=D.hotels?.[hotelCity],hotelCard=hotel?'<article class="v61item"><div class="tm">🏨</div><div></div><div><h4>Konaklama · '+escapeHtml(hotel.name)+'</h4><p>'+escapeHtml(hotel.location)+(d[0]===11?' · Bu gecenin oteli; gün Madrid’de başlıyor.':'')+'</p><a class="ticketlink" target="_blank" rel="noopener" href="'+travelSearch(hotel.map)+'">⌖ Oteli haritada aç ↗</a></div></article>':"";
- dayTimeline.innerHTML=hotelCard+items.map((x,i)=>'<article class="v61item '+(done[i]?"done":"")+'"><div class="tm">'+escapeHtml(x[0])+'</div><button class="v61check" data-ti="'+i+'" aria-label="'+(done[i]?"Tamamlanmadı olarak işaretle":"Tamamlandı olarak işaretle")+'">'+(done[i]?"✓":"")+'</button><div><h4>'+(x[6]?'<a class="ticketlink" target="_blank" rel="noopener" href="'+x[6]+'">'+escapeHtml(x[1])+' ↗</a>':escapeHtml(x[1]))+'</h4><p>'+escapeHtml(x[2])+'</p>'+sevillaStory(d[0],x[1])+sevillaVideoFood(d[0],x[1])+tourVideoNotes(d[0],x[1])+'</div></article>').join("")+(DAY_FOOD[d[0]]?'<article class="v61item"><div class="tm">🍴</div><div></div><div><h4>Rota üzerindeki yemek alternatifleri</h4><p>'+DAY_FOOD[d[0]].map(x=>'<a target="_blank" rel="noopener" href="'+travelSearch(x[0]+" "+d[2].split(" → ").pop())+'"><b>'+escapeHtml(x[0])+'</b></a> · '+escapeHtml(x[1])).join("<br>")+'</p></div></article>':"");
- dayTimeline.querySelectorAll("[data-ti]").forEach(b=>b.onclick=()=>{travelDone[d[0]]=travelDone[d[0]]||{};travelDone[d[0]][b.dataset.ti]=!travelDone[d[0]][b.dataset.ti];localStorage.setItem(travelKey,JSON.stringify(travelDone));renderTravel()});
- const route=DAY_ROUTES[d[0]],city=d[2].split(" → ")[0];
- const transfer=DAY_TRANSFER_ROUTES[d[0]];
- dayActions.innerHTML=(route?'<a class="primary" target="_blank" rel="noopener" href="'+travelDir(route)+'">🚶 Konaklamadan günlük yürüyüş rotası</a>':"")+(transfer?'<a target="_blank" rel="noopener" href="'+travelDir([transfer.from,transfer.to],transfer.mode)+'">🚌 '+escapeHtml(transfer.label)+'</a>':"")+'<a target="_blank" rel="noopener" href="'+travelSearch(city)+'">⌖ '+escapeHtml(city)+' haritası</a>';
- document.getElementById("v61prev").disabled=activeDay===0;document.getElementById("v61next").disabled=activeDay===D.days.length-1;
+ dayHero.innerHTML='<div class="v61dayhero"><div class="ey">'+escapeHtml(day[1])+'</div><h3>'+escapeHtml(day[2])+
+  '</h3><p>'+escapeHtml(day[3])+'</p><div class="v61progress" aria-hidden="true"><i></i></div>'+
+  '<p class="day-progress-text" aria-live="polite"></p></div>';
+ dayActions.innerHTML=dayLodging(day[0])+dayRoutes(day[0]);
+ dayTimeline.innerHTML=renderAgenda(day,done);
+ travelProgress(day,done);
+ previousDay.disabled=activeDay===0;
+ nextDay.disabled=activeDay===D.days.length-1;
 }
-if(daySelect){
- daySelect.innerHTML=D.days.map((d,i)=>'<option value="'+i+'">Gün '+d[0]+' · '+escapeHtml(d[2])+'</option>').join("");
- activeDay=defaultDay();daySelect.onchange=()=>{activeDay=+daySelect.value;renderTravel()};
- document.getElementById("v61prev").onclick=()=>{if(activeDay>0){activeDay--;renderTravel()}};
- document.getElementById("v61next").onclick=()=>{if(activeDay<D.days.length-1){activeDay++;renderTravel()}};
+
+function renderToday(){
+ const box=document.getElementById("v5travel");
+ if(!box||todayIndex<0)return;
+ const day=D.days[todayIndex];
+ box.innerHTML='<div class="v5travel"><div class="ey">BUGÜN · '+escapeHtml(day[1])+
+  '</div><h3>'+escapeHtml(day[2])+'</h3><p>'+escapeHtml(day[3])+'</p>'+dayRoutes(day[0])+'</div>';
+}
+
+dayTimeline.addEventListener("click",event=>{
+ const button=event.target.closest("[data-ti]");
+ if(!button)return;
+ const day=D.days[activeDay];
+ const done=travelDone[day[0]]||={};
+ const id=button.dataset.ti;
+ done[id]=!done[id];
+ localStorage.setItem(travelKey,JSON.stringify(travelDone));
+ button.setAttribute("aria-pressed",String(done[id]));
+ button.textContent=done[id]?"✓":"";
+ button.closest(".agenda-item").classList.toggle("done",done[id]);
+ travelProgress(day,done);
+});
+
+daySelect.innerHTML=D.days.map((d,i)=>'<option value="'+i+'">'+escapeHtml(d[1].split(" · ")[0]+" · "+d[2])+'</option>').join("");
+daySelect.onchange=()=>{activeDay=Number(daySelect.value);renderTravel()};
+previousDay.onclick=()=>{activeDay--;renderTravel()};
+nextDay.onclick=()=>{activeDay++;renderTravel()};
+document.querySelector('#v5home [data-v5go="v61travel"]').addEventListener("click",()=>{
+ activeDay=todayIndex>=0?todayIndex:0;
  renderTravel();
-}
+ document.querySelector(".v61daynav").scrollIntoView({block:"nearest"});
+});
+renderPlan();
+renderNotes();
+renderTravel();
+renderToday();
 function onlineState(){
  const on=navigator.onLine,label=on?"● Online":"● Offline";
  ["v61online"].forEach(id=>{const el=document.getElementById(id);if(el){el.textContent=label;el.classList.toggle("v61online",on);el.classList.toggle("v61offline",!on)}});
